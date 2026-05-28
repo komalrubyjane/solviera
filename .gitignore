@@ -1,0 +1,18 @@
+# Dependency directories
+node_modules/
+
+# Local database persistence files
+orders.json
+subscribers.json
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Vercel directories
+.vercel/
+
+# OS metadata
+.DS_Store
+Thumbs.db

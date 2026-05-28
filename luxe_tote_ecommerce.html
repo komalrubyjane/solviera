@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLVIERA — Premium Handcrafted Tote Atelier</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--cream:#0D0814;--ivory:#FAF5FF;--sand:#1B112A;--beige:#2E1D47;--mocha:#A78BFA;--warm-brown:#F472B6;--nude:#FB7185;--soft-brown:#C084FC;--dark-mocha:#FFFFFF;--accent:#F59E0B;
+--font-serif:'Cormorant Garamond',serif;--font-sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--dark-mocha);font-family:var(--font-sans);overflow-x:hidden;cursor:none}
+
+/* Custom cursor */
+#cursor{position:fixed;width:12px;height:12px;background:var(--warm-brown);border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.15s ease,background 0.2s;top:0;left:0;box-shadow:0 0 12px var(--warm-brown)}
+#cursor-ring{position:fixed;width:40px;height:40px;border:1px solid var(--mocha);border-radius:50%;pointer-events:none;z-index:9998;transition:transform 0.4s cubic-bezier(.25,.46,.45,.94);top:0;left:0;opacity:0.8;box-shadow:0 0 8px rgba(167,139,250,0.2)}
+body:hover #cursor{opacity:1}
+
+/* NAV */
+nav{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:1000;width:calc(100% - 48px);max-width:900px}
+.nav-pill{display:flex;align-items:center;justify-content:space-between;background:rgba(27,17,42,0.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:0.5px solid rgba(167,139,250,0.25);border-radius:100px;padding:14px 28px;box-shadow:0 8px 32px rgba(13,8,20,0.3),0 1px 0 rgba(255,255,255,0.1) inset}
+.nav-logo{font-family:var(--font-serif);font-size:18px;font-weight:500;letter-spacing:0.12em;color:var(--dark-mocha);text-transform:uppercase}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:12px;font-weight:300;letter-spacing:0.1em;color:var(--mocha);text-decoration:none;text-transform:uppercase;transition:color 0.3s}
+.nav-links a:hover{color:var(--dark-mocha)}
+.nav-cta{background:rgba(244,114,182,0.12);border:0.5px solid rgba(244,114,182,0.4);color:var(--ivory);font-size:11px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;padding:10px 22px;border-radius:100px;cursor:pointer;transition:all 0.3s ease}
+.nav-cta:hover{background:var(--warm-brown);color:var(--cream);transform:scale(0.97);box-shadow:0 0 15px rgba(244,114,182,0.4)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 24px 60px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(167,139,250,0.18) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 80% 70%,rgba(244,114,182,0.12) 0%,transparent 60%);pointer-events:none}
+.hero-grain{position:absolute;inset:0;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+
+.hero-container{position:relative;width:100%;max-width:1100px;background:linear-gradient(145deg,rgba(27,17,42,0.6) 0%,rgba(27,17,42,0.85) 50%,rgba(13,8,20,0.75) 100%);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:0.5px solid rgba(167,139,250,0.22);border-radius:32px;box-shadow:0 24px 80px rgba(13,8,20,0.4),0 4px 24px rgba(13,8,20,0.2),0 1px 0 rgba(255,255,255,0.08) inset;padding:60px;min-height:600px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+
+/* Floating UI tags above hero */
+.hero-tags{position:absolute;top:-22px;left:50%;transform:translateX(-50%);display:flex;gap:10px;white-space:nowrap}
+.tag-pill{background:rgba(27,17,42,0.92);border:0.5px solid rgba(167,139,250,0.3);border-radius:100px;padding:6px 16px;font-size:10px;font-weight:400;letter-spacing:0.12em;color:var(--mocha);text-transform:uppercase;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:2}
+.hero-headline{flex:1;max-width:580px}
+.hero-eyebrow{font-size:10px;font-weight:400;letter-spacing:0.2em;color:var(--mocha);text-transform:uppercase;margin-bottom:16px;opacity:0;animation:fadeUp 0.8s ease 0.3s forwards}
+.hero-title{font-family:var(--font-serif);font-size:clamp(52px,7vw,88px);font-weight:300;line-height:1.0;letter-spacing:-0.01em;color:var(--dark-mocha);opacity:0;animation:fadeUp 0.9s ease 0.5s forwards}
+.hero-title em{font-style:italic;color:var(--mocha);font-weight:300}
+.hero-title strong{font-weight:600;display:block}
+.hero-sub{font-size:14px;font-weight:300;color:var(--soft-brown);line-height:1.7;margin-top:20px;max-width:320px;opacity:0;animation:fadeUp 0.8s ease 0.7s forwards}
+.hero-actions{display:flex;gap:12px;margin-top:32px;opacity:0;animation:fadeUp 0.8s ease 0.9s forwards}
+.btn-primary{background:linear-gradient(135deg,var(--warm-brown) 0%,var(--nude) 100%);color:var(--cream);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:14px 32px;border-radius:100px;cursor:none;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),box-shadow 0.3s;box-shadow:0 4px 15px rgba(244,114,182,0.3)}
+.btn-primary:hover{transform:scale(1.04);box-shadow:0 8px 32px rgba(244,114,182,0.5);background:var(--ivory);color:var(--cream)}
+.btn-ghost{background:transparent;color:var(--mocha);font-size:12px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;border:0.5px solid rgba(167,139,250,0.4);padding:14px 28px;border-radius:100px;cursor:none;transition:all 0.3s}
+.btn-ghost:hover{background:rgba(167,139,250,0.12);border-color:var(--warm-brown);color:var(--ivory)}
+
+/* Side stats */
+.hero-stats{display:flex;flex-direction:column;gap:24px;align-items:flex-end;opacity:0;animation:fadeUp 0.8s ease 1s forwards}
+.stat-item{text-align:right}
+.stat-num{font-family:var(--font-serif);font-size:32px;font-weight:400;color:var(--dark-mocha);line-height:1}
+.stat-label{font-size:10px;font-weight:300;letter-spacing:0.12em;color:var(--soft-brown);text-transform:uppercase;margin-top:2px}
+
+/* Floating product area */
+.hero-products{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:65%;max-width:680px;height:70%;pointer-events:none;z-index:1}
+.bag-float{position:absolute;opacity:0;animation:bagReveal 1.2s ease forwards}
+.bag-1{top:5%;left:20%;width:200px;animation-delay:0.6s}
+.bag-2{top:10%;left:55%;width:170px;animation-delay:0.9s}
+.bag-3{bottom:5%;left:35%;width:180px;animation-delay:1.1s}
+@keyframes bagReveal{from{opacity:0;transform:translateY(30px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+.bag-float:nth-child(1){animation:bagReveal 1.2s ease 0.6s forwards,floatAnim1 6s ease-in-out 2s infinite}
+.bag-float:nth-child(2){animation:bagReveal 1.2s ease 0.9s forwards,floatAnim2 7s ease-in-out 2.5s infinite}
+.bag-float:nth-child(3){animation:bagReveal 1.2s ease 1.1s forwards,floatAnim3 5.5s ease-in-out 2.2s infinite}
+@keyframes floatAnim1{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-18px) rotate(1deg)}}
+@keyframes floatAnim2{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-12px) rotate(-1deg)}}
+@keyframes floatAnim3{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-20px) rotate(2deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* SVG bag illustrations */
+.bag-svg{width:100%;filter:drop-shadow(0 12px 40px rgba(61,43,31,0.18))}
+
+/* Floating decorative labels on bags */
+.bag-label{position:absolute;background:rgba(27,17,42,0.95);border:0.5px solid rgba(167,139,250,0.35);border-radius:100px;padding:5px 12px;font-size:9px;font-weight:400;letter-spacing:0.1em;color:var(--mocha);text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.25)}
+.label-1{top:-18px;right:-10px}
+.label-2{bottom:-15px;left:10px}
+.label-3{top:50%;right:-50px;transform:translateY(-50%)}
+
+/* Wave bottom */
+.hero-wave{margin-top:40px;position:relative;height:80px;overflow:hidden}
+.hero-wave svg{position:absolute;bottom:0;width:100%;display:block}
+
+/* SECTION: Featured */
+.section{padding:100px 24px;max-width:1200px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:60px;opacity:0;transform:translateY(30px);transition:all 0.8s ease}
+.section-header.visible{opacity:1;transform:translateY(0)}
+.section-eyebrow{font-size:10px;font-weight:400;letter-spacing:0.2em;color:var(--mocha);text-transform:uppercase;margin-bottom:12px}
+.section-title{font-family:var(--font-serif);font-size:clamp(36px,5vw,56px);font-weight:300;line-height:1.1;color:var(--dark-mocha)}
+.section-title em{font-style:italic;color:var(--mocha)}
+
+/* Products grid */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.product-card{background:linear-gradient(145deg,rgba(27,17,42,0.7),rgba(13,8,20,0.8));border:0.5px solid rgba(167,139,250,0.2);border-radius:24px;overflow:hidden;cursor:none;transition:transform 0.5s cubic-bezier(.34,1.2,.64,1),box-shadow 0.4s ease;opacity:0;transform:translateY(40px)}
+.product-card.visible{opacity:1;transform:translateY(0)}
+.product-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 24px 60px rgba(167,139,250,0.12)}
+.product-img{height:280px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(46,29,71,0.4),rgba(244,114,182,0.15));position:relative;overflow:hidden}
+.product-img svg, .product-img img{width:auto;height:80%;max-width:85%;transition:transform 0.6s ease;object-fit:contain}
+.product-card:hover .product-img svg, .product-card:hover .product-img img{transform:scale(1.06) rotate(2deg)}
+.badge{position:absolute;top:16px;left:16px;background:rgba(167,139,250,0.15);border:0.5px solid var(--mocha);color:var(--ivory);font-size:9px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:100px}
+.product-info{padding:24px}
+.product-name{font-family:var(--font-serif);font-size:22px;font-weight:400;color:var(--dark-mocha);margin-bottom:4px}
+.product-desc{font-size:12px;font-weight:300;color:var(--soft-brown);line-height:1.6;margin-bottom:16px}
+.product-footer{display:flex;justify-content:space-between;align-items:center}
+.product-price{font-family:var(--font-serif);font-size:20px;font-weight:400;color:var(--warm-brown)}
+.add-btn{background:var(--sand);color:var(--mocha);font-size:10px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:10px 20px;border-radius:100px;cursor:none;transition:all 0.3s}
+.add-btn:hover{background:var(--dark-mocha);color:var(--ivory)}
+
+/* Collections section */
+.collections-wrap{background:linear-gradient(180deg,var(--cream) 0%,rgba(232,221,208,0.3) 50%,var(--cream) 100%);padding:100px 0}
+.collections-inner{max-width:1200px;margin:0 auto;padding:0 24px}
+.collections-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:50px}
+.collection-card{border-radius:24px;overflow:hidden;position:relative;cursor:none;height:360px;border:0.5px solid rgba(139,111,94,0.12)}
+.collection-card.large{grid-row:span 2;height:100%}
+.collection-bg{position:absolute;inset:0;transition:transform 0.7s ease}
+.collection-card:hover .collection-bg{transform:scale(1.04)}
+.collection-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(61,43,31,0.65) 0%,rgba(61,43,31,0.1) 50%,transparent 100%)}
+.collection-info{position:absolute;bottom:0;left:0;right:0;padding:32px}
+.collection-name{font-family:var(--font-serif);font-size:clamp(22px,3vw,32px);font-weight:300;color:var(--ivory);line-height:1.2;margin-bottom:8px}
+.collection-cta{font-size:10px;font-weight:400;letter-spacing:0.15em;color:rgba(253,250,246,0.7);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cta-arrow{width:24px;height:1px;background:rgba(253,250,246,0.5);display:inline-block;transition:width 0.3s}
+.collection-card:hover .cta-arrow{width:40px}
+
+/* Reviews */
+.reviews-section{padding:100px 24px;max-width:1200px;margin:0 auto}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:50px}
+.review-card{background:linear-gradient(145deg,rgba(27,17,42,0.75),rgba(13,8,20,0.85));border:0.5px solid rgba(167,139,250,0.18);border-radius:20px;padding:28px;opacity:0;transform:translateY(30px);transition:all 0.7s ease}
+.review-card.visible{opacity:1;transform:translateY(0)}
+.stars{color:var(--accent);font-size:14px;letter-spacing:2px;margin-bottom:14px}
+.review-text{font-family:var(--font-serif);font-size:16px;font-weight:300;line-height:1.65;color:var(--dark-mocha);font-style:italic;margin-bottom:20px}
+.reviewer{font-size:11px;font-weight:400;letter-spacing:0.1em;color:var(--soft-brown);text-transform:uppercase}
+
+/* Brand story */
+.brand-story{padding:100px 24px;background:linear-gradient(135deg,#1B112A,#0D0814);margin:60px 24px;border-radius:32px;overflow:hidden;position:relative;border:0.5px solid rgba(167,139,250,0.2)}
+.brand-story-inner{max-width:700px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.brand-story-eyebrow{font-size:10px;font-weight:400;letter-spacing:0.2em;color:var(--mocha);text-transform:uppercase;margin-bottom:20px}
+.brand-story-title{font-family:var(--font-serif);font-size:clamp(40px,6vw,72px);font-weight:300;line-height:1.05;color:var(--ivory);margin-bottom:24px}
+.brand-story-title em{font-style:italic;color:var(--nude)}
+.brand-story-body{font-size:15px;font-weight:300;line-height:1.8;color:var(--ivory);opacity:0.75;margin-bottom:36px}
+.brand-deco{position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(167,139,250,0.1);top:-80px;right:-80px;pointer-events:none}
+.brand-deco-2{position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(167,139,250,0.08);bottom:-50px;left:-50px;pointer-events:none}
+
+/* Newsletter strip */
+.newsletter{padding:80px 24px;text-align:center;max-width:600px;margin:0 auto}
+.newsletter-title{font-family:var(--font-serif);font-size:36px;font-weight:300;color:var(--dark-mocha);margin-bottom:8px}
+.newsletter-sub{font-size:13px;font-weight:300;color:var(--soft-brown);margin-bottom:28px}
+.newsletter-form{display:flex;gap:10px;max-width:400px;margin:0 auto}
+.newsletter-form input{flex:1;background:rgba(27,17,42,0.95);border:0.5px solid rgba(167,139,250,0.25);border-radius:100px;padding:13px 22px;font-family:var(--font-sans);font-size:13px;font-weight:300;color:var(--ivory);outline:none}
+.newsletter-form input::placeholder{color:var(--soft-brown);opacity:0.6}
+.newsletter-form input:focus{border-color:var(--mocha)}
+.newsletter-form button{background:var(--warm-brown);color:var(--cream);font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:13px 24px;border-radius:100px;cursor:none;transition:all 0.3s;white-space:nowrap}
+.newsletter-form button:hover{background:var(--ivory);color:var(--cream);box-shadow:0 0 15px rgba(254,254,254,0.3)}
+
+/* Footer */
+footer{border-top:0.5px solid rgba(139,111,94,0.15);padding:50px 24px 30px;max-width:1200px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand{font-family:var(--font-serif);font-size:22px;font-weight:400;letter-spacing:0.1em;color:var(--dark-mocha);margin-bottom:12px}
+.footer-tagline{font-size:12px;font-weight:300;color:var(--soft-brown);line-height:1.7;max-width:240px}
+.footer-heading{font-size:10px;font-weight:400;letter-spacing:0.15em;color:var(--dark-mocha);text-transform:uppercase;margin-bottom:16px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:12px;font-weight:300;color:var(--soft-brown);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--dark-mocha)}
+.footer-bottom{border-top:0.5px solid rgba(139,111,94,0.1);padding-top:24px;display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:11px;font-weight:300;color:rgba(139,111,94,0.6);letter-spacing:0.05em}
+
+/* Scroll reveal utility */
+.reveal{opacity:0;transform:translate3d(0,30px,0);will-change:transform,opacity;transition:opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)}
+.reveal.visible{opacity:1;transform:translate3d(0,0,0)}
+
+/* Decorative floating shapes */
+.deco-circle{position:absolute;border-radius:50%;border:1px solid rgba(139,111,94,0.12);pointer-events:none}
+.deco-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(139,111,94,0.2),transparent);pointer-events:none}
+
+@media(max-width:1150px){
+.hero-products{display:none}
+}
+
+@media(max-width:768px){
+.nav-links{display:none}
+.hero-container{padding:36px 28px}
+.hero-top{flex-direction:column;gap:24px}
+.hero-stats{flex-direction:row;align-items:flex-start}
+.hero-products{display:none}
+.products-grid{grid-template-columns:1fr}
+.collections-grid{grid-template-columns:1fr}
+.collection-card.large{height:360px}
+.reviews-grid{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}
+.newsletter-form{flex-direction:column}
+}
+
+@media(max-width:480px){
+.cart-drawer{max-width:100% !important;padding:24px 20px}
+.checkout-content{padding:24px 16px;border-radius:20px}
+.checkout-title{font-size:22px;margin-bottom:18px}
+.checkout-modal{padding:12px}
+.nav-logo{font-size:15px}
+.nav-cta{padding:8px 16px;font-size:10px}
+}
+
+/* CART DRAWER */
+.cart-drawer{position:fixed;top:0;right:-400px;width:100%;max-width:400px;height:100vh;background:rgba(13,8,20,0.95);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-left:0.5px solid rgba(167,139,250,0.2);z-index:1100;transition:right 0.4s cubic-bezier(.25,.8,.25,1);box-shadow:-10px 0 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;padding:32px}
+.cart-drawer.open{right:0}
+.cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;border-bottom:0.5px solid rgba(167,139,250,0.15);padding-bottom:16px}
+.cart-title{font-family:var(--font-serif);font-size:24px;font-weight:400;color:var(--ivory)}
+.close-drawer{background:none;border:none;color:var(--soft-brown);cursor:none;font-size:20px}
+.cart-items{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:18px;margin-bottom:20px}
+.cart-item{display:flex;gap:14px;align-items:center;background:rgba(27,17,42,0.4);border:0.5px solid rgba(167,139,250,0.1);border-radius:16px;padding:12px}
+.cart-item-img{width:60px;height:60px;object-fit:contain;background:rgba(13,8,20,0.5);border-radius:10px;padding:4px}
+.cart-item-info{flex:1}
+.cart-item-name{font-family:var(--font-serif);font-size:16px;color:var(--ivory);margin-bottom:2px}
+.cart-item-price{font-size:12px;color:var(--mocha)}
+.cart-item-qty{display:flex;align-items:center;gap:10px;margin-top:6px}
+.qty-btn{background:var(--sand);border:none;color:var(--ivory);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:none;font-size:12px}
+.qty-val{font-size:12px;color:var(--ivory)}
+.cart-remove{background:none;border:none;color:var(--warm-brown);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;cursor:none}
+.cart-footer{border-top:0.5px solid rgba(167,139,250,0.15);padding-top:20px}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.total-label{font-size:12px;text-transform:uppercase;color:var(--soft-brown);letter-spacing:0.1em}
+.total-price{font-family:var(--font-serif);font-size:26px;color:var(--warm-brown)}
+.checkout-btn{width:100%;background:var(--warm-brown);color:var(--cream);font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:16px;border-radius:100px;cursor:none;transition:all 0.3s}
+.checkout-btn:hover{background:var(--ivory);color:var(--cream)}
+
+/* CHECKOUT MODAL */
+.checkout-modal{position:fixed;inset:0;background:rgba(13,8,20,0.8);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);z-index:1200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;padding:24px}
+.checkout-modal.open{opacity:1;pointer-events:all}
+.checkout-content{width:100%;max-width:500px;background:linear-gradient(145deg,rgba(27,17,42,0.9),rgba(13,8,20,0.95));border:0.5px solid rgba(167,139,250,0.22);border-radius:28px;box-shadow:0 24px 80px rgba(0,0,0,0.6);padding:36px;position:relative;max-height:90vh;overflow-y:auto}
+.checkout-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--soft-brown);font-size:18px;cursor:none}
+.checkout-title{font-family:var(--font-serif);font-size:28px;color:var(--ivory);margin-bottom:24px;border-bottom:0.5px solid rgba(167,139,250,0.15);padding-bottom:12px}
+.form-step{display:none}
+.form-step.active{display:block}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--soft-brown);margin-bottom:6px}
+.form-input{width:100%;background:rgba(13,8,20,0.6);border:0.5px solid rgba(167,139,250,0.2);border-radius:12px;padding:12px 16px;color:var(--ivory);font-family:var(--font-sans);font-size:13px;outline:none;transition:border 0.2s}
+.form-input:focus{border-color:var(--mocha)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.step-actions{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+.btn-back{background:transparent;border:0.5px solid rgba(167,139,250,0.2);color:var(--ivory);padding:12px 24px;border-radius:100px;cursor:none;font-size:11px;letter-spacing:0.1em;text-transform:uppercase}
+.btn-next{background:var(--mocha);border:none;color:var(--ivory);padding:12px 24px;border-radius:100px;cursor:none;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;flex:1}
+
+/* TOAST NOTIFICATION */
+#toast{position:fixed;bottom:24px;right:24px;background:rgba(27,17,42,0.92);backdrop-filter:blur(10px);border:0.5px solid rgba(167,139,250,0.3);border-radius:16px;padding:16px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(.175,.885,.32,1.275)}
+#toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-pill">
+    <span class="nav-logo">Solviera</span>
+    <ul class="nav-links">
+      <li><a href="#sec1">Collection</a></li>
+      <li><a href="#sec4">Story</a></li>
+      <li><a href="#sec5">Subscribe</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="nav-cta" id="cartTrigger" style="display:flex;align-items:center;gap:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span>Cart</span> <span id="cartCount" style="background:var(--warm-brown);color:white;border-radius:50%;padding:1px 6px;font-size:9px;font-weight:bold">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+
+  <div class="hero-container" id="heroContainer">
+    <!-- Floating tags -->
+    <div class="hero-tags">
+      <span class="tag-pill">✦ New Arrivals 2025</span>
+      <span class="tag-pill">Handcrafted in Florence</span>
+      <span class="tag-pill">Free global shipping</span>
+    </div>
+
+    <!-- Main content -->
+    <div class="hero-top">
+      <div class="hero-headline">
+        <p class="hero-eyebrow">The Luxury Tote Atelier</p>
+        <h1 class="hero-title">
+          <em>Timeless</em>
+          <strong>Craft &</strong>
+          Form.
+        </h1>
+        <p class="hero-sub">Each bag is a study in restraint. Vegetable-tanned leathers, hand-stitched edges, and silhouettes that carry decades without effort.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="document.getElementById('sec1').scrollIntoView({behavior:'smooth'})">Explore Collection</button>
+          <button class="btn-ghost" onclick="document.getElementById('sec4').scrollIntoView({behavior:'smooth'})">Our Story →</button>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">12</div>
+          <div class="stat-label">Signature styles</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">04</div>
+          <div class="stat-label">Collections</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Lifetime care</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating bags -->
+    <div class="hero-products">
+      <!-- Bag 1: Large tote -->
+      <div class="bag-float bag-1" style="position:absolute;top:5%;left:15%;width:220px">
+        <img class="bag-svg" src="./tote_crochet.png" alt="Toscana Crochet Tote" style="width:100%;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5))">
+        <div class="bag-label label-1">Toscana Crochet</div>
+        <div class="bag-label label-2">From ₹29,900</div>
+      </div>
+
+      <!-- Bag 2: Slim tote -->
+      <div class="bag-float bag-2" style="position:absolute;top:12%;right:5%;width:190px">
+        <img class="bag-svg" src="./tote_hibiscus.png" alt="Venezia Hibiscus Mini" style="width:100%;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5))">
+        <div class="bag-label label-3">Venezia Hibiscus</div>
+      </div>
+
+      <!-- Bag 3: Structured tote -->
+      <div class="bag-float bag-3" style="position:absolute;bottom:2%;left:30%;width:200px">
+        <img class="bag-svg" src="./tote_kitty.png" alt="Palermo Kitty Everyday" style="width:100%;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5))">
+        <div class="bag-label label-1">Palermo Kitty</div>
+      </div>
+    </div>
+
+    <!-- Wave bottom -->
+    <div class="hero-wave">
+      <svg viewBox="0 0 1100 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0 40 Q100 10 200 40 Q300 70 400 45 Q500 20 600 45 Q700 70 800 40 Q900 10 1000 38 Q1050 48 1100 35 L1100 80 L0 80 Z" fill="url(#wave-grad)" opacity="0.35"/>
+        <path d="M0 55 Q150 30 300 55 Q450 80 600 55 Q750 30 900 55 Q1000 68 1100 50 L1100 80 L0 80 Z" fill="url(#wave-grad)" opacity="0.2"/>
+        <defs>
+          <linearGradient id="wave-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#D9CCBA"/>
+            <stop offset="100%" stop-color="#C4A882"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section style="padding:80px 24px;max-width:1200px;margin:0 auto">
+  <div class="section-header reveal" id="sec1">
+    <p class="section-eyebrow">Curated Selection</p>
+    <h2 class="section-title">Featured <em>Pieces</em></h2>
+  </div>
+  <div class="products-grid">
+    <div class="product-card reveal" style="transition-delay:0.1s">
+      <div class="product-img">
+        <span class="badge">Bestseller</span>
+        <img src="./tote_crochet.png" alt="Toscana Crochet Tote" style="height:85%;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.4));transition:transform 0.6s ease">
+      </div>
+      <div class="product-info">
+        <div class="product-name">Toscana Crochet</div>
+        <div class="product-desc">Intricately hand-woven crochet mesh tote. Light, breathable, and perfect for resort days.</div>
+        <div class="product-footer">
+          <div class="product-price">₹29,900</div>
+          <button class="add-btn">Add to bag</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.2s">
+      <div class="product-img" style="background:linear-gradient(135deg,rgba(244,114,182,0.12),rgba(46,29,71,0.1))">
+        <img src="./tote_hibiscus.png" alt="Venezia Hibiscus Mini" style="height:85%;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.4));transition:transform 0.6s ease">
+      </div>
+      <div class="product-info">
+        <div class="product-name">Venezia Hibiscus</div>
+        <div class="product-desc">Plush tufted velvet tote in a deep hibiscus crimson. Features a beautiful white floral motif.</div>
+        <div class="product-footer">
+          <div class="product-price">₹26,500</div>
+          <button class="add-btn">Add to bag</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.3s">
+      <div class="product-img" style="background:linear-gradient(135deg,rgba(27,17,42,0.5),rgba(244,114,182,0.15))">
+        <span class="badge">New</span>
+        <img src="./tote_kitty.png" alt="Palermo Kitty Everyday" style="height:85%;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.4));transition:transform 0.6s ease">
+      </div>
+      <div class="product-info">
+        <div class="product-name">Palermo Kitty</div>
+        <div class="product-desc">Premium plush tufted signature tote in sunset bubblegum pink. A playful, high-fashion statement piece.</div>
+        <div class="product-footer">
+          <div class="product-price">₹22,900</div>
+          <button class="add-btn">Add to bag</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<div class="collections-wrap">
+  <div class="collections-inner">
+    <div class="section-header reveal" id="sec2">
+      <p class="section-eyebrow">Explore</p>
+      <h2 class="section-title">Our <em>Collections</em></h2>
+    </div>
+    <div class="collections-grid">
+      <div class="collection-card large reveal">
+        <div class="collection-bg" style="background: linear-gradient(rgba(13,8,20,0.3), rgba(13,8,20,0.75)), url('./collection_heritage.png') no-repeat center/cover; position:absolute; inset:0"></div>
+        <div style="position:absolute;inset:0;overflow:hidden">
+          <svg viewBox="0 0 400 740" style="position:absolute;right:-20px;top:0;width:60%;opacity:0.12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M80 200 Q80 80 200 60 Q320 80 320 200 L320 640 Q320 700 200 720 Q80 700 80 640 Z" fill="var(--sand)"/>
+          </svg>
+        </div>
+        <div class="collection-overlay"></div>
+        <div class="collection-info">
+          <h3 class="collection-name">The Italian<br><em>Heritage</em> Edit</h3>
+          <div class="collection-cta">Shop Collection <span class="cta-arrow"></span></div>
+        </div>
+      </div>
+      <div class="collection-card reveal" style="transition-delay:0.15s">
+        <div class="collection-bg" style="background: linear-gradient(rgba(13,8,20,0.25), rgba(13,8,20,0.75)), url('./collection_summer.png') no-repeat center/cover; position:absolute; inset:0"></div>
+        <div class="collection-overlay" style="background:linear-gradient(to top,rgba(13,8,20,0.65) 0%,transparent 60%)"></div>
+        <div class="collection-info">
+          <h3 class="collection-name">Summer<br>Naturals</h3>
+          <div class="collection-cta">Discover <span class="cta-arrow"></span></div>
+        </div>
+      </div>
+      <div class="collection-card reveal" style="transition-delay:0.25s">
+        <div class="collection-bg" style="background: linear-gradient(rgba(13,8,20,0.25), rgba(13,8,20,0.75)), url('./collection_noir.png') no-repeat center/cover; position:absolute; inset:0"></div>
+        <div class="collection-overlay" style="background:linear-gradient(to top,rgba(13,8,20,0.65) 0%,transparent 60%)"></div>
+        <div class="collection-info">
+          <h3 class="collection-name">Midnight<br>Noir</h3>
+          <div class="collection-cta">Explore <span class="cta-arrow"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<section class="reviews-section" style="max-width:1200px;margin:0 auto">
+  <div class="section-header reveal" id="sec3">
+    <p class="section-eyebrow">What they say</p>
+    <h2 class="section-title">Worn with <em>Love</em></h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal" style="transition-delay:0.05s">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"The Toscana Grand has replaced every other bag I own. Three years in and it only looks better."</p>
+      <div class="reviewer">— Isabelle M., Paris</div>
+    </div>
+    <div class="review-card reveal" style="transition-delay:0.15s">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"Impeccable craftsmanship. The leather aged beautifully — it truly becomes your own over time."</p>
+      <div class="reviewer">— Sara K., Milan</div>
+    </div>
+    <div class="review-card reveal" style="transition-delay:0.25s">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"Worth every euro. I get compliments everywhere I go. Solviera is all I'll ever carry."</p>
+      <div class="reviewer">— Anna R., London</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND STORY -->
+<div style="padding:0 24px">
+  <div class="brand-story reveal" id="sec4">
+    <div class="brand-deco"></div>
+    <div class="brand-deco-2"></div>
+    <div class="brand-story-inner">
+      <p class="brand-story-eyebrow">Our Philosophy</p>
+      <h2 class="brand-story-title">Made to be<br><em>kept forever</em></h2>
+      <p class="brand-story-body">Founded in Florence in 2012, Solviera was born from a single obsession: making bags that outlast trends. We source only the finest materials from historic tanneries and artisan weavers, and every stitch is placed by hand in our atelier. We believe luxury is not about logos — it's about enduring quality.</p>
+      <button class="btn-primary" style="background:var(--nude);color:var(--dark-mocha)" onclick="document.getElementById('sec5').scrollIntoView({behavior:'smooth'})">Read our story</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter reveal" id="sec5">
+  <p class="section-eyebrow">Stay close</p>
+  <h3 class="newsletter-title">The Solviera Letter</h3>
+  <p class="newsletter-sub">New collections, rare leathers, and stories from the atelier — delivered slowly.</p>
+  <div class="newsletter-form">
+    <input type="email" placeholder="your@email.com">
+    <button>Subscribe</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Solviera</div>
+      <p class="footer-tagline">Handcrafted premium luxury tote bags. Made in Florence, carried everywhere.</p>
+    </div>
+    <div>
+      <p class="footer-heading">Shop</p>
+      <ul class="footer-links">
+        <li><a href="#sec1">New Arrivals</a></li>
+        <li><a href="#sec1">Collections</a></li>
+        <li><a href="#sec1">Bestsellers</a></li>
+        <li><a href="#sec1">Gift Cards</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-heading">Atelier</p>
+      <ul class="footer-links">
+        <li><a href="#sec4">Our Story</a></li>
+        <li><a href="#sec4">Craftsmanship</a></li>
+        <li><a href="#sec4">Materials</a></li>
+        <li><a href="#sec4">Journal</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-heading">Support</p>
+      <ul class="footer-links">
+        <li><a href="#">Sizing guide</a></li>
+        <li><a href="#">Care & repair</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Solviera. All rights reserved.</span>
+    <span class="footer-copy">Made with care in Florence, Italy.</span>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3 class="cart-title">Your Bag</h3>
+    <button class="close-drawer" id="closeDrawer">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <!-- Dynamic Cart Items -->
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total-row">
+      <span class="total-label">Subtotal</span>
+      <span class="total-price" id="cartTotal">₹0</span>
+    </div>
+    <button class="checkout-btn" id="proceedCheckout">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="checkout-modal" id="checkoutModal">
+  <div class="checkout-content">
+    <button class="checkout-close" id="closeCheckout">✕</button>
+    <h3 class="checkout-title" id="checkoutModalTitle">Checkout</h3>
+    
+    <form id="checkoutForm">
+      <!-- Step 1: Shipping Details -->
+      <div class="form-step active" id="stepShipping">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="shipName" placeholder="Isabelle Mercer" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="shipEmail" placeholder="isabelle@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shipping Address</label>
+          <input type="text" class="form-input" id="shipAddress" placeholder="24 Rue de Rivoli" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" class="form-input" id="shipCity" placeholder="Paris" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Postal Code</label>
+            <input type="text" class="form-input" id="shipZip" placeholder="75001" required>
+          </div>
+        </div>
+        <div class="step-actions">
+          <button type="button" class="btn-next" id="nextToPayment">Continue to Payment →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Payment Details -->
+      <div class="form-step" id="stepPayment">
+        <div class="form-group">
+          <label class="form-label">Cardholder Name</label>
+          <input type="text" class="form-input" id="cardName" placeholder="ISABELLE MERCER" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <input type="text" class="form-input" id="cardNumber" placeholder="4111 2222 3333 4444" maxlength="19" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Expiration Date</label>
+            <input type="text" class="form-input" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input type="password" class="form-input" id="cardCvv" placeholder="•••" maxlength="3" required>
+          </div>
+        </div>
+        <div class="step-actions">
+          <button type="button" class="btn-back" id="backToShipping">Back</button>
+          <button type="submit" class="btn-next" id="placeOrderBtn">Complete Purchase (₹0)</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Processing -->
+      <div class="form-step" id="stepProcessing" style="text-align:center;padding:40px 0">
+        <div style="width:40px;height:40px;border:3px solid var(--beige);border-top:3px solid var(--warm-brown);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div>
+        <p style="color:var(--ivory);font-size:14px;letter-spacing:0.05em">Securing your luxurious purchase...</p>
+      </div>
+
+      <!-- Step 4: Success / Receipt -->
+      <div class="form-step" id="stepSuccess" style="text-align:center">
+        <div style="font-size:48px;color:var(--accent);margin-bottom:16px">✦</div>
+        <h4 style="font-family:var(--font-serif);font-size:24px;color:var(--ivory);margin-bottom:8px">Thank You for Your Order</h4>
+        <p style="color:var(--soft-brown);font-size:12px;line-height:1.6;margin-bottom:24px" id="successMsg">
+          Your order has been accepted. A tracking reference and confirmation email are on their way.
+        </p>
+        
+        <div style="background:rgba(13,8,20,0.5);border:0.5px solid rgba(167,139,250,0.15);border-radius:16px;padding:20px;text-align:left;margin-bottom:24px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:11px;color:var(--soft-brown)">
+            <span>ORDER REFERENCE</span>
+            <span id="receiptRef" style="color:var(--accent);font-weight:bold">#SLV-123456</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--soft-brown)">
+            <span>ESTIMATED DELIVERY</span>
+            <span id="receiptDelivery" style="color:var(--ivory)">3-5 Business Days</span>
+          </div>
+        </div>
+        
+        <button type="button" class="checkout-btn" id="finishCheckout">Return to Atelier</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">Order placed successfully!</div>
+
+<style>
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+
+<script>
+// Detect touch/mobile capability to skip resource-heavy cursor animations
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 768);
+
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+
+if (isTouchDevice) {
+  if (cursor) cursor.style.display = 'none';
+  if (ring) ring.style.display = 'none';
+  document.body.style.cursor = 'auto';
+} else {
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    cursor.style.transform=`translate(${mx-6}px,${my-6}px)`;
+  });
+  function animRing(){
+    rx+=(mx-rx-20)*0.12;
+    ry+=(my-ry-20)*0.12;
+    ring.style.transform=`translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('button,a,.product-card,.collection-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform+=' scale(2)';ring.style.opacity='0.2';});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform=cursor.style.transform.replace(' scale(2)','');ring.style.opacity='0.6';});
+  });
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      if(e.target.classList.contains('section-header')){
+        observer.unobserve(e.target);
+      }
+    }
+  });
+},{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+
+document.querySelectorAll('.reveal,.product-card,.review-card,.section-header').forEach(el=>observer.observe(el));
+
+// Staggered product cards
+const cards=document.querySelectorAll('.product-card');
+cards.forEach((c,i)=>{c.style.transitionDelay=(i*0.12)+'s';observer.observe(c);});
+
+// Parallax hero container gentle tilt (desktop only)
+const hero=document.getElementById('heroContainer');
+if (!isTouchDevice && hero) {
+  document.addEventListener('mousemove',e=>{
+    const cx=window.innerWidth/2,cy=window.innerHeight/2;
+    const dx=(e.clientX-cx)/cx,dy=(e.clientY-cy)/cy;
+    hero.style.transform=`perspective(1200px) rotateX(${-dy*1.5}deg) rotateY(${dx*1.5}deg)`;
+  });
+  document.addEventListener('mouseleave',()=>{
+    hero.style.transform='perspective(1200px) rotateX(0deg) rotateY(0deg)';
+  });
+}
+
+// Cart and Backend logic
+let cart = JSON.parse(localStorage.getItem('solviera_cart')) || [];
+const cartCount = document.getElementById('cartCount');
+const cartTotal = document.getElementById('cartTotal');
+const cartItemsContainer = document.getElementById('cartItems');
+const cartDrawer = document.getElementById('cartDrawer');
+const checkoutModal = document.getElementById('checkoutModal');
+const placeOrderBtn = document.getElementById('placeOrderBtn');
+
+// Sync UI on load
+updateCartUI();
+
+// Toast helper
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toast');
+  toast.innerText = msg;
+  toast.style.background = isError ? 'rgba(239, 68, 68, 0.95)' : 'rgba(27, 17, 42, 0.95)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Add to Cart handler
+document.querySelectorAll('.product-card').forEach(card => {
+  const addBtn = card.querySelector('.add-btn');
+  if(!addBtn) return;
+  addBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const name = card.querySelector('.product-name').innerText;
+    const priceText = card.querySelector('.product-price').innerText;
+    const priceVal = parseInt(priceText.replace(/[^\d]/g, ''));
+    const imgElement = card.querySelector('.product-img img');
+    const imgSrc = imgElement ? imgElement.getAttribute('src') : '';
+    
+    addToCart(name, priceVal, imgSrc);
+    showToast(`Added ${name} to your bag.`);
+    openCartDrawer();
+  });
+});
+
+function addToCart(name, price, imgSrc) {
+  const existing = cart.find(item => item.name === name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ name, price, imgSrc, qty: 1 });
+  }
+  localStorage.setItem('solviera_cart', JSON.stringify(cart));
+  updateCartUI();
+}
+
+function updateCartUI() {
+  // Update badges
+  const count = cart.reduce((acc, item) => acc + item.qty, 0);
+  if(cartCount) cartCount.innerText = count;
+  
+  // Render list
+  if(cartItemsContainer) {
+    cartItemsContainer.innerHTML = '';
+    if(cart.length === 0) {
+      cartItemsContainer.innerHTML = `<div style="text-align:center;color:var(--soft-brown);padding:60px 0;font-size:13px;letter-spacing:0.05em">Your bag is empty.</div>`;
+    } else {
+      cart.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item';
+        itemEl.innerHTML = `
+          <img class="cart-item-img" src="${item.imgSrc}" alt="${item.name}">
+          <div class="cart-item-info">
+            <h4 class="cart-item-name">${item.name}</h4>
+            <div class="cart-item-price">₹${item.price.toLocaleString('en-IN')}</div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+              <span class="qty-val">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+            </div>
+          </div>
+          <button class="cart-remove" onclick="removeItem(${index})">Remove</button>
+        `;
+        cartItemsContainer.appendChild(itemEl);
+      });
+    }
+  }
+  
+  // Calculate total
+  const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+  if(cartTotal) cartTotal.innerText = `₹${total.toLocaleString('en-IN')}`;
+  if(placeOrderBtn) placeOrderBtn.innerText = `Complete Purchase (₹${total.toLocaleString('en-IN')})`;
+}
+
+window.changeQty = function(index, delta) {
+  cart[index].qty += delta;
+  if(cart[index].qty <= 0) {
+    cart.splice(index, 1);
+  }
+  localStorage.setItem('solviera_cart', JSON.stringify(cart));
+  updateCartUI();
+};
+
+window.removeItem = function(index) {
+  cart.splice(index, 1);
+  localStorage.setItem('solviera_cart', JSON.stringify(cart));
+  updateCartUI();
+};
+
+// Drawer controls
+function openCartDrawer() { if(cartDrawer) cartDrawer.classList.add('open'); }
+function closeCartDrawer() { if(cartDrawer) cartDrawer.classList.remove('open'); }
+
+document.getElementById('cartTrigger')?.addEventListener('click', openCartDrawer);
+document.getElementById('closeDrawer')?.addEventListener('click', closeCartDrawer);
+
+// Checkout navigation
+const shipForm = document.getElementById('checkoutForm');
+const stepShipping = document.getElementById('stepShipping');
+const stepPayment = document.getElementById('stepPayment');
+const stepProcessing = document.getElementById('stepProcessing');
+const stepSuccess = document.getElementById('stepSuccess');
+
+document.getElementById('proceedCheckout')?.addEventListener('click', () => {
+  if (cart.length === 0) {
+    showToast('Your bag is empty.', true);
+    return;
+  }
+  closeCartDrawer();
+  if(checkoutModal) checkoutModal.classList.add('open');
+  showStep('stepShipping');
+});
+
+document.getElementById('closeCheckout')?.addEventListener('click', () => {
+  if(checkoutModal) checkoutModal.classList.remove('open');
+});
+
+document.getElementById('nextToPayment')?.addEventListener('click', () => {
+  const name = document.getElementById('shipName').value;
+  const email = document.getElementById('shipEmail').value;
+  const address = document.getElementById('shipAddress').value;
+  const city = document.getElementById('shipCity').value;
+  const zip = document.getElementById('shipZip').value;
+  
+  if(!name || !email || !address || !city || !zip) {
+    showToast('Please fill out all shipping details.', true);
+    return;
+  }
+  showStep('stepPayment');
+});
+
+document.getElementById('backToShipping')?.addEventListener('click', () => {
+  showStep('stepShipping');
+});
+
+function showStep(stepId) {
+  document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+  const modalTitle = document.getElementById('checkoutModalTitle');
+  if(stepId === 'stepShipping') modalTitle.innerText = 'Shipping Details';
+  if(stepId === 'stepPayment') modalTitle.innerText = 'Secure Payment';
+  if(stepId === 'stepProcessing') modalTitle.innerText = 'Processing Order...';
+  if(stepId === 'stepSuccess') modalTitle.innerText = 'Order Placed';
+}
+
+// Payment fields helper formatting
+const cardInput = document.getElementById('cardNumber');
+cardInput?.addEventListener('input', (e) => {
+  let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+  let formatted = '';
+  for (let i = 0; i < val.length; i++) {
+    if (i > 0 && i % 4 === 0) formatted += ' ';
+    formatted += val[i];
+  }
+  e.target.value = formatted;
+});
+
+const expiryInput = document.getElementById('cardExpiry');
+expiryInput?.addEventListener('input', (e) => {
+  let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+  if (val.length > 2) {
+    e.target.value = val.slice(0, 2) + '/' + val.slice(2, 4);
+  } else {
+    e.target.value = val;
+  }
+});
+
+// Checkout submit to actual Backend API
+shipForm?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const shipData = {
+    name: document.getElementById('shipName').value,
+    email: document.getElementById('shipEmail').value,
+    address: document.getElementById('shipAddress').value,
+    city: document.getElementById('shipCity').value,
+    zip: document.getElementById('shipZip').value,
+  };
+  
+  const payData = {
+    cardholder: document.getElementById('cardName').value,
+    number: document.getElementById('cardNumber').value,
+    expiry: document.getElementById('cardExpiry').value,
+  };
+
+  showStep('stepProcessing');
+
+  fetch('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      shipping: shipData,
+      payment: payData,
+      items: cart,
+      total: cart.reduce((acc, item) => acc + (item.price * item.qty), 0)
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success) {
+      document.getElementById('receiptRef').innerText = data.orderId;
+      document.getElementById('successMsg').innerText = `Your order of luxury Solviera totes is confirmed. A tracking reference and receipt have been dispatched to ${shipData.email}.`;
+      showStep('stepSuccess');
+      
+      // Clear cart
+      cart = [];
+      localStorage.removeItem('solviera_cart');
+      updateCartUI();
+    } else {
+      showToast(data.message || 'Payment processing failed.', true);
+      showStep('stepPayment');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showToast('Unable to reach secure payment server.', true);
+    showStep('stepPayment');
+  });
+});
+
+document.getElementById('finishCheckout')?.addEventListener('click', () => {
+  checkoutModal.classList.remove('open');
+});
+
+// Newsletter submit to Backend API
+const newsForm = document.querySelector('.newsletter-form');
+if (newsForm) {
+  const newsInput = newsForm.querySelector('input');
+  const newsBtn = newsForm.querySelector('button');
+  
+  newsBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const email = newsInput.value.trim();
+    if(!email || !email.includes('@')) {
+      showToast('Please enter a valid email address.', true);
+      return;
+    }
+    
+    newsBtn.innerText = 'Subscribing...';
+    newsBtn.disabled = true;
+    
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.success) {
+        showToast(data.message || 'Thank you for subscribing to Solviera.');
+        newsInput.value = '';
+      } else {
+        showToast(data.message || 'Subscription failed.', true);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('Unable to connect to newsletter registry.', true);
+    })
+    .finally(() => {
+      newsBtn.innerText = 'Subscribe';
+      newsBtn.disabled = false;
+    });
+  });
+}
+</script>
+</body>
+</html>
