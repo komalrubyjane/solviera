@@ -46,7 +46,7 @@ function writeJSONFile(filePath, data) {
 
 // Default route serving the main HTML page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'luxe_tote_ecommerce.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // API Endpoint: Dynamic Products Fetch
