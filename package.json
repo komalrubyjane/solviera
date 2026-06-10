@@ -1,16 +1,37 @@
 {
-  "name": "solviera-ecommerce",
-  "version": "1.0.0",
-  "description": "Full Stack Premium Handcrafted Tote E-Commerce Platform",
-  "main": "server.js",
+  "name": "solviera-next",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5"
+    "next": "16.2.9",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "framer-motion": "^11.0.0",
+    "@prisma/client": "^5.12.0",
+    "recharts": "^2.12.0",
+    "lucide-react": "^0.300.0",
+    "react-hook-form": "^7.50.0",
+    "zod": "^3.22.0",
+    "@hookform/resolvers": "^3.3.4",
+    "razorpay": "^2.9.2",
+    "qrcode": "^1.5.3"
   },
-  "author": "Solviera Atelier",
-  "license": "ISC"
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/qrcode": "^1.5.5",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "prisma": "^5.12.0"
+  }
 }

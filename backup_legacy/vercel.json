@@ -20,6 +20,14 @@
       "dest": "server.js"
     },
     {
+      "src": "/workshop-experience",
+      "dest": "workshop-experience.html"
+    },
+    {
+      "src": "/workshop",
+      "dest": "workshop-experience.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }

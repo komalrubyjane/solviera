@@ -17,6 +17,7 @@ app.use(express.static(__dirname));
 // Files for persistent data
 const SUBSCRIBERS_FILE = path.join(__dirname, 'subscribers.json');
 const ORDERS_FILE = path.join(__dirname, 'orders.json');
+const BOOKINGS_FILE = path.join(__dirname, 'bookings.json');
 
 // Helper to read data from JSON files
 function readJSONFile(filePath, defaultData = []) {
@@ -47,6 +48,15 @@ function writeJSONFile(filePath, data) {
 // Default route serving the main HTML page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Route for dedicated workshop page
+app.get('/workshop', (req, res) => {
+  res.sendFile(path.join(__dirname, 'workshop-experience.html'));
+});
+
+app.get('/workshop-experience', (req, res) => {
+  res.sendFile(path.join(__dirname, 'workshop-experience.html'));
 });
 
 // API Endpoint: Dynamic Products Fetch
@@ -100,6 +110,42 @@ app.post('/api/subscribe', (req, res) => {
   res.status(200).json({ 
     success: true, 
     message: 'Welcome to Solviera. You have been added to our private collection release mailing list.' 
+  });
+});
+
+// API Endpoint: Workshop Booking Registration
+app.post('/api/workshop-book', (req, res) => {
+  const { name, email, craft, toteColor, date, time, notes } = req.body;
+
+  if (!name || !email || !craft || !toteColor || !date || !time) {
+    return res.status(400).json({ success: false, message: 'Required fields are missing.' });
+  }
+
+  const randomNum = Math.floor(100000 + Math.random() * 900000);
+  const bookingId = `SLV-WK-${randomNum}`;
+
+  const bookings = readJSONFile(BOOKINGS_FILE, []);
+  const newBooking = {
+    bookingId,
+    timestamp: new Date().toISOString(),
+    name,
+    email,
+    craft,
+    toteColor,
+    date,
+    time,
+    notes,
+    status: 'Confirmed'
+  };
+
+  bookings.push(newBooking);
+  writeJSONFile(BOOKINGS_FILE, bookings);
+
+  console.log(`[Solviera Backend] Workshop Session booked: ${bookingId} | Name: ${name} | Craft: ${craft}`);
+  res.status(200).json({
+    success: true,
+    bookingId,
+    message: 'Atelier Workshop seat successfully reserved.'
   });
 });
 

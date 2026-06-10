@@ -255,6 +255,69 @@ footer{border-top:0.5px solid rgba(139,111,94,0.15);padding:50px 24px 30px;max-w
 .btn-back{background:transparent;border:0.5px solid rgba(167,139,250,0.2);color:var(--ivory);padding:12px 24px;border-radius:100px;cursor:none;font-size:11px;letter-spacing:0.1em;text-transform:uppercase}
 .btn-next{background:var(--mocha);border:none;color:var(--ivory);padding:12px 24px;border-radius:100px;cursor:none;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;flex:1}
 
+/* WORKSHOP SECTION */
+.workshop-preview { padding:100px 24px; max-width:1200px; margin:0 auto; position:relative; overflow:hidden; }
+.workshop-split { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.workshop-left { max-width:540px; }
+.ws-eyebrow { font-size:10px; font-weight:400; letter-spacing:0.2em; color:var(--mocha); text-transform:uppercase; margin-bottom:16px; }
+.ws-title { font-family:var(--font-serif); font-size:clamp(40px,5vw,56px); font-weight:300; line-height:1.1; color:var(--dark-mocha); margin-bottom:24px; }
+.ws-title em { font-style:italic; color:var(--mocha); }
+.ws-title strong { font-weight:600; }
+.ws-sub { font-size:16px; font-weight:400; line-height:1.6; color:var(--soft-brown); margin-bottom:16px; }
+.ws-desc { font-size:14px; font-weight:300; line-height:1.6; color:var(--soft-brown); opacity:0.8; margin-bottom:40px; }
+.ws-highlights { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.ws-card { background:linear-gradient(145deg,rgba(27,17,42,0.6),rgba(13,8,20,0.8)); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:0.5px solid rgba(167,139,250,0.2); border-radius:16px; padding:16px; display:flex; align-items:center; gap:12px; cursor:none; transition:transform 0.4s ease,box-shadow 0.4s ease; opacity:0; transform:translateY(20px); }
+.ws-card.visible { opacity:1; transform:translateY(0); }
+.ws-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(167,139,250,0.15); }
+.ws-icon { color:var(--warm-brown); font-size:16px; display:flex; align-items:center; justify-content:center; }
+.ws-text { font-size:12px; font-weight:300; color:var(--ivory); }
+
+.workshop-right { position:relative; height:600px; display:flex; align-items:center; justify-content:center; }
+.ws-visual-container { width:100%; height:100%; position:relative; border-radius:32px; overflow:hidden; background:linear-gradient(145deg,rgba(27,17,42,0.4),rgba(13,8,20,0.6)); border:0.5px solid rgba(167,139,250,0.2); box-shadow:0 24px 60px rgba(0,0,0,0.3); }
+.ws-scene-img { width:100%; height:100%; object-fit:cover; opacity:0.8; transition:transform 1s ease; }
+.ws-visual-container:hover .ws-scene-img { transform:scale(1.05); }
+
+/* Decorative floaters in right side */
+.ws-floater { position:absolute; pointer-events:none; transition:transform 0.1s ease-out; }
+.ws-splash { width:180px; height:180px; background:radial-gradient(circle,rgba(244,114,182,0.15) 0%,transparent 70%); filter:blur(15px); border-radius:50%; }
+.ws-blob { width:220px; height:220px; background:radial-gradient(circle,rgba(167,139,250,0.15) 0%,transparent 70%); filter:blur(20px); border-radius:50%; }
+
+/* Workshop Timeline */
+.ws-timeline { margin-top:80px; padding-top:60px; border-top:0.5px solid rgba(139,111,94,0.1); display:flex; justify-content:space-between; gap:20px; position:relative; }
+.ws-timeline::before { content:''; position:absolute; top:85px; left:60px; right:60px; height:1px; background:rgba(167,139,250,0.2); z-index:0; }
+.ws-step { text-align:center; position:relative; z-index:1; flex:1; opacity:0; transform:translateY(30px); transition:all 0.6s ease; }
+.ws-step.visible { opacity:1; transform:translateY(0); }
+.ws-step-num { width:50px; height:50px; margin:0 auto 20px; background:var(--sand); border:1px solid rgba(167,139,250,0.4); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); font-size:18px; color:var(--warm-brown); box-shadow:0 0 15px rgba(27,17,42,0.8); transition:transform 0.3s,box-shadow 0.3s; }
+.ws-step:hover .ws-step-num { transform:scale(1.1); box-shadow:0 0 20px rgba(167,139,250,0.3); background:var(--beige); color:var(--ivory); }
+.ws-step-title { font-family:var(--font-serif); font-size:20px; color:var(--dark-mocha); margin-bottom:8px; }
+.ws-step-desc { font-size:12px; font-weight:300; color:var(--soft-brown); line-height:1.5; padding:0 10px; }
+
+/* Interactive Preview Cards */
+.ws-previews { margin-top:80px; display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.ws-preview-card { position:relative; height:400px; border-radius:24px; overflow:hidden; border:0.5px solid rgba(167,139,250,0.2); cursor:none; }
+.ws-preview-img { width:100%; height:100%; object-fit:cover; transition:transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+.ws-preview-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(13,8,20,0.95) 0%,rgba(13,8,20,0.1) 60%,transparent 100%); display:flex; flex-direction:column; justify-content:flex-end; padding:40px; transition:background 0.4s; }
+.ws-preview-title { font-family:var(--font-serif); font-size:28px; color:var(--ivory); margin-bottom:8px; transform:translateY(10px); transition:transform 0.4s ease; }
+.ws-preview-desc { font-size:13px; font-weight:300; color:var(--soft-brown); opacity:0; transform:translateY(20px); transition:opacity 0.4s,transform 0.4s; }
+.ws-preview-card:hover .ws-preview-img { transform:scale(1.08); }
+.ws-preview-card:hover .ws-preview-overlay { background:linear-gradient(to top,rgba(13,8,20,0.98) 0%,rgba(13,8,20,0.3) 60%,transparent 100%); }
+.ws-preview-card:hover .ws-preview-title { transform:translateY(0); color:var(--warm-brown); }
+.ws-preview-card:hover .ws-preview-desc { opacity:1; transform:translateY(0); }
+
+/* CTA Section */
+.ws-cta { margin-top:100px; padding:80px 40px; text-align:center; background:linear-gradient(135deg,rgba(27,17,42,0.8),rgba(13,8,20,0.9)); border:0.5px solid rgba(167,139,250,0.3); border-radius:32px; position:relative; overflow:hidden; }
+.ws-cta::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle at center,rgba(244,114,182,0.1) 0%,transparent 60%); pointer-events:none; }
+.ws-cta-title { font-family:var(--font-serif); font-size:clamp(32px,4vw,48px); font-weight:300; color:var(--ivory); margin-bottom:16px; position:relative; z-index:1; }
+.ws-cta-sub { font-size:14px; font-weight:300; color:var(--soft-brown); margin-bottom:40px; max-width:500px; margin-inline:auto; position:relative; z-index:1; }
+
+@media(max-width:900px){
+.workshop-split { grid-template-columns:1fr; }
+.workshop-right { height:400px; }
+.ws-timeline { flex-direction:column; gap:40px; }
+.ws-timeline::before { display:none; }
+.ws-previews { grid-template-columns:1fr; }
+}
+
 /* TOAST NOTIFICATION */
 #toast{position:fixed;bottom:24px;right:24px;background:rgba(27,17,42,0.92);backdrop-filter:blur(10px);border:0.5px solid rgba(167,139,250,0.3);border-radius:16px;padding:16px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(.175,.885,.32,1.275)}
 #toast.show{transform:translateY(0);opacity:1}
@@ -362,6 +425,88 @@ footer{border-top:0.5px solid rgba(139,111,94,0.15);padding:50px 24px 30px;max-w
         </defs>
       </svg>
     </div>
+  </div>
+</section>
+
+<!-- WORKSHOP PREVIEW -->
+<section class="workshop-preview" id="sec-workshop">
+  <div class="workshop-split">
+    <!-- Left Side Content -->
+    <div class="workshop-left reveal">
+      <p class="ws-eyebrow">Studio Experience</p>
+      <h2 class="ws-title"><em>Create.</em> Paint. <strong>Carry.</strong></h2>
+      <p class="ws-sub">Transform a simple tote bag into a personal piece of art. Explore colors, experiment with traditional block printing, and leave with a handcrafted creation that's uniquely yours.</p>
+      <p class="ws-desc">Whether you're an experienced artist or picking up a brush for the first time, our workshops are designed to inspire creativity in a welcoming and fun environment.</p>
+      
+      <div class="ws-highlights">
+        <div class="ws-card reveal" style="transition-delay:0.1s">
+          <div class="ws-icon">✔</div><div class="ws-text">Premium Tote Bag Included</div>
+        </div>
+        <div class="ws-card reveal" style="transition-delay:0.2s">
+          <div class="ws-icon">✔</div><div class="ws-text">White & Black Options</div>
+        </div>
+        <div class="ws-card reveal" style="transition-delay:0.3s">
+          <div class="ws-icon">✔</div><div class="ws-text">Professional Paint Brushes</div>
+        </div>
+        <div class="ws-card reveal" style="transition-delay:0.4s">
+          <div class="ws-icon">✔</div><div class="ws-text">Vibrant Fabric Colors</div>
+        </div>
+        <div class="ws-card reveal" style="transition-delay:0.5s">
+          <div class="ws-icon">✔</div><div class="ws-text">Traditional Block Printing</div>
+        </div>
+        <div class="ws-card reveal" style="transition-delay:0.6s">
+          <div class="ws-icon">✔</div><div class="ws-text">Take Home Your Creation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side Visuals -->
+    <div class="workshop-right reveal" style="transition-delay:0.3s">
+      <div class="ws-visual-container" id="wsVisual">
+        <img src="./workshop_scene.png" alt="Workshop Session" class="ws-scene-img">
+        <div class="ws-floater ws-splash" style="top:10%; left:10%;" data-speed="-1.5"></div>
+        <div class="ws-floater ws-blob" style="bottom:15%; right:10%;" data-speed="2"></div>
+        <div class="ws-floater" style="top:35%; right:20%; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));" data-speed="3">
+           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ivory)" stroke-width="1.5"><path d="M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-6-4-4 6-1z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workshop Process Timeline -->
+  <div class="ws-timeline">
+    <div class="ws-step reveal" style="transition-delay:0.1s">
+      <div class="ws-step-num">1</div>
+      <h4 class="ws-step-title">Choose Your Tote</h4>
+      <p class="ws-step-desc">Select between premium white or black heavy-canvas tote bags.</p>
+    </div>
+    <div class="ws-step reveal" style="transition-delay:0.2s">
+      <div class="ws-step-num">2</div>
+      <h4 class="ws-step-title">Choose Your Style</h4>
+      <p class="ws-step-desc">Go freehand with brush painting or explore intricate block printing.</p>
+    </div>
+    <div class="ws-step reveal" style="transition-delay:0.3s">
+      <div class="ws-step-num">3</div>
+      <h4 class="ws-step-title">Create Your Design</h4>
+      <p class="ws-step-desc">Use provided vibrant colors, brushes, and handcrafted wooden blocks.</p>
+    </div>
+    <div class="ws-step reveal" style="transition-delay:0.4s">
+      <div class="ws-step-num">4</div>
+      <h4 class="ws-step-title">Take It Home</h4>
+      <p class="ws-step-desc">Leave the studio with your personalized, one-of-a-kind masterpiece.</p>
+    </div>
+  </div>
+
+
+  <!-- CTA -->
+  <div class="ws-cta reveal">
+    <h2 class="ws-cta-title">Ready to Create Your Own Tote Bag?</h2>
+    <p class="ws-cta-sub">Join our creative workshops and experience the joy of making something truly personal.</p>
+    <a href="/workshop-experience" style="text-decoration:none;">
+      <button class="btn-primary" style="font-size:13px; padding:16px 40px; box-shadow:0 0 25px rgba(244,114,182,0.4); border-radius:100px;">
+        Explore Workshop Experience →
+      </button>
+    </a>
   </div>
 </section>
 
@@ -726,6 +871,31 @@ if (!isTouchDevice && hero) {
   });
   document.addEventListener('mouseleave',()=>{
     hero.style.transform='perspective(1200px) rotateX(0deg) rotateY(0deg)';
+  });
+}
+
+// Workshop Visual Parallax
+const wsVisual = document.getElementById('wsVisual');
+if (!isTouchDevice && wsVisual) {
+  const floaters = wsVisual.querySelectorAll('.ws-floater');
+  wsVisual.addEventListener('mousemove', e => {
+    const rect = wsVisual.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    
+    floaters.forEach(floater => {
+      const speed = parseFloat(floater.getAttribute('data-speed')) || 1;
+      const dx = (x - cx) * 0.05 * speed;
+      const dy = (y - cy) * 0.05 * speed;
+      floater.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+  });
+  wsVisual.addEventListener('mouseleave', () => {
+    floaters.forEach(floater => {
+      floater.style.transform = 'translate(0px, 0px)';
+    });
   });
 }
 

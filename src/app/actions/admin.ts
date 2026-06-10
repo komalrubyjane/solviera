@@ -1,0 +1,339 @@
+"use server";
+
+import db from "@/lib/db";
+import { hashPassword, signToken } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+
+// 1. Admin Auth Actions
+export async function loginAdminAction(formData: any) {
+  const { email, password } = formData;
+
+  try {
+    if (!email || !password) {
+      return { success: false, message: "Email and password are required." };
+    }
+
+    const hashedPassword = hashPassword(password);
+    const admin = await db.admin.findUnique({
+      where: { email },
+    });
+
+    if (!admin || admin.password !== hashedPassword) {
+      return { success: false, message: "Invalid email or password." };
+    }
+
+    // Sign JWT and set cookie
+    const token = signToken({
+      id: admin.id,
+      email: admin.email,
+      name: admin.name,
+      role: admin.role,
+    });
+
+    const cookieStore = await cookies();
+    cookieStore.set("solviera_admin_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24, // 24 hours
+      path: "/",
+    });
+
+    return { success: true, name: admin.name, role: admin.role };
+  } catch (error) {
+    console.error("Admin login crash:", error);
+    return { success: false, message: "Server error during authentication." };
+  }
+}
+
+export async function logoutAdminAction() {
+  const cookieStore = await cookies();
+  cookieStore.delete("solviera_admin_token");
+  return { success: true };
+}
+
+// 2. Workshop CMS actions
+export async function createWorkshopAction(data: {
+  title: string;
+  description: string;
+  price: number;
+  capacity: number;
+  banner: string;
+  status?: string;
+  featured?: boolean;
+  tags?: string;
+}) {
+  try {
+    const workshop = await db.workshop.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        price: data.price,
+        capacity: data.capacity,
+        banner: data.banner || "./workshop_scene.png",
+        status: data.status || "DRAFT",
+        featured: data.featured || false,
+        tags: data.tags || "",
+      },
+    });
+    revalidatePath("/workshop");
+    return { success: true, workshopId: workshop.id };
+  } catch (error) {
+    console.error("Failed to create workshop:", error);
+    return { success: false, message: "Could not create workshop." };
+  }
+}
+
+export async function updateWorkshopAction(
+  id: string,
+  data: {
+    title?: string;
+    description?: string;
+    price?: number;
+    capacity?: number;
+    banner?: string;
+    status?: string;
+    featured?: boolean;
+    tags?: string;
+  }
+) {
+  try {
+    await db.workshop.update({
+      where: { id },
+      data,
+    });
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update workshop:", error);
+    return { success: false, message: "Could not update workshop details." };
+  }
+}
+
+export async function deleteWorkshopAction(id: string) {
+  try {
+    await db.workshop.delete({
+      where: { id },
+    });
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete workshop:", error);
+    return { success: false, message: "Could not delete workshop." };
+  }
+}
+
+// 3. Date Scheduling Actions
+export async function createWorkshopDateAction(data: {
+  workshopId: string;
+  date: string;
+  timeSlot: string;
+  capacity: number;
+}) {
+  try {
+    await db.workshopDate.create({
+      data: {
+        workshopId: data.workshopId,
+        date: new Date(data.date),
+        timeSlot: data.timeSlot,
+        capacity: data.capacity,
+        booked: 0,
+        status: "ACTIVE",
+      },
+    });
+    revalidatePath("/workshop");
+    revalidatePath("/workshop-experience");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to create session date:", error);
+    return { success: false, message: "Could not schedule workshop session date." };
+  }
+}
+
+export async function updateWorkshopDateAction(
+  id: string,
+  data: {
+    status?: string;
+    capacity?: number;
+  }
+) {
+  try {
+    await db.workshopDate.update({
+      where: { id },
+      data,
+    });
+    revalidatePath("/workshop");
+    revalidatePath("/workshop-experience");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update session date:", error);
+    return { success: false, message: "Could not update date status." };
+  }
+}
+
+export async function deleteWorkshopDateAction(id: string) {
+  try {
+    await db.workshopDate.delete({
+      where: { id },
+    });
+    revalidatePath("/workshop");
+    revalidatePath("/workshop-experience");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete date:", error);
+    return { success: false, message: "Could not delete scheduled date." };
+  }
+}
+
+// 4. Booking & Attendance check-in actions
+export async function markAttendanceAction(bookingId: string, present: boolean) {
+  try {
+    await db.booking.update({
+      where: { id: bookingId },
+      data: { attendance: present },
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to mark attendance:", error);
+    return { success: false, message: "Could not update attendance status." };
+  }
+}
+
+export async function markAttendanceByRefAction(bookingRef: string) {
+  try {
+    const booking = await db.booking.findUnique({
+      where: { bookingRef },
+    });
+
+    if (!booking) return { success: false, message: "Booking ref not found." };
+    if (booking.attendance) return { success: true, message: "Attendee was already checked in." };
+
+    await db.booking.update({
+      where: { id: booking.id },
+      data: { attendance: true },
+    });
+
+    return { success: true, name: bookingRef, message: "Checked in successfully!" };
+  } catch (error) {
+    console.error("Failed to check in via reference QR:", error);
+    return { success: false, message: "Could not process QR check-in scan." };
+  }
+}
+
+export async function cancelBookingAction(bookingId: string) {
+  try {
+    const booking = await db.booking.findUnique({
+      where: { id: bookingId },
+      include: { workshopDate: true, payment: true },
+    });
+
+    if (!booking) return { success: false, message: "Booking not found." };
+    if (booking.status === "CANCELLED") return { success: true, message: "Booking already cancelled." };
+
+    await db.$transaction(async (tx) => {
+      // Restore capacity
+      const updatedBooked = Math.max(0, booking.workshopDate.booked - booking.participants);
+      await tx.workshopDate.update({
+        where: { id: booking.dateId },
+        data: {
+          booked: updatedBooked,
+          status: updatedBooked >= booking.workshopDate.capacity ? "SOLD_OUT" : "ACTIVE",
+        },
+      });
+
+      // Update Booking status
+      await tx.booking.update({
+        where: { id: bookingId },
+        data: { status: "CANCELLED" },
+      });
+
+      // Update payment status (Mock Refund process)
+      if (booking.paymentId) {
+        await tx.payment.update({
+          where: { id: booking.paymentId },
+          data: { status: "REFUNDED" },
+        });
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to cancel booking:", error);
+    return { success: false, message: "Could not process booking cancellation." };
+  }
+}
+
+// 5. CMS Content updates actions
+export async function updateVenueAction(data: {
+  id?: string;
+  name: string;
+  address: string;
+  mapsEmbed: string;
+  parkingInfo: string;
+  contactInfo: string;
+}) {
+  try {
+    const venue = await db.venue.findFirst();
+    if (venue) {
+      await db.venue.update({
+        where: { id: venue.id },
+        data,
+      });
+    } else {
+      await db.venue.create({ data });
+    }
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update venue info:", error);
+    return { success: false, message: "Could not update venue details." };
+  }
+}
+
+export async function createFaqAction(question: string, answer: string, order = 0) {
+  try {
+    await db.faq.create({
+      data: { question, answer, order },
+    });
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to create FAQ:", error);
+    return { success: false, message: "Could not create FAQ entry." };
+  }
+}
+
+export async function deleteFaqAction(id: string) {
+  try {
+    await db.faq.delete({ where: { id } });
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete FAQ:", error);
+    return { success: false, message: "Could not delete FAQ entry." };
+  }
+}
+
+export async function createTestimonialAction(name: string, review: string, rating = 5) {
+  try {
+    await db.testimonial.create({
+      data: { name, review, rating },
+    });
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to create testimonial:", error);
+    return { success: false, message: "Could not create testimonial." };
+  }
+}
+
+export async function deleteTestimonialAction(id: string) {
+  try {
+    await db.testimonial.delete({ where: { id } });
+    revalidatePath("/workshop");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete testimonial:", error);
+    return { success: false, message: "Could not delete review testimonial." };
+  }
+}

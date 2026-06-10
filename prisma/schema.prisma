@@ -1,0 +1,124 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("STAFF") // SUPER_ADMIN, MANAGER, STAFF, VIEWER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String
+  phone     String?
+  createdAt DateTime  @default(now())
+  bookings  Booking[]
+}
+
+model Workshop {
+  id          String         @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  capacity    Int
+  banner      String
+  status      String         @default("DRAFT") // DRAFT, PUBLISHED
+  featured    Boolean        @default(false)
+  tags        String?        // Comma-separated list of tags
+  dates       WorkshopDate[]
+  bookings    Booking[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model WorkshopDate {
+  id         String    @id @default(uuid())
+  workshopId String
+  workshop   Workshop  @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  date       DateTime
+  timeSlot   String
+  capacity   Int
+  booked     Int       @default(0)
+  status     String    @default("ACTIVE") // ACTIVE, SOLD_OUT, INACTIVE
+  bookings   Booking[]
+  createdAt  DateTime  @default(now())
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  bookingRef    String        @unique // SLV-WK-XXXXXX
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  workshopId    String
+  workshop      Workshop      @relation(fields: [workshopId], references: [id])
+  dateId        String
+  workshopDate  WorkshopDate  @relation(fields: [dateId], references: [id])
+  bagColor      String        // White, Black
+  style         String        // Brush, Block, Both
+  participants  Int           @default(1)
+  notes         String?
+  totalAmount   Float
+  status        String        @default("CONFIRMED") // CONFIRMED, CANCELLED, WAITLIST
+  attendance    Boolean       @default(false)
+  qrCode        String?       @unique
+  paymentId     String?       @unique
+  payment       Payment?      @relation(fields: [paymentId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  razorpayOrderId String       @unique
+  razorpayPaymentId String?    @unique
+  razorpaySignature String?
+  amount         Float
+  status         String        @default("PENDING") // PENDING, SUCCESSFUL, FAILED, REFUNDED
+  refundId       String?
+  booking        Booking?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Venue {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  mapsEmbed   String
+  parkingInfo String
+  contactInfo String
+  updatedAt   DateTime @updatedAt
+}
+
+model GalleryItem {
+  id        String   @id @default(uuid())
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+}
+
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String
+  review    String
+  rating    Int      @default(5)
+  avatar    String?
+}
