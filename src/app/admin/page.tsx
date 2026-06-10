@@ -1,124 +1,55 @@
 import React from "react";
-import { redirect } from "next/navigation";
-import { getAdminSession } from "@/lib/auth";
-import db from "@/lib/db";
 import DashboardClient from "./DashboardClient";
 
 export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
-  const session = await getAdminSession();
-  if (!session) {
-    redirect("/admin/login");
-  }
+  // ─── DEMO MODE ─── Static mock data for deployment demo (no database required)
+  const metrics = {
+    totalRevenue: 248500,
+    pendingRevenue: 12300,
+    bookingsCount: 47,
+    upcomingWorkshops: 6,
+    availableSeats: 38,
+    customersCount: 42,
+  };
 
-  // 1. Fetch data
-  const bookings = await db.booking.findMany({
-    include: {
-      workshopDate: true,
-      user: true,
-    },
-  });
+  const recentActivity = [
+    { id: "1", ref: "SLV-WK-104821", customerName: "Priya Sharma", amount: 4130, participants: 1, dateStr: "Jun 10, 2026", status: "CONFIRMED" },
+    { id: "2", ref: "SLV-WK-209345", customerName: "Ananya Mehta", amount: 8260, participants: 2, dateStr: "Jun 9, 2026", status: "CONFIRMED" },
+    { id: "3", ref: "SLV-WK-318472", customerName: "Rohan Kapoor", amount: 4130, participants: 1, dateStr: "Jun 8, 2026", status: "CONFIRMED" },
+    { id: "4", ref: "SLV-WK-423681", customerName: "Sneha Iyer", amount: 6490, participants: 2, dateStr: "Jun 7, 2026", status: "CONFIRMED" },
+    { id: "5", ref: "SLV-WK-531029", customerName: "Kavya Nair", amount: 4130, participants: 1, dateStr: "Jun 6, 2026", status: "CONFIRMED" },
+  ];
 
-  const payments = await db.payment.findMany();
-  const usersCount = await db.user.count();
-  const dates = await db.workshopDate.findMany({
-    where: { date: { gte: new Date() } },
-  });
+  const revenueChartData = [
+    { name: "Jan", revenue: 18500 },
+    { name: "Feb", revenue: 22000 },
+    { name: "Mar", revenue: 31500 },
+    { name: "Apr", revenue: 28000 },
+    { name: "May", revenue: 41200 },
+    { name: "Jun", revenue: 38800 },
+  ];
 
-  // 2. Calculate analytics
-  const totalRevenue = payments
-    .filter((p) => p.status === "SUCCESSFUL")
-    .reduce((acc, curr) => acc + curr.amount, 0);
-
-  const pendingRevenue = payments
-    .filter((p) => p.status === "PENDING")
-    .reduce((acc, curr) => acc + curr.amount, 0);
-
-  const totalBookingsCount = bookings.filter((b) => b.status === "CONFIRMED").length;
-
-  const totalCapacity = dates.reduce((acc, curr) => acc + curr.capacity, 0);
-  const totalBookedSeats = dates.reduce((acc, curr) => acc + curr.booked, 0);
-  const availableSeats = Math.max(0, totalCapacity - totalBookedSeats);
-
-  // Recent activity log
-  const recentBookings = await db.booking.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    include: { user: true, workshopDate: true },
-  });
-
-  const recentActivity = recentBookings.map((b) => ({
-    id: b.id,
-    ref: b.bookingRef,
-    customerName: b.user.name,
-    amount: b.totalAmount,
-    participants: b.participants,
-    dateStr: new Date(b.createdAt).toLocaleDateString(),
-    status: b.status,
-  }));
-
-  // 3. Recharts chart groupings
-  // Monthly Revenue Grouping
-  const revenueByMonthMap: { [key: string]: number } = {};
-  payments
-    .filter((p) => p.status === "SUCCESSFUL")
-    .forEach((p) => {
-      const month = new Date(p.createdAt).toLocaleString("en-US", { month: "short" });
-      revenueByMonthMap[month] = (revenueByMonthMap[month] || 0) + p.amount;
-    });
-
-  const revenueChartData = Object.keys(revenueByMonthMap).map((m) => ({
-    name: m,
-    revenue: revenueByMonthMap[m],
-  }));
-
-  // Bag color preferences
-  const bagColors = { White: 0, Black: 0 };
-  bookings.forEach((b) => {
-    if (b.bagColor.toLowerCase().includes("white")) bagColors.White += b.participants;
-    if (b.bagColor.toLowerCase().includes("black")) bagColors.Black += b.participants;
-  });
+  const bookingsChartData = [
+    { date: "Jun 1", seats: 3 },
+    { date: "Jun 3", seats: 5 },
+    { date: "Jun 5", seats: 2 },
+    { date: "Jun 7", seats: 8 },
+    { date: "Jun 9", seats: 4 },
+    { date: "Jun 10", seats: 6 },
+  ];
 
   const bagColorData = [
-    { name: "Ivory White", value: bagColors.White },
-    { name: "Noir Black", value: bagColors.Black },
+    { name: "Ivory White", value: 28 },
+    { name: "Noir Black", value: 19 },
   ];
-
-  // Style preferences
-  const stylePrefs = { Brush: 0, Block: 0, Both: 0 };
-  bookings.forEach((b) => {
-    if (b.style === "Brush Painting") stylePrefs.Brush += b.participants;
-    else if (b.style === "Block Printing") stylePrefs.Block += b.participants;
-    else stylePrefs.Both += b.participants;
-  });
 
   const stylePrefData = [
-    { name: "Brush Painting", value: stylePrefs.Brush },
-    { name: "Block Printing", value: stylePrefs.Block },
-    { name: "Dual Craft", value: stylePrefs.Both },
+    { name: "Brush Painting", value: 22 },
+    { name: "Block Printing", value: 15 },
+    { name: "Dual Craft", value: 10 },
   ];
-
-  // Bookings graph over time (grouped by date)
-  const bookingsByDateMap: { [key: string]: number } = {};
-  bookings.forEach((b) => {
-    const dStr = new Date(b.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    bookingsByDateMap[dStr] = (bookingsByDateMap[dStr] || 0) + b.participants;
-  });
-
-  const bookingsChartData = Object.keys(bookingsByDateMap).map((k) => ({
-    date: k,
-    seats: bookingsByDateMap[k],
-  }));
-
-  const metrics = {
-    totalRevenue,
-    pendingRevenue,
-    bookingsCount: totalBookingsCount,
-    upcomingWorkshops: dates.length,
-    availableSeats,
-    customersCount: usersCount,
-  };
 
   return (
     <DashboardClient
