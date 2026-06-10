@@ -9,7 +9,7 @@ export const revalidate = 0;
 export default async function AdminDashboardPage() {
   const session = await getAdminSession();
   if (!session) {
-    redirect("/solviera/admin/login");
+    redirect("/admin/login");
   }
 
   // 1. Fetch data

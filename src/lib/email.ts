@@ -226,7 +226,7 @@ export function getAdminNotificationTemplate(data: {
             <li><strong>Date & Time:</strong> ${data.dateStr}</li>
             <li><strong>Amount Received:</strong> ₹${data.totalAmount.toLocaleString()}</li>
           </ul>
-          <p>Access the <a href="http://localhost:8000/solviera/admin" target="_blank">Solviera Admin Portal</a> to review metrics, check attendance, or process bookings.</p>
+          <p>Access the <a href="http://localhost:8000/admin" target="_blank">Solviera Admin Portal</a> to review metrics, check attendance, or process bookings.</p>
         </div>
       </div>
     </body>

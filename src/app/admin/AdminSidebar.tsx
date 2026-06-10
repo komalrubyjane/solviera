@@ -19,15 +19,15 @@ export default function AdminSidebar({ session }: SidebarProps) {
 
   const handleLogout = async () => {
     await logoutAdminAction();
-    router.push("/solviera/admin/login");
+    router.push("/admin/login");
     router.refresh();
   };
 
   const menuItems = [
-    { name: "Dashboard Overview", path: "/solviera/admin" },
-    { name: "Workshops & Dates", path: "/solviera/admin/workshops" },
-    { name: "Bookings Ledger", path: "/solviera/admin/bookings" },
-    { name: "Content CMS", path: "/solviera/admin/content" },
+    { name: "Dashboard Overview", path: "/admin" },
+    { name: "Workshops & Dates", path: "/admin/workshops" },
+    { name: "Bookings Ledger", path: "/admin/bookings" },
+    { name: "Content CMS", path: "/admin/content" },
   ];
 
   return (

@@ -504,7 +504,7 @@ export default function Homepage() {
             </li>
             <li>
               <Link
-                href="/solviera/admin"
+                href="/admin"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >

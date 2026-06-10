@@ -9,7 +9,7 @@ export const revalidate = 0;
 export default async function AdminWorkshopsPage() {
   const session = await getAdminSession();
   if (!session) {
-    redirect("/solviera/admin/login");
+    redirect("/admin/login");
   }
 
   const workshops = await db.workshop.findMany({

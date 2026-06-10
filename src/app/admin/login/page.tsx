@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
     
     const res = await loginAdminAction(data);
     if (res.success) {
-      router.push("/solviera/admin");
+      router.push("/admin");
     } else {
       setErrorMsg(res.message || "Invalid credentials.");
       setIsSubmitting(false);
