@@ -907,8 +907,20 @@ nav {
   color: var(--dark-mocha);
   margin-bottom: 0;
 }
+.hero-eyebrow-anim {
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
 .hero-title-anim {
   animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+.hero-sub-anim {
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}
+.hero-actions-anim {
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+}
+.hero-stats-anim {
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
 }
 @keyframes heroFadeUp {
   from {

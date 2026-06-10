@@ -555,16 +555,16 @@ export default function Homepage() {
           {/* Main content */}
           <div className="hero-top">
             <div className="hero-headline">
-              <p className="hero-eyebrow">The Luxury Tote Atelier</p>
+              <p className="hero-eyebrow hero-eyebrow-anim">The Luxury Tote Atelier</p>
               <h1 className="hero-title hero-title-anim">
                 <span className="hero-title-line hero-title-line--italic">Timeless</span>
                 <span className="hero-title-line hero-title-line--bold">Craft &amp;</span>
                 <span className="hero-title-line">Form.</span>
               </h1>
-              <p className="hero-sub">
+              <p className="hero-sub hero-sub-anim">
                 Each bag is a study in restraint. Vegetable-tanned leathers, hand-stitched edges, and silhouettes that carry decades without effort.
               </p>
-              <div className="hero-actions">
+              <div className="hero-actions hero-actions-anim">
                 <button
                   onClick={() => document.getElementById("sec-curated")?.scrollIntoView({ behavior: "smooth" })}
                   className="btn-primary cursor-pointer"
@@ -584,7 +584,7 @@ export default function Homepage() {
               </div>
             </div>
             
-            <div className="hero-stats">
+            <div className="hero-stats hero-stats-anim">
               <div className="stat-item">
                 <div className="stat-num">12</div>
                 <div className="stat-label">Signature styles</div>
