@@ -165,16 +165,16 @@ export default function WorkshopClient({ venue, faqs, testimonials }: Props) {
       <section className="relative min-h-[60vh] flex items-center justify-center pt-36 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_35%,rgba(167,139,250,0.15)_0%,transparent_70%)] pointer-events-none" />
         <div className="text-center max-w-[800px] z-10">
-          <p className="text-[10px] tracking-[0.25em] text-mocha uppercase mb-4 animate-[fadeUp_0.8s_ease_0.2s_forwards] opacity-0">
+          <p className="text-[10px] tracking-[0.25em] text-mocha uppercase mb-4 animate-[heroFadeUp_0.8s_ease_0.2s_forwards] opacity-0">
             Creative Retreat
           </p>
-          <h1 className="font-serif text-5xl md:text-7xl font-light leading-tight text-dark-mocha mb-6 animate-[fadeUp_0.8s_ease_0.4s_forwards] opacity-0">
+          <h1 className="font-serif text-5xl md:text-7xl font-light leading-tight text-dark-mocha mb-6 animate-[heroFadeUp_0.8s_ease_0.4s_forwards] opacity-0">
             The Atelier <em className="italic text-mocha">Workshop</em>
           </h1>
-          <p className="text-base font-light text-soft-brown leading-relaxed mb-8 max-w-[600px] mx-auto animate-[fadeUp_0.8s_ease_0.6s_forwards] opacity-0">
+          <p className="text-base font-light text-soft-brown leading-relaxed mb-8 max-w-[600px] mx-auto animate-[heroFadeUp_0.8s_ease_0.6s_forwards] opacity-0">
             Step into our sunlit studio atelier. Select a premium heavy-canvas tote, study under master artisans, and paint or print a beautiful custom accessory to carry forever.
           </p>
-          <div className="animate-[fadeUp_0.8s_ease_0.8s_forwards] opacity-0">
+          <div className="animate-[heroFadeUp_0.8s_ease_0.8s_forwards] opacity-0">
             <button
               onClick={() => document.getElementById("booking-section")?.scrollIntoView({ behavior: "smooth" })}
               className="bg-gradient-to-r from-warm-brown to-nude text-cream font-semibold text-xs tracking-wider uppercase py-4 px-10 rounded-full shadow-lg hover:scale-104 hover:shadow-[0_8px_25px_rgba(244,114,182,0.5)] transition-all duration-300 cursor-pointer"
