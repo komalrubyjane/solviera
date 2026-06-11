@@ -1,9 +1,16 @@
 import React from "react";
+import { redirect } from "next/navigation";
+import { getAdminSession } from "@/lib/auth";
 import DashboardClient from "./DashboardClient";
 
 export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
+  const session = await getAdminSession();
+  if (!session) {
+    redirect("/admin/login");
+  }
+
   // ─── DEMO MODE ─── Static mock data for deployment demo (no database required)
   const metrics = {
     totalRevenue: 248500,

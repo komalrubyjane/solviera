@@ -1,9 +1,16 @@
 import React from "react";
+import { redirect } from "next/navigation";
+import { getAdminSession } from "@/lib/auth";
 import ContentManagerClient from "./ContentManagerClient";
 
 export const revalidate = 0;
 
 export default async function AdminContentPage() {
+  const session = await getAdminSession();
+  if (!session) {
+    redirect("/admin/login");
+  }
+
   // ─── DEMO MODE ─── Static mock content for deployment demo
   const venue = {
     id: "venue-1",

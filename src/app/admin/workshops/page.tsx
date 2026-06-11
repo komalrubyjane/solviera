@@ -1,9 +1,16 @@
 import React from "react";
+import { redirect } from "next/navigation";
+import { getAdminSession } from "@/lib/auth";
 import WorkshopManagerClient from "./WorkshopManagerClient";
 
 export const revalidate = 0;
 
 export default async function AdminWorkshopsPage() {
+  const session = await getAdminSession();
+  if (!session) {
+    redirect("/admin/login");
+  }
+
   // ─── DEMO MODE ─── Static mock workshops for deployment demo
   const now = new Date();
   const workshops = [
