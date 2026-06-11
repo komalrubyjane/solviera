@@ -120,7 +120,7 @@ export default function WorkshopClient({ venue, faqs, testimonials }: Props) {
       )}
 
       {/* NAV */}
-      <nav>
+      <nav className="main-nav">
         <div className="nav-pill">
           <Link
             href="/"

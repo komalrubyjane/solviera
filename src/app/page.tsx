@@ -473,7 +473,7 @@ export default function Homepage() {
       )}
 
       {/* NAV */}
-      <nav>
+      <nav className="main-nav">
         <div className="nav-pill">
           <Link
             href="/"

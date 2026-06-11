@@ -749,7 +749,7 @@
 }
 
 /* Original Template Layout & Card Classes */
-nav {
+.main-nav {
   position: fixed;
   top: 24px;
   left: 50%;
