@@ -284,7 +284,9 @@ export default function DashboardClient({
                 <XAxis dataKey="name" stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <YAxis stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={45} />
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "#ffffff" }}
+                  labelStyle={{ color: "#a78bfa" }}
                   formatter={(v: number) => [`₹${v.toLocaleString()}`, "Revenue"]}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#A78BFA" strokeWidth={2} fillOpacity={1} fill="url(#revGrad)" />
@@ -309,7 +311,9 @@ export default function DashboardClient({
                 <XAxis dataKey="date" stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <YAxis stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(244,114,182,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(244,114,182,0.2)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "#ffffff" }}
+                  labelStyle={{ color: "#f472b6" }}
                   formatter={(v: number) => [v, "Seats"]}
                 />
                 <Bar dataKey="seats" fill="#F472B6" radius={[6, 6, 0, 0]} maxBarSize={40}>
@@ -358,7 +362,9 @@ export default function DashboardClient({
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "#ffffff" }}
+                  labelStyle={{ color: "#a78bfa" }}
                 />
                 <Legend
                   verticalAlign="bottom"
@@ -396,7 +402,9 @@ export default function DashboardClient({
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "#ffffff" }}
+                  labelStyle={{ color: "#a78bfa" }}
                 />
                 <Legend
                   verticalAlign="bottom"
