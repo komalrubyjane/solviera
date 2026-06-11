@@ -530,7 +530,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                   {/* Participants */}
                   <div className="form-group">
                     <label className="form-label mb-3">Number of Seats (1-5)</label>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       <Controller
                         name="participants"
                         control={control}
@@ -543,7 +543,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                                   key={num}
                                   type="button"
                                   onClick={() => field.onChange(num)}
-                                  className={`w-12 h-12 rounded-full border flex items-center justify-center font-serif text-base transition-all duration-300 ${
+                                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center font-serif text-sm sm:text-base transition-all duration-300 ${
                                     isSelected
                                       ? "bg-beige border-mocha text-white shadow-md"
                                       : "bg-sand/40 border-mocha/10 text-soft-brown hover:border-mocha/40"

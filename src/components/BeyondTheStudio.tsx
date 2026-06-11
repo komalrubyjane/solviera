@@ -110,6 +110,7 @@ export default function BeyondTheStudio() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"quote" | "contact">("quote");
   const [formState, setFormState] = useState<QuoteFormState>({
     name: "", company: "", email: "", phone: "", eventType: "", 
     quantity: "", color: "", method: "", date: "", description: "", budget: ""
@@ -441,8 +442,8 @@ export default function BeyondTheStudio() {
             <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Have Something <em>Bigger</em> In Mind?</h2>
             <p className="text-mocha text-lg mb-10">From intimate gatherings to large-scale events, we're ready to create something meaningful together.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onClick={() => setIsModalOpen(true)} className="btn-primary cursor-pointer text-sm px-8 py-4 !rounded-full">Request A Custom Order</button>
-              <button className="btn-ghost cursor-pointer text-sm px-8 py-4 !rounded-full">Talk To Our Team</button>
+              <button onClick={() => { setModalMode("quote"); setIsModalOpen(true); }} className="btn-primary cursor-pointer text-sm px-8 py-4 !rounded-full">Request A Custom Order</button>
+              <button onClick={() => { setModalMode("contact"); setIsModalOpen(true); }} className="btn-ghost cursor-pointer text-sm px-8 py-4 !rounded-full">Talk To Our Team</button>
             </div>
           </div>
         </motion.div>
@@ -471,8 +472,14 @@ export default function BeyondTheStudio() {
               </button>
               
               <div className="bs-modal-header">
-                <h3 className="text-2xl font-serif text-white">Request a Custom Order</h3>
-                <p className="text-sm text-mocha mt-1">Fill out the details below and our atelier will get back to you within 24 hours.</p>
+                <h3 className="text-2xl font-serif text-white">
+                  {modalMode === "quote" ? "Request a Custom Order" : "Talk to Our Team"}
+                </h3>
+                <p className="text-sm text-mocha mt-1">
+                  {modalMode === "quote" 
+                    ? "Fill out the details below and our atelier will get back to you within 24 hours."
+                    : "Have a general question, collaboration proposal, or event inquiry? Let's start a conversation."}
+                </p>
               </div>
               
               {isSuccess ? (
@@ -487,112 +494,167 @@ export default function BeyondTheStudio() {
                 </div>
               ) : (
                 <div className="bs-modal-body custom-scrollbar">
-                  <form onSubmit={handleQuoteSubmit} className="bs-form">
-                    
-                    <div className="bs-form-row">
-                      <div className="bs-form-group">
-                        <label>Full Name</label>
-                        <input required type="text" value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} placeholder="Jane Doe"/>
+                  {modalMode === "quote" ? (
+                    <form onSubmit={handleQuoteSubmit} className="bs-form">
+                      
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Full Name</label>
+                          <input required type="text" value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} placeholder="Jane Doe"/>
+                        </div>
+                        <div className="bs-form-group">
+                          <label>Company / Organization</label>
+                          <input type="text" value={formState.company} onChange={e => setFormState({...formState, company: e.target.value})} placeholder="Acme Corp"/>
+                        </div>
                       </div>
-                      <div className="bs-form-group">
-                        <label>Company / Organization</label>
-                        <input type="text" value={formState.company} onChange={e => setFormState({...formState, company: e.target.value})} placeholder="Acme Corp"/>
+                      
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Email Address</label>
+                          <input required type="email" value={formState.email} onChange={e => setFormState({...formState, email: e.target.value})} placeholder="jane@example.com"/>
+                        </div>
+                        <div className="bs-form-group">
+                          <label>Phone Number</label>
+                          <input type="tel" value={formState.phone} onChange={e => setFormState({...formState, phone: e.target.value})} placeholder="+1 (555) 000-0000"/>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="bs-form-row">
-                      <div className="bs-form-group">
-                        <label>Email Address</label>
-                        <input required type="email" value={formState.email} onChange={e => setFormState({...formState, email: e.target.value})} placeholder="jane@example.com"/>
-                      </div>
-                      <div className="bs-form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" value={formState.phone} onChange={e => setFormState({...formState, phone: e.target.value})} placeholder="+1 (555) 000-0000"/>
-                      </div>
-                    </div>
 
-                    <div className="bs-form-row">
-                      <div className="bs-form-group">
-                        <label>Event Type / Purpose</label>
-                        <select required value={formState.eventType} onChange={e => setFormState({...formState, eventType: e.target.value})}>
-                          <option value="">Select an option...</option>
-                          <option value="corporate">Corporate Gifting</option>
-                          <option value="wedding">Wedding</option>
-                          <option value="event">Event / Festival</option>
-                          <option value="brand">Brand Collaboration</option>
-                          <option value="other">Other</option>
-                        </select>
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Event Type / Purpose</label>
+                          <select required value={formState.eventType} onChange={e => setFormState({...formState, eventType: e.target.value})}>
+                            <option value="">Select an option...</option>
+                            <option value="corporate">Corporate Gifting</option>
+                            <option value="wedding">Wedding</option>
+                            <option value="event">Event / Festival</option>
+                            <option value="brand">Brand Collaboration</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                        <div className="bs-form-group">
+                          <label>Required Quantity</label>
+                          <select required value={formState.quantity} onChange={e => setFormState({...formState, quantity: e.target.value})}>
+                            <option value="">Select quantity...</option>
+                            <option value="25-50">25 - 50 Bags</option>
+                            <option value="51-100">51 - 100 Bags</option>
+                            <option value="101-250">101 - 250 Bags</option>
+                            <option value="251-500">251 - 500 Bags</option>
+                            <option value="500+">500+ Bags</option>
+                          </select>
+                        </div>
                       </div>
-                      <div className="bs-form-group">
-                        <label>Required Quantity</label>
-                        <select required value={formState.quantity} onChange={e => setFormState({...formState, quantity: e.target.value})}>
-                          <option value="">Select quantity...</option>
-                          <option value="25-50">25 - 50 Bags</option>
-                          <option value="51-100">51 - 100 Bags</option>
-                          <option value="101-250">101 - 250 Bags</option>
-                          <option value="251-500">251 - 500 Bags</option>
-                          <option value="500+">500+ Bags</option>
-                        </select>
-                      </div>
-                    </div>
 
-                    <div className="bs-form-row">
-                      <div className="bs-form-group">
-                        <label>Preferred Tote Color</label>
-                        <select value={formState.color} onChange={e => setFormState({...formState, color: e.target.value})}>
-                          <option value="">Any</option>
-                          <option value="natural">Natural Canvas</option>
-                          <option value="black">Midnight Black</option>
-                          <option value="custom">Custom Color (500+ only)</option>
-                        </select>
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Preferred Tote Color</label>
+                          <select value={formState.color} onChange={e => setFormState({...formState, color: e.target.value})}>
+                            <option value="">Any</option>
+                            <option value="natural">Natural Canvas</option>
+                            <option value="black">Midnight Black</option>
+                            <option value="custom">Custom Color (500+ only)</option>
+                          </select>
+                        </div>
+                        <div className="bs-form-group">
+                          <label>Delivery Date</label>
+                          <input type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})}/>
+                        </div>
                       </div>
-                      <div className="bs-form-group">
-                        <label>Delivery Date</label>
-                        <input type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})}/>
-                      </div>
-                    </div>
 
-                    <div className="bs-form-group">
-                      <label>Project Description & Vision</label>
-                      <textarea required rows={4} value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} placeholder="Tell us about the design, artwork, and aesthetic you have in mind..."></textarea>
-                    </div>
-
-                    <div className="bs-form-row">
                       <div className="bs-form-group">
-                        <label>Budget Range</label>
-                        <select value={formState.budget} onChange={e => setFormState({...formState, budget: e.target.value})}>
-                          <option value="">Select budget range...</option>
-                          <option value="under-1000">Under $1,000</option>
-                          <option value="1000-5000">$1,000 - $5,000</option>
-                          <option value="5000-10000">$5,000 - $10,000</option>
-                          <option value="10000+">$10,000+</option>
-                        </select>
+                        <label>Project Description & Vision</label>
+                        <textarea required rows={4} value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} placeholder="Tell us about the design, artwork, and aesthetic you have in mind..."></textarea>
                       </div>
-                      <div className="bs-form-group pt-6">
-                        <button type="button" className="bs-upload-btn w-full">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Upload Design File (Optional)
+
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Budget Range</label>
+                          <select value={formState.budget} onChange={e => setFormState({...formState, budget: e.target.value})}>
+                            <option value="">Select budget range...</option>
+                            <option value="under-1000">Under $1,000</option>
+                            <option value="1000-5000">$1,000 - $5,000</option>
+                            <option value="5000-10000">$5,000 - $10,000</option>
+                            <option value="10000+">$10,000+</option>
+                          </select>
+                        </div>
+                        <div className="bs-form-group pt-6">
+                          <button type="button" className="bs-upload-btn w-full">
+                            <Upload className="w-4 h-4 mr-2" />
+                            Upload Design File (Optional)
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="bs-modal-footer mt-8 pt-6 border-t border-white/10 flex justify-end">
+                        <button 
+                          type="submit" 
+                          disabled={isSubmitting}
+                          className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                              Processing...
+                            </>
+                          ) : (
+                            "Submit Request"
+                          )}
                         </button>
                       </div>
-                    </div>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleQuoteSubmit} className="bs-form">
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Full Name</label>
+                          <input required type="text" value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} placeholder="Jane Doe"/>
+                        </div>
+                        <div className="bs-form-group">
+                          <label>Email Address</label>
+                          <input required type="email" value={formState.email} onChange={e => setFormState({...formState, email: e.target.value})} placeholder="jane@example.com"/>
+                        </div>
+                      </div>
 
-                    <div className="bs-modal-footer mt-8 pt-6 border-t border-white/10 flex justify-end">
-                      <button 
-                        type="submit" 
-                        disabled={isSubmitting}
-                        className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                            Processing...
-                          </>
-                        ) : (
-                          "Submit Request"
-                        )}
-                      </button>
-                    </div>
-                  </form>
+                      <div className="bs-form-row">
+                        <div className="bs-form-group">
+                          <label>Phone Number (Optional)</label>
+                          <input type="tel" value={formState.phone} onChange={e => setFormState({...formState, phone: e.target.value})} placeholder="+1 (555) 000-0000"/>
+                        </div>
+                        <div className="bs-form-group">
+                          <label>Inquiry Type</label>
+                          <select required value={formState.eventType} onChange={e => setFormState({...formState, eventType: e.target.value})}>
+                            <option value="">Select a topic...</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="collaboration">Brand Collaboration</option>
+                            <option value="press">Press & Media</option>
+                            <option value="private-workshop">Private / Group Workshop</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="bs-form-group">
+                        <label>Your Message</label>
+                        <textarea required rows={5} value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} placeholder="Tell us how we can help you..."></textarea>
+                      </div>
+
+                      <div className="bs-modal-footer mt-8 pt-6 border-t border-white/10 flex justify-end">
+                        <button 
+                          type="submit" 
+                          disabled={isSubmitting}
+                          className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                              Sending...
+                            </>
+                          ) : (
+                            "Send Message"
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  )}
                 </div>
               )}
             </motion.div>

@@ -3378,3 +3378,155 @@
   position: relative;
   z-index: 2;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPREHENSIVE MOBILE RESPONSIVENESS CUSTOMIZATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Navigation pill responsiveness */
+  .nav-links {
+    display: none !important;
+  }
+  .main-nav {
+    top: 12px;
+    width: calc(100% - 24px);
+  }
+  .nav-pill {
+    padding: 10px 18px;
+  }
+  .nav-logo {
+    font-size: 14px;
+  }
+  .nav-cta {
+    padding: 8px 16px;
+    font-size: 10px;
+  }
+
+  /* Hero container responsiveness */
+  .hero {
+    padding: 100px 16px 40px;
+  }
+  .hero-container {
+    padding: 40px 20px 30px;
+    min-height: auto;
+    border-radius: 24px;
+  }
+  .hero-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 32px;
+  }
+  .hero-headline {
+    max-width: 100%;
+  }
+  .hero-title {
+    font-size: clamp(38px, 8vw, 52px);
+  }
+  .hero-sub {
+    margin-inline: auto;
+    text-align: center;
+    font-size: 14px;
+  }
+  .hero-actions {
+    justify-content: center;
+  }
+  .hero-stats {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+    border-top: 1px solid rgba(167, 139, 250, 0.1);
+    padding-top: 24px;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .hero-products {
+    position: relative !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    height: 220px !important;
+    margin-top: 24px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    pointer-events: none;
+  }
+  .bag-float {
+    position: absolute !important;
+  }
+  .bag-1 {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 160px !important;
+  }
+  .bag-2, .bag-3 {
+    display: none !important;
+  }
+
+  /* Founder Story Illustration responsiveness */
+  .fs-illustration-wrap {
+    height: 350px !important;
+    border-radius: 24px;
+  }
+  .fs-tote {
+    width: 120px !important;
+    height: 160px !important;
+    bottom: 15% !important;
+    left: 25% !important;
+  }
+  .fs-brushes {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .fs-silhouette {
+    transform: scale(0.7);
+  }
+  .fs-quote-block {
+    padding: 48px 24px;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Checkout Modal responsiveness */
+  .checkout-content {
+    padding: 24px 20px;
+    max-height: 95vh;
+    border-radius: 20px;
+  }
+  .checkout-title {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  /* Beyond the Studio Custom Form Modal responsiveness */
+  .bs-modal-content {
+    max-height: 95vh;
+    border-radius: 20px;
+  }
+  .bs-modal-header {
+    padding: 24px 20px;
+  }
+  .bs-modal-body {
+    padding: 20px;
+  }
+  .bs-form {
+    gap: 16px;
+  }
+  .bs-form-row {
+    gap: 12px;
+  }
+  .bs-form-group input, 
+  .bs-form-group select, 
+  .bs-form-group textarea {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+}
