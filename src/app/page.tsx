@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import BeyondTheStudio from "@/components/BeyondTheStudio";
+import FounderStory from "@/components/FounderStory";
 
 interface CartItem {
   name: string;
@@ -502,15 +504,7 @@ export default function Homepage() {
                 Workshop
               </Link>
             </li>
-            <li>
-              <Link
-                href="/admin"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                Admin
-              </Link>
-            </li>
+
           </ul>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <button
@@ -691,39 +685,12 @@ export default function Homepage() {
           </div>
 
           <div className="workshop-right reveal" style={{ transitionDelay: "0.3s" }}>
-            <div className="ws-visual-container" id="wsVisual" onMouseMove={handleVisualTilt} onMouseLeave={handleVisualTiltLeave}>
-              <img src="/workshop_scene.png" alt="Workshop Session" className="ws-scene-img" />
-              <div className="ws-floater ws-splash" style={{ top: "10%", left: "10%" }}></div>
-              <div className="ws-floater ws-blob" style={{ bottom: "15%", right: "10%" }}></div>
-              <div className="ws-floater" style={{ top: "35%", right: "20%", filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.5))" }}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ivory)" strokeWidth="1.5">
-                  <path d="M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-6-4-4 6-1z" />
-                </svg>
+            <div className="ws-comic-wrapper">
+              <div className="ws-comic-card">
+                <div className="ws-comic-glow"></div>
+                <img src="/workshop_comic.jpg" alt="Workshop Storyboard" className="ws-comic-img" />
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="ws-timeline">
-          <div className="ws-step reveal" style={{ transitionDelay: "0.1s" }}>
-            <div className="ws-step-num">1</div>
-            <h4 className="ws-step-title">Choose Your Tote</h4>
-            <p className="ws-step-desc">Select between premium white or black heavy-canvas tote bags.</p>
-          </div>
-          <div className="ws-step reveal" style={{ transitionDelay: "0.2s" }}>
-            <div className="ws-step-num">2</div>
-            <h4 className="ws-step-title">Choose Your Style</h4>
-            <p className="ws-step-desc">Go freehand with brush painting or explore intricate block printing.</p>
-          </div>
-          <div className="ws-step reveal" style={{ transitionDelay: "0.3s" }}>
-            <div className="ws-step-num">3</div>
-            <h4 className="ws-step-title">Create Your Design</h4>
-            <p className="ws-step-desc">Use provided vibrant colors, brushes, and handcrafted wooden blocks.</p>
-          </div>
-          <div className="ws-step reveal" style={{ transitionDelay: "0.4s" }}>
-            <div className="ws-step-num">4</div>
-            <h4 className="ws-step-title">Take It Home</h4>
-            <p className="ws-step-desc">Leave the studio with your personalized, one-of-a-kind masterpiece.</p>
           </div>
         </div>
 
@@ -742,6 +709,8 @@ export default function Homepage() {
           </Link>
         </div>
       </section>
+
+      <BeyondTheStudio />
 
       {/* FEATURED PRODUCTS */}
       <section className="section" id="sec-curated">
@@ -825,54 +794,19 @@ export default function Homepage() {
         </div>
       </div>
 
-      {/* REVIEWS */}
-      <section className="reviews-section" style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div className="section-header reveal" id="sec3">
-          <p className="section-eyebrow">What they say</p>
-          <h2 className="section-title">Worn with <em>Love</em></h2>
-        </div>
-        <div className="reviews-grid">
-          <div className="review-card reveal" style={{ transitionDelay: "0.05s" }}>
-            <div className="stars">★★★★★</div>
-            <p className="review-text">"The Toscana Grand has replaced every other bag I own. Three years in and it only looks better."</p>
-            <div className="reviewer">— Isabelle M., Paris</div>
-          </div>
-          <div className="review-card reveal" style={{ transitionDelay: "0.15s" }}>
-            <div className="stars">★★★★★</div>
-            <p className="review-text">"Impeccable craftsmanship. The leather aged beautifully — it truly becomes your own over time."</p>
-            <div className="reviewer">— Sara K., Milan</div>
-          </div>
-          <div className="review-card reveal" style={{ transitionDelay: "0.25s" }}>
-            <div className="stars">★★★★★</div>
-            <p className="review-text">"Worth every euro. I get compliments everywhere I go. Solviera is all I'll ever carry."</p>
-            <div className="reviewer">— Anna R., London</div>
-          </div>
+      {/* FOUNDER STORY */}
+      <FounderStory />
+
+      {/* WORN WITH LOVE TAGLINE */}
+      <section className="worn-with-love-section reveal" id="sec3" style={{ textAlign: "center", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div className="wwl-inner" style={{ textAlign: "center", width: "100%", maxWidth: "800px" }}>
+          <p className="wwl-eyebrow" style={{ textAlign: "center", width: "100%" }}>Worn with Love</p>
+          <h2 className="wwl-title wwl-typewriter" style={{ textAlign: "center", width: "100%" }}>
+            <span className="wwl-typewriter-text">Made to be <em>kept forever</em></span>
+          </h2>
+          <div className="wwl-divider" />
         </div>
       </section>
-
-      {/* BRAND STORY */}
-      <div style={{ padding: "0 24px" }}>
-        <div className="brand-story reveal" id="sec4">
-          <div className="brand-deco"></div>
-          <div className="brand-deco-2"></div>
-          <div className="brand-story-inner">
-            <p className="brand-story-eyebrow">Our Philosophy</p>
-            <h2 className="brand-story-title">Made to be<br /><em>kept forever</em></h2>
-            <p className="brand-story-body">
-              Founded in Florence in 2012, Solviera was born from a single obsession: making bags that outlast trends. We source only the finest materials from historic tanneries and artisan weavers, and every stitch is placed by hand in our atelier. We believe luxury is not about logos — it's about enduring quality.
-            </p>
-            <button
-              className="btn-primary cursor-pointer"
-              style={{ background: "var(--nude)", color: "var(--cream)" }}
-              onClick={() => document.getElementById("sec5")?.scrollIntoView({ behavior: "smooth" })}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              Read our story
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* NEWSLETTER */}
       <div className="newsletter reveal" id="sec5">
