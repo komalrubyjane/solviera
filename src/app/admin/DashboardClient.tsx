@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -60,7 +60,79 @@ interface Props {
   stylePrefData: PreferencesItem[];
 }
 
-const COLORS = ["#A78BFA", "#F472B6", "#C084FC", "#F59E0B"];
+const CHART_COLORS = ["#A78BFA", "#F472B6", "#34D399", "#F59E0B"];
+
+// Animated counter hook
+function useCountUp(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.floor(eased * target));
+      if (progress < 1) {
+        ref.current = setTimeout(() => requestAnimationFrame(tick), 16);
+      }
+    };
+    requestAnimationFrame(tick);
+    return () => { if (ref.current) clearTimeout(ref.current); };
+  }, [target, duration]);
+
+  return value;
+}
+
+function MetricCard({
+  label,
+  value,
+  prefix = "",
+  suffix = "",
+  sub,
+  accent,
+  delay,
+  icon,
+}: {
+  label: string;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  sub?: string;
+  accent?: string;
+  delay: number;
+  icon: React.ReactNode;
+}) {
+  const [visible, setVisible] = useState(false);
+  const count = useCountUp(visible ? value : 0, 1400);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+
+  return (
+    <div
+      className="admin-metric-card"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms`,
+      }}
+    >
+      <div className="admin-metric-icon" style={{ background: accent || "rgba(167,139,250,0.12)", color: accent ? "white" : "#A78BFA" }}>
+        {icon}
+      </div>
+      <div className="admin-metric-label">{label}</div>
+      <div className="admin-metric-value" style={{ color: accent || "white" }}>
+        {prefix}{count.toLocaleString()}{suffix}
+      </div>
+      {sub && <div className="admin-metric-sub">{sub}</div>}
+      <div className="admin-metric-glow" style={{ background: accent || "#A78BFA" }} />
+    </div>
+  );
+}
 
 export default function DashboardClient({
   metrics,
@@ -70,229 +142,332 @@ export default function DashboardClient({
   bagColorData,
   stylePrefData,
 }: Props) {
-  // If no chart data, display mock placeholders for layout testing
+  const [chartsVisible, setChartsVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setChartsVisible(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+
   const finalRevData =
     revenueChartData.length > 0
       ? revenueChartData
       : [
-          { name: "May", revenue: 45000 },
-          { name: "Jun", revenue: 58000 },
-          { name: "Jul", revenue: 84000 },
+          { name: "Jan", revenue: 18500 },
+          { name: "Feb", revenue: 22000 },
+          { name: "Mar", revenue: 31500 },
+          { name: "Apr", revenue: 28000 },
+          { name: "May", revenue: 41200 },
+          { name: "Jun", revenue: 38800 },
         ];
 
   const finalBookingData =
     bookingsChartData.length > 0
       ? bookingsChartData
       : [
-          { date: "06/01", seats: 3 },
-          { date: "06/05", seats: 5 },
-          { date: "06/08", seats: 8 },
+          { date: "Jun 1", seats: 3 },
+          { date: "Jun 3", seats: 5 },
+          { date: "Jun 5", seats: 2 },
+          { date: "Jun 7", seats: 8 },
+          { date: "Jun 9", seats: 4 },
+          { date: "Jun 10", seats: 6 },
         ];
 
+  const metricCards = [
+    {
+      label: "Total Revenue",
+      value: metrics.totalRevenue,
+      prefix: "₹",
+      sub: `₹${metrics.pendingRevenue.toLocaleString()} pending`,
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23" />
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      ),
+      accent: undefined,
+      delay: 100,
+    },
+    {
+      label: "Confirmed Bookings",
+      value: metrics.bookingsCount,
+      sub: "Total reservations",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 2v4M8 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+          <path d="m9 16 2 2 4-4" />
+        </svg>
+      ),
+      accent: undefined,
+      delay: 200,
+    },
+    {
+      label: "Customers",
+      value: metrics.customersCount,
+      sub: "Unique contacts",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+      accent: undefined,
+      delay: 300,
+    },
+    {
+      label: "Available Seats",
+      value: metrics.availableSeats,
+      sub: `Across ${metrics.upcomingWorkshops} upcoming dates`,
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+        </svg>
+      ),
+      accent: "#10B981",
+      delay: 400,
+    },
+  ];
+
   return (
-    <div className="space-y-10">
-      <div className="flex justify-between items-center">
+    <div className="admin-dashboard">
+      {/* Page Header */}
+      <div className="admin-page-header">
         <div>
-          <h1 className="font-serif text-3xl text-white font-light">Atelier Analytics</h1>
-          <p className="text-xs font-light text-soft-brown mt-1">
-            Real-time workshop bookings and revenue overview.
+          <h1 className="admin-page-title">Analytics Overview</h1>
+          <p className="admin-page-sub">
+            Real-time insights for Solviera Atelier workshop bookings
           </p>
+        </div>
+        <div className="admin-page-badge">
+          <span className="admin-live-dot" />
+          <span>Live Data</span>
         </div>
       </div>
 
-      {/* METRICS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Total Revenue */}
-        <div className="bg-sand/40 border border-mocha/10 rounded-2xl p-6 shadow-md">
-          <div className="text-[10px] tracking-widest text-mocha uppercase font-light mb-2">
-            Total Revenue
-          </div>
-          <div className="font-serif text-3xl text-white">
-            ₹{metrics.totalRevenue.toLocaleString()}
-          </div>
-          <p className="text-[9px] text-soft-brown mt-2">
-            Pending checkout amount: ₹{metrics.pendingRevenue.toLocaleString()}
-          </p>
-        </div>
-
-        {/* Confirmed Bookings */}
-        <div className="bg-sand/40 border border-mocha/10 rounded-2xl p-6 shadow-md">
-          <div className="text-[10px] tracking-widest text-mocha uppercase font-light mb-2">
-            Confirmed Bookings
-          </div>
-          <div className="font-serif text-3xl text-white">{metrics.bookingsCount}</div>
-          <p className="text-[9px] text-soft-brown mt-2">Reservations checked in: Active</p>
-        </div>
-
-        {/* Unique Customers */}
-        <div className="bg-sand/40 border border-mocha/10 rounded-2xl p-6 shadow-md">
-          <div className="text-[10px] tracking-widest text-mocha uppercase font-light mb-2">
-            Unique Customers
-          </div>
-          <div className="font-serif text-3xl text-white">{metrics.customersCount}</div>
-          <p className="text-[9px] text-soft-brown mt-2">Customer contacts collected</p>
-        </div>
-
-        {/* Available Seats */}
-        <div className="bg-sand/40 border border-mocha/10 rounded-2xl p-6 shadow-md">
-          <div className="text-[10px] tracking-widest text-mocha uppercase font-light mb-2">
-            Available Seats
-          </div>
-          <div className="font-serif text-3xl text-warm-brown">{metrics.availableSeats}</div>
-          <p className="text-[9px] text-soft-brown mt-2">
-            Scheduled across {metrics.upcomingWorkshops} upcoming date(s)
-          </p>
-        </div>
+      {/* METRIC CARDS */}
+      <div className="admin-metrics-grid">
+        {metricCards.map((card) => (
+          <MetricCard key={card.label} {...card} />
+        ))}
       </div>
 
-      {/* GRAPHS AND CHARTS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Revenue Growth Graph */}
-        <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-          <h3 className="font-serif text-lg text-white mb-6">Revenue Growth</h3>
-          <div className="h-[280px] w-full">
+      {/* CHARTS ROW */}
+      <div
+        className="admin-charts-grid"
+        style={{
+          opacity: chartsVisible ? 1 : 0,
+          transform: chartsVisible ? "translateY(0)" : "translateY(32px)",
+          transition: "opacity 0.7s ease 0.5s, transform 0.7s cubic-bezier(0.34,1.2,0.64,1) 0.5s",
+        }}
+      >
+        {/* Revenue Area Chart */}
+        <div className="admin-chart-card">
+          <div className="admin-chart-header">
+            <div>
+              <h3 className="admin-chart-title">Revenue Growth</h3>
+              <p className="admin-chart-sub">Monthly earnings trend</p>
+            </div>
+            <div className="admin-chart-tag">Area Chart</div>
+          </div>
+          <div style={{ height: 260 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={finalRevData}>
+              <AreaChart data={finalRevData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#A78BFA" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#A78BFA" stopOpacity={0.35} />
                     <stop offset="95%" stopColor="#A78BFA" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(167,139,250,0.1)" />
-                <XAxis dataKey="name" stroke="#C084FC" style={{ fontSize: 10 }} />
-                <YAxis stroke="#C084FC" style={{ fontSize: 10 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(167,139,250,0.08)" />
+                <XAxis dataKey="name" stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+                <YAxis stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={45} />
                 <Tooltip
-                  contentStyle={{ background: "#1B112A", border: "0.5px solid rgba(167,139,250,0.3)", borderRadius: 10, color: "white" }}
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                  formatter={(v: number) => [`₹${v.toLocaleString()}`, "Revenue"]}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#A78BFA" fillOpacity={1} fill="url(#revGrad)" />
+                <Area type="monotone" dataKey="revenue" stroke="#A78BFA" strokeWidth={2} fillOpacity={1} fill="url(#revGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Bookings Graph */}
-        <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-          <h3 className="font-serif text-lg text-white mb-6">Seats Reserved</h3>
-          <div className="h-[280px] w-full">
+        {/* Seats Bar Chart */}
+        <div className="admin-chart-card">
+          <div className="admin-chart-header">
+            <div>
+              <h3 className="admin-chart-title">Seats Reserved</h3>
+              <p className="admin-chart-sub">Bookings by date</p>
+            </div>
+            <div className="admin-chart-tag">Bar Chart</div>
+          </div>
+          <div style={{ height: 260 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={finalBookingData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(167,139,250,0.1)" />
-                <XAxis dataKey="date" stroke="#C084FC" style={{ fontSize: 10 }} />
-                <YAxis stroke="#C084FC" style={{ fontSize: 10 }} />
+              <BarChart data={finalBookingData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(167,139,250,0.08)" />
+                <XAxis dataKey="date" stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+                <YAxis stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ background: "#1B112A", border: "0.5px solid rgba(167,139,250,0.3)", borderRadius: 10, color: "white" }}
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(244,114,182,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                  formatter={(v: number) => [v, "Seats"]}
                 />
-                <Bar dataKey="seats" fill="#F472B6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="seats" fill="#F472B6" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                  {finalBookingData.map((_, i) => (
+                    <Cell key={i} fill={`hsl(${320 + i * 5}, 80%, ${65 + i * 2}%)`} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* PIE CHARTS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Style Preferences */}
-        <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md flex flex-col justify-between">
-          <h3 className="font-serif text-lg text-white mb-6">Medium Preferences</h3>
-          <div className="h-[240px] w-full flex items-center justify-center">
-            {stylePrefData.reduce((a, b) => a + b.value, 0) === 0 ? (
-              <p className="text-xs text-soft-brown font-light">No preferences recorded yet.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={stylePrefData.filter((d) => d.value > 0)}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {stylePrefData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ background: "#1B112A", border: "0.5px solid rgba(167,139,250,0.3)", borderRadius: 10, color: "white" }}
-                  />
-                  <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: 10 }} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
+      {/* PIE CHARTS ROW */}
+      <div
+        className="admin-charts-grid"
+        style={{
+          opacity: chartsVisible ? 1 : 0,
+          transform: chartsVisible ? "translateY(0)" : "translateY(32px)",
+          transition: "opacity 0.7s ease 0.8s, transform 0.7s cubic-bezier(0.34,1.2,0.64,1) 0.8s",
+        }}
+      >
+        {/* Style Preferences Donut */}
+        <div className="admin-chart-card">
+          <div className="admin-chart-header">
+            <div>
+              <h3 className="admin-chart-title">Craft Medium</h3>
+              <p className="admin-chart-sub">Style preference breakdown</p>
+            </div>
+            <div className="admin-chart-tag">Donut</div>
+          </div>
+          <div style={{ height: 240 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={stylePrefData.filter((d) => d.value > 0)}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={55}
+                  outerRadius={80}
+                  paddingAngle={4}
+                  dataKey="value"
+                >
+                  {stylePrefData.map((_, index) => (
+                    <Cell key={index} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  wrapperStyle={{ fontSize: 10, color: "#9CA3AF" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Color Preferences */}
-        <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md flex flex-col justify-between">
-          <h3 className="font-serif text-lg text-white mb-6">Tote Color Preferences</h3>
-          <div className="h-[240px] w-full flex items-center justify-center">
-            {bagColorData.reduce((a, b) => a + b.value, 0) === 0 ? (
-              <p className="text-xs text-soft-brown font-light">No preferences recorded yet.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={bagColorData.filter((d) => d.value > 0)}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {bagColorData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ background: "#1B112A", border: "0.5px solid rgba(167,139,250,0.3)", borderRadius: 10, color: "white" }}
-                  />
-                  <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: 10 }} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
+        {/* Bag Color Donut */}
+        <div className="admin-chart-card">
+          <div className="admin-chart-header">
+            <div>
+              <h3 className="admin-chart-title">Tote Colors</h3>
+              <p className="admin-chart-sub">Color preference breakdown</p>
+            </div>
+            <div className="admin-chart-tag">Donut</div>
+          </div>
+          <div style={{ height: 240 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={bagColorData.filter((d) => d.value > 0)}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={55}
+                  outerRadius={80}
+                  paddingAngle={4}
+                  dataKey="value"
+                >
+                  {bagColorData.map((_, index) => (
+                    <Cell key={index} fill={CHART_COLORS[(index + 2) % CHART_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, color: "white", fontSize: 12 }}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  wrapperStyle={{ fontSize: 10, color: "#9CA3AF" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* RECENT BOOKINGS TABLE */}
-      <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-        <h3 className="font-serif text-lg text-white mb-6">Recent Atelier Activity</h3>
+      {/* RECENT ACTIVITY TABLE */}
+      <div
+        className="admin-table-card"
+        style={{
+          opacity: chartsVisible ? 1 : 0,
+          transform: chartsVisible ? "translateY(0)" : "translateY(32px)",
+          transition: "opacity 0.7s ease 1.1s, transform 0.7s cubic-bezier(0.34,1.2,0.64,1) 1.1s",
+        }}
+      >
+        <div className="admin-chart-header" style={{ marginBottom: "1.5rem" }}>
+          <div>
+            <h3 className="admin-chart-title">Recent Bookings</h3>
+            <p className="admin-chart-sub">Latest atelier activity log</p>
+          </div>
+          <div className="admin-chart-tag" style={{ color: "#34D399", borderColor: "rgba(52,211,153,0.3)", background: "rgba(52,211,153,0.08)" }}>
+            {recentActivity.length} entries
+          </div>
+        </div>
+
         {recentActivity.length === 0 ? (
-          <p className="text-xs text-soft-brown font-light text-center py-6">
-            No booking activities recorded.
-          </p>
+          <div className="admin-empty-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color: "rgba(167,139,250,0.3)", margin: "0 auto 12px" }}>
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18M9 21V9" />
+            </svg>
+            <p>No booking activities yet.</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+          <div className="admin-table-wrap">
+            <table className="admin-table">
               <thead>
-                <tr className="border-b border-mocha/15 text-[10px] tracking-wider text-mocha uppercase">
-                  <th className="py-3 px-4 font-light">Booking ID</th>
-                  <th className="py-3 px-4 font-light">Customer</th>
-                  <th className="py-3 px-4 font-light">Seats</th>
-                  <th className="py-3 px-4 font-light">Date</th>
-                  <th className="py-3 px-4 font-light">Amount</th>
-                  <th className="py-3 px-4 font-light">Status</th>
+                <tr>
+                  <th>Booking Ref</th>
+                  <th>Customer</th>
+                  <th>Seats</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-mocha/5 font-light text-soft-brown">
-                {recentActivity.map((act) => (
-                  <tr key={act.id} className="hover:bg-sand/20 transition-colors">
-                    <td className="py-3.5 px-4 font-medium text-white">{act.ref}</td>
-                    <td className="py-3.5 px-4">{act.customerName}</td>
-                    <td className="py-3.5 px-4">{act.participants}</td>
-                    <td className="py-3.5 px-4">{act.dateStr}</td>
-                    <td className="py-3.5 px-4 text-white">₹{act.amount.toLocaleString()}</td>
-                    <td className="py-3.5 px-4">
-                      <span
-                        className={`text-[9px] uppercase tracking-wider py-1 px-3 rounded-full ${
-                          act.status === "CONFIRMED"
-                            ? "bg-green-400/10 text-green-400 border border-green-400/30"
-                            : "bg-red-400/10 text-red-400 border border-red-400/30"
-                        }`}
-                      >
+              <tbody>
+                {recentActivity.map((act, i) => (
+                  <tr
+                    key={act.id}
+                    style={{
+                      opacity: chartsVisible ? 1 : 0,
+                      transform: chartsVisible ? "translateX(0)" : "translateX(-16px)",
+                      transition: `opacity 0.5s ease ${1.2 + i * 0.08}s, transform 0.5s ease ${1.2 + i * 0.08}s`,
+                    }}
+                  >
+                    <td className="admin-table-ref">{act.ref}</td>
+                    <td>{act.customerName}</td>
+                    <td>
+                      <span className="admin-table-badge admin-table-badge--neutral">{act.participants}</span>
+                    </td>
+                    <td>{act.dateStr}</td>
+                    <td className="admin-table-amount">₹{act.amount.toLocaleString()}</td>
+                    <td>
+                      <span className={`admin-table-badge ${act.status === "CONFIRMED" ? "admin-table-badge--green" : "admin-table-badge--red"}`}>
                         {act.status}
                       </span>
                     </td>
