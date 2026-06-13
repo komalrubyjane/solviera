@@ -97,7 +97,7 @@ export default function BeyondTheStudio() {
 
   // Quantity Visualizer State
   const [selectedQty, setSelectedQty] = useState<number>(100);
-  const quantities = [25, 50, 100, 250, 500];
+  const quantities = [100, 250, 500, 1000];
 
   // Carousel State
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -279,7 +279,7 @@ export default function BeyondTheStudio() {
                   onClick={() => setSelectedQty(qty)}
                   onMouseEnter={() => setSelectedQty(qty)}
                 >
-                  {qty}{qty === 500 ? "+" : ""} Bags
+                  {qty}{qty === 1000 ? "+" : ""} Bags
                 </button>
               ))}
             </div>
@@ -295,15 +295,15 @@ export default function BeyondTheStudio() {
                   className="bs-qty-stack"
                 >
                   {/* Visual representation of quantity using CSS bags */}
-                  <div className="bs-stack-graphic" style={{ opacity: selectedQty / 500 + 0.2 }}>
+                  <div className="bs-stack-graphic" style={{ opacity: Math.min(selectedQty / 1000 + 0.2, 1) }}>
                     {[...Array(Math.min(selectedQty / 25, 20))].map((_, i) => (
-                      <div key={i} className="bs-stack-item" style={{ bottom: `${i * 8}px`, zIndex: 20 - i, left: `${Math.sin(i)*10}px` }}>
+                      <div key={i} className="bs-stack-item" style={{ bottom: `${i * 8}px`, zIndex: 20 - i, left: `calc(50% + ${Math.sin(i)*10}px)` }}>
                         <img src="/tote_kitty.png" alt="Stack item" className="w-24 h-24 object-contain" />
                       </div>
                     ))}
                   </div>
                   <div className="bs-qty-label text-center mt-8">
-                    <span className="text-4xl font-serif text-dark-mocha">{selectedQty}{selectedQty === 500 ? "+" : ""}</span>
+                    <span className="text-4xl font-serif text-dark-mocha">{selectedQty}{selectedQty === 1000 ? "+" : ""}</span>
                     <span className="text-sm text-mocha block mt-2 tracking-widest uppercase">Custom Masterpieces</span>
                   </div>
                 </motion.div>
