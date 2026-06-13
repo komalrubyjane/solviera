@@ -253,7 +253,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
 
     const tReveal = setTimeout(() => {
       setStage('revealing');
-    }, 3000);
+    }, 1600); // Speed up wait time from 3000ms to 1600ms
 
     return () => clearTimeout(tReveal);
   }, [stage]);
@@ -262,7 +262,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
     if (stage !== 'revealing') return;
     gsap.to(introLayerRef.current, {
       opacity: 0,
-      duration: 1.6,
+      duration: 0.8, // Speed up fade-out from 1.6s to 0.8s
       ease: 'power2.inOut',
       onComplete: onComplete,
     });
