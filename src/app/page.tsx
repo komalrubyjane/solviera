@@ -863,17 +863,15 @@ export default function Homepage() {
       {/* FOUNDER STORY */}
       <FounderStory />
 
-      {/* WORN WITH LOVE & MADE TO BE KEPT FOREVER SECTION */}
-      <div style={{ padding: "0 24px", marginBottom: "60px" }}>
-        <div className="brand-story reveal" id="sec4">
-          <div className="brand-deco"></div>
-          <div className="brand-deco-2"></div>
-          <div className="brand-story-inner" style={{ padding: "80px 40px" }}>
-            <p className="brand-story-eyebrow">Worn with Love</p>
-            <h2 className="brand-story-title" style={{ margin: 0 }}>Made to be<br /><em>kept forever</em></h2>
-          </div>
+      {/* BRAND STATEMENT */}
+      <section className="section text-center" id="sec3" style={{ padding: "120px 24px" }}>
+        <div className="reveal" style={{ maxWidth: "800px", margin: "0 auto" }}>
+          <p className="section-eyebrow">Worn with Love</p>
+          <h2 className="font-serif text-4xl md:text-6xl font-light text-dark-mocha mt-4 leading-tight">
+            Made to be <br /><em className="italic text-mocha">kept forever</em>
+          </h2>
         </div>
-      </div>
+      </section>
 
       {/* NEWSLETTER */}
       <div className="newsletter reveal" id="sec5">

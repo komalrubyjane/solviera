@@ -20,6 +20,7 @@ interface FlowerParticle {
   zIndex: number;
 }
 
+// Using pre-resized natively transparent flower images
 const FLOWER_IMAGES: Record<string, string> = {
   lily:       '/assets/flowers/trans_flower.png',
   rose:       '/assets/flowers/trans_chatgpt_2.png',
@@ -162,8 +163,6 @@ const ZoomFlower = ({
         zIndex: flower.zIndex,
         opacity: 0,
         willChange: 'transform, opacity',
-        backfaceVisibility: 'hidden',
-        transform: 'translate3d(0, 0, 0)',
         transformOrigin: 'center center',
       }}
     >
@@ -177,6 +176,7 @@ const ZoomFlower = ({
           objectFit: 'contain',
           userSelect: 'none',
           pointerEvents: 'none',
+          transform: 'translate3d(0, 0, 0)',
         }}
       />
     </div>
@@ -237,8 +237,8 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
         duration: 0.8, delay: 0.4, ease: 'power2.in',
         onStart: () => {
           setStage('blooming');
-          const isMobileDevice = window.innerWidth < 768;
-          setFlowers(spawnFlowers(isMobileDevice ? 80 : 350, 0, 2.0));
+          const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
+          setFlowers(spawnFlowers(isMobileDevice ? 120 : 380, 0, 2.5));
         },
       });
   };
@@ -303,7 +303,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
         </div>
       )}
 
-      {/* Flowers layer — behind everything */}
+      {/* Flowers layer — behind envelope */}
       <div className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 10 }}>
         {flowers.map(f => (
           <ZoomFlower
