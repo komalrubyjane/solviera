@@ -863,54 +863,18 @@ export default function Homepage() {
       {/* FOUNDER STORY */}
       <FounderStory />
 
-      {/* REVIEWS */}
-      <section className="reviews-section" style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div className="section-header reveal" id="sec3">
-          <p className="section-eyebrow">What they say</p>
-          <h2 className="section-title">Worn with <em>Love</em></h2>
-        </div>
-        <div className="reviews-grid">
-          <div className="review-card reveal" style={{ transitionDelay: "0.05s" }}>
-            <div className="stars">★★★★★</div>
-            <p className="review-text">"The Toscana Grand has replaced every other bag I own. Three years in and it only looks better."</p>
-            <div className="reviewer">— Isabelle M., Paris</div>
-          </div>
-          <div className="review-card reveal" style={{ transitionDelay: "0.15s" }}>
-            <div className="stars">★★★★★</div>
-            <p className="review-text">"Impeccable craftsmanship. The leather aged beautifully — it truly becomes your own over time."</p>
-            <div className="reviewer">— Sara K., Milan</div>
-          </div>
-          <div className="review-card reveal" style={{ transitionDelay: "0.25s" }}>
-            <div className="stars">★★★★★</div>
-            <p className="review-text">"Worth every euro. I get compliments everywhere I go. Solviera is all I'll ever carry."</p>
-            <div className="reviewer">— Anna R., London</div>
-          </div>
+      {/* COMBINED BRAND TAGLINE SECTION */}
+      <section className="reviews-section" style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center", padding: "100px 24px" }}>
+        <div className="reveal" id="sec3" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <p className="section-eyebrow" style={{ textTransform: "uppercase", letterSpacing: "0.15em", fontSize: "11px", color: "var(--mocha)", marginBottom: "16px" }}>
+            Worn with Love
+          </p>
+          <h2 className="font-serif font-light text-dark-mocha" style={{ fontSize: "clamp(2.5rem, 5vw, 4.2rem)", lineHeight: 1.2 }}>
+            Made to be<br />
+            <em className="italic text-mocha">kept forever</em>
+          </h2>
         </div>
       </section>
-
-      {/* BRAND STORY */}
-      <div style={{ padding: "0 24px" }}>
-        <div className="brand-story reveal" id="sec4">
-          <div className="brand-deco"></div>
-          <div className="brand-deco-2"></div>
-          <div className="brand-story-inner">
-            <p className="brand-story-eyebrow">Our Philosophy</p>
-            <h2 className="brand-story-title">Made to be<br /><em>kept forever</em></h2>
-            <p className="brand-story-body">
-              Founded in Florence in 2012, Solviera was born from a single obsession: making bags that outlast trends. We source only the finest materials from historic tanneries and artisan weavers, and every stitch is placed by hand in our atelier. We believe luxury is not about logos — it's about enduring quality.
-            </p>
-            <button
-              className="btn-primary cursor-pointer"
-              style={{ background: "var(--nude)", color: "var(--cream)" }}
-              onClick={() => document.getElementById("sec5")?.scrollIntoView({ behavior: "smooth" })}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              Read our story
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* NEWSLETTER */}
       <div className="newsletter reveal" id="sec5">
