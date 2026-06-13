@@ -21,11 +21,11 @@ interface FlowerParticle {
 }
 
 const FLOWER_IMAGES: Record<string, string> = {
-  lily:       '/assets/flowers/lily.png',
-  rose:       '/assets/flowers/rose.png',
-  peony:      '/assets/flowers/peony.png',
-  lotus:      '/assets/flowers/lotus.png',
-  babybreath: '/assets/flowers/babybreath.png',
+  lily:       '/assets/flowers/trans_flower.png',
+  rose:       '/assets/flowers/trans_chatgpt_2.png',
+  peony:      '/assets/flowers/trans_chatgpt_1.png',
+  lotus:      '/assets/flowers/trans_chatgpt_1.png',
+  babybreath: '/assets/flowers/trans_baby_breath.png',
 };
 
 // Remove dark background from envelope images (aggressive keying for black backgrounds)
@@ -57,39 +57,10 @@ const makeEnvelopeTransparent = (src: string): Promise<string> => {
   });
 };
 
-// Remove white background from flower images
-const makeFlowerTransparent = (src: string): Promise<string> => {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = src;
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) { resolve(src); return; }
-      ctx.drawImage(img, 0, 0);
-      const d = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < d.data.length; i += 4) {
-        const r = d.data[i];
-        const g = d.data[i+1];
-        const b = d.data[i+2];
-        if (r > 238 && g > 238 && b > 238) {
-          d.data[i+3] = 0;
-        }
-      }
-      ctx.putImageData(d, 0, 0);
-      resolve(canvas.toDataURL());
-    };
-    img.onerror = () => resolve(src);
-  });
-};
-
 let _uid = 0;
 const TYPES: FlowerParticle['type'][] = ['lily', 'rose', 'peony', 'lotus', 'babybreath'];
 
-function spawnFlowers(count: number, delayOffset: number = 0, spreadDuration: number = 3.0): FlowerParticle[] {
+function spawnFlowers(count: number, delayOffset: number = 0, spreadDuration: number = 2.5): FlowerParticle[] {
   const flowers: FlowerParticle[] = [];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
@@ -102,9 +73,9 @@ function spawnFlowers(count: number, delayOffset: number = 0, spreadDuration: nu
     const endY = 50 + Math.sin(angle) * flyRadius;
 
     const startSize = 6 + Math.random() * 12;
-    const endSize   = 260 + Math.random() * 260; 
+    const endSize   = 220 + Math.random() * 220; 
 
-    const duration  = 1.2 + Math.random() * 1.0;
+    const duration  = 1.1 + Math.random() * 0.9;
     const delay = delayOffset + (i / count) * spreadDuration * Math.random();
 
     flowers.push({
@@ -191,6 +162,8 @@ const ZoomFlower = ({
         zIndex: flower.zIndex,
         opacity: 0,
         willChange: 'transform, opacity',
+        backfaceVisibility: 'hidden',
+        transform: 'translate3d(0, 0, 0)',
         transformOrigin: 'center center',
       }}
     >
@@ -204,7 +177,6 @@ const ZoomFlower = ({
           objectFit: 'contain',
           userSelect: 'none',
           pointerEvents: 'none',
-          transform: 'translate3d(0, 0, 0)',
         }}
       />
     </div>
@@ -214,7 +186,6 @@ const ZoomFlower = ({
 export default function SolveriaIntro({ onComplete }: { onComplete: () => void }) {
   const [stage, setStage] = useState<'idle' | 'opening' | 'blooming' | 'revealing'>('idle');
   const [flowers, setFlowers] = useState<FlowerParticle[]>([]);
-  const [transparentFlowers, setTransparentFlowers] = useState<Record<string, string>>({});
   const [envelopes, setEnvelopes] = useState({ closed: '/assets/envelope_closed.png', open: '/assets/envelope_open.png' });
   const [envelopePhase, setEnvelopePhase] = useState<'closed' | 'open'>('closed');
 
@@ -226,12 +197,6 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
 
   useEffect(() => {
     (async () => {
-      const fw: Record<string, string> = {};
-      for (const [k, p] of Object.entries(FLOWER_IMAGES)) {
-        fw[k] = await makeFlowerTransparent(p);
-      }
-      setTransparentFlowers(fw);
-
       const [c, o] = await Promise.all([
         makeEnvelopeTransparent('/assets/envelope_closed.png'),
         makeEnvelopeTransparent('/assets/envelope_open.png'),
@@ -272,7 +237,8 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
         duration: 0.8, delay: 0.4, ease: 'power2.in',
         onStart: () => {
           setStage('blooming');
-          setFlowers(spawnFlowers(1400, 0, 3.0));
+          const isMobileDevice = window.innerWidth < 768;
+          setFlowers(spawnFlowers(isMobileDevice ? 80 : 350, 0, 2.0));
         },
       });
   };
@@ -319,7 +285,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
       {/* Ambient gold dust particles */}
       {stage === 'idle' && (
         <div className="absolute inset-0 pointer-events-none">
-          {[...Array(30)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <div
               key={i}
               className="absolute rounded-full bg-[#D4AF37]/50"
@@ -343,7 +309,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
           <ZoomFlower
             key={f.id}
             flower={f}
-            imgSrc={transparentFlowers[f.type] || FLOWER_IMAGES[f.type]}
+            imgSrc={FLOWER_IMAGES[f.type]}
             stage={stage}
           />
         ))}
