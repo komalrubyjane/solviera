@@ -472,22 +472,24 @@ export default function Homepage() {
         <>
           <div
             id="cursor"
-            className="fixed w-3 h-3 bg-warm-brown rounded-full pointer-events-none z-[9999] transition-transform duration-150 ease-out"
+            className="fixed w-3 h-3 bg-warm-brown rounded-full pointer-events-none z-[100000] transition-transform duration-150 ease-out"
             style={{
               left: `${cursorPos.x - 6}px`,
               top: `${cursorPos.y - 6}px`,
               transform: isHovered ? "scale(2.5)" : "scale(1)",
               boxShadow: "0 0 12px var(--warm-brown)",
+              zIndex: 100000,
             }}
           />
           <div
             id="cursor-ring"
-            className="fixed w-10 h-10 border border-mocha rounded-full pointer-events-none z-[9998] opacity-80 transition-opacity duration-300"
+            className="fixed w-10 h-10 border border-mocha rounded-full pointer-events-none z-[99999] opacity-80 transition-opacity duration-300"
             style={{
               left: `${ringPos.x - 20}px`,
               top: `${ringPos.y - 20}px`,
               opacity: isHovered ? 0.2 : 0.8,
               boxShadow: "0 0 8px rgba(167,139,250,0.2)",
+              zIndex: 99999,
             }}
           />
         </>
