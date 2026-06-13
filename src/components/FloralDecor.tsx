@@ -151,8 +151,13 @@ const LEAVES = [
 // ── Main Component ─────────────────────────────────────────────
 export default function FloralDecor() {
   const layerRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = React.useState(false);
 
   useEffect(() => {
+    // Only show decorations on tablet+ for performance
+    if (window.innerWidth < 768) return;
+    setVisible(true);
+
     const update = () => {
       if (layerRef.current) {
         layerRef.current.style.height = `${document.documentElement.scrollHeight}px`;
@@ -167,6 +172,9 @@ export default function FloralDecor() {
       clearInterval(id);
     };
   }, []);
+
+  // Skip rendering entirely on mobile — saves 40+ animated DOM nodes
+  if (!visible) return null;
 
   return (
     <div
