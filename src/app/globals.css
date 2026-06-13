@@ -3646,6 +3646,8 @@
   position: absolute;
   pointer-events: none;
   will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 /* ── Float animations (flowers) ─────────── */

@@ -863,18 +863,17 @@ export default function Homepage() {
       {/* FOUNDER STORY */}
       <FounderStory />
 
-      {/* COMBINED BRAND TAGLINE SECTION */}
-      <section className="reviews-section" style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center", padding: "100px 24px" }}>
-        <div className="reveal" id="sec3" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <p className="section-eyebrow" style={{ textTransform: "uppercase", letterSpacing: "0.15em", fontSize: "11px", color: "var(--mocha)", marginBottom: "16px" }}>
-            Worn with Love
-          </p>
-          <h2 className="font-serif font-light text-dark-mocha" style={{ fontSize: "clamp(2.5rem, 5vw, 4.2rem)", lineHeight: 1.2 }}>
-            Made to be<br />
-            <em className="italic text-mocha">kept forever</em>
-          </h2>
+      {/* WORN WITH LOVE & MADE TO BE KEPT FOREVER SECTION */}
+      <div style={{ padding: "0 24px", marginBottom: "60px" }}>
+        <div className="brand-story reveal" id="sec4">
+          <div className="brand-deco"></div>
+          <div className="brand-deco-2"></div>
+          <div className="brand-story-inner" style={{ padding: "80px 40px" }}>
+            <p className="brand-story-eyebrow">Worn with Love</p>
+            <h2 className="brand-story-title" style={{ margin: 0 }}>Made to be<br /><em>kept forever</em></h2>
+          </div>
         </div>
-      </section>
+      </div>
 
       {/* NEWSLETTER */}
       <div className="newsletter reveal" id="sec5">

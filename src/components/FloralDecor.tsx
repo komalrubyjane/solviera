@@ -151,30 +151,40 @@ const LEAVES = [
 // ── Main Component ─────────────────────────────────────────────
 export default function FloralDecor() {
   const layerRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
 
   useEffect(() => {
-    // Only show decorations on tablet+ for performance
-    if (window.innerWidth < 768) return;
-    setVisible(true);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
-    const update = () => {
+    const updateHeight = () => {
       if (layerRef.current) {
         layerRef.current.style.height = `${document.documentElement.scrollHeight}px`;
       }
     };
-    update();
-    window.addEventListener("resize", update);
-    const id = setInterval(update, 800);
+    updateHeight();
+    const id = setInterval(updateHeight, 800);
     setTimeout(() => clearInterval(id), 6000);
+
     return () => {
-      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", handleResize);
       clearInterval(id);
     };
   }, []);
 
-  // Skip rendering entirely on mobile — saves 40+ animated DOM nodes
-  if (!visible) return null;
+  // Filter elements on mobile for buttery smooth performance
+  const activeFlowers = isMobile
+    ? [FLOWERS[0], FLOWERS[6], FLOWERS[4], FLOWERS[10]]
+    : FLOWERS;
+  const activePetals = isMobile
+    ? [PETALS[0], PETALS[1], PETALS[4], PETALS[5]]
+    : PETALS;
+  const activeLeaves = isMobile
+    ? [LEAVES[0], LEAVES[3], LEAVES[6], LEAVES[9]]
+    : LEAVES;
 
   return (
     <div
@@ -192,16 +202,16 @@ export default function FloralDecor() {
       }}
     >
       {/* ── Generated/Uploaded Flowers ── */}
-      {FLOWERS.map((f, i) => (
+      {activeFlowers.map((f, i) => (
         <div
           key={`fl-${i}`}
-          className={f.anim}
+          className={`fl-item ${f.anim}`}
           style={{
             position: "absolute",
             top: f.top,
             ...(f.right !== undefined ? { right: f.right } : { left: f.left }),
             animationDelay: f.delay,
-            transform: `rotate(${f.rotate}deg)`,
+            transform: `rotate(${f.rotate}deg) translate3d(0,0,0)`,
             pointerEvents: "none",
           }}
         >
@@ -210,15 +220,15 @@ export default function FloralDecor() {
       ))}
 
       {/* ── Generated/Uploaded Petals ── */}
-      {PETALS.map((p, i) => (
+      {activePetals.map((p, i) => (
         <div
           key={`pt-${i}`}
-          className="fl-drift-a"
+          className="fl-item fl-drift-a"
           style={{
             position: "absolute",
             top: p.top,
             left: p.left,
-            transform: `rotate(${p.r}deg)`,
+            transform: `rotate(${p.r}deg) translate3d(0,0,0)`,
             animationDelay: p.d,
             pointerEvents: "none",
           }}
@@ -228,15 +238,15 @@ export default function FloralDecor() {
       ))}
 
       {/* ── Generated/Uploaded Leaves ── */}
-      {LEAVES.map((l, i) => (
+      {activeLeaves.map((l, i) => (
         <div
           key={`lf-${i}`}
-          className="fl-sway-a"
+          className="fl-item fl-sway-a"
           style={{
             position: "absolute",
             top: l.top,
             left: l.left,
-            transform: `rotate(${l.r}deg)`,
+            transform: `rotate(${l.r}deg) translate3d(0,0,0)`,
             animationDelay: l.d,
             pointerEvents: "none",
           }}
