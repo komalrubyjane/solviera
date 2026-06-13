@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import BeyondTheStudio from "@/components/BeyondTheStudio";
 import FounderStory from "@/components/FounderStory";
+import { useIntro } from "@/components/IntroProvider";
+import SolveriaIntro from "@/components/SolveriaIntro";
+import { motion } from "framer-motion";
 
 interface CartItem {
   name: string;
@@ -14,6 +17,7 @@ interface CartItem {
 }
 
 export default function Homepage() {
+  const { hasSeenIntro, setHasSeenIntro, isLoading } = useIntro();
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [ringPos, setRingPos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -290,6 +294,8 @@ export default function Homepage() {
 
   // Handle intersection observer scroll reveals
   useEffect(() => {
+    if (!hasSeenIntro) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -303,7 +309,7 @@ export default function Homepage() {
 
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [hasSeenIntro]);
 
   const featuredBags = [
     {
@@ -446,8 +452,21 @@ export default function Homepage() {
     card.style.boxShadow = "0 24px 80px rgba(13, 8, 20, 0.4), 0 4px 24px rgba(13, 8, 20, 0.2), 0 1px 0 rgba(255, 255, 255, 0.08) inset";
   };
 
+  if (isLoading) {
+    return <div className="fixed inset-0 z-[99999]" style={{ backgroundColor: "#F5EEE6" }} />;
+  }
+
+  if (!hasSeenIntro) {
+    return <SolveriaIntro onComplete={() => setHasSeenIntro(true)} />;
+  }
+
   return (
-    <div className={`relative min-h-screen overflow-hidden ${!isTouch ? "custom-cursor-active" : ""}`}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      className={`relative min-h-screen overflow-hidden ${!isTouch ? "custom-cursor-active" : ""}`}
+    >
       {/* CUSTOM CURSOR */}
       {!isTouch && (
         <>
@@ -532,6 +551,7 @@ export default function Homepage() {
       <section className="hero">
         <div className="hero-bg" />
         <div className="hero-grain" />
+
 
         <div
           className="hero-container"
@@ -694,19 +714,65 @@ export default function Homepage() {
           </div>
         </div>
 
+        {/* Workshop Process Timeline */}
+        <div className="ws-timeline">
+          <div className="ws-step reveal" style={{ transitionDelay: "0.1s" }}>
+            <div className="ws-step-num">1</div>
+            <h4 className="ws-step-title">Choose Your Tote</h4>
+            <p className="ws-step-desc">Select between premium white or black heavy-canvas tote bags.</p>
+          </div>
+          <div className="ws-step reveal" style={{ transitionDelay: "0.2s" }}>
+            <div className="ws-step-num">2</div>
+            <h4 className="ws-step-title">Choose Your Style</h4>
+            <p className="ws-step-desc">Go freehand with brush painting or explore intricate block printing.</p>
+          </div>
+          <div className="ws-step reveal" style={{ transitionDelay: "0.3s" }}>
+            <div className="ws-step-num">3</div>
+            <h4 className="ws-step-title">Create Your Design</h4>
+            <p className="ws-step-desc">Use provided vibrant colors, brushes, and handcrafted wooden blocks.</p>
+          </div>
+          <div className="ws-step reveal" style={{ transitionDelay: "0.4s" }}>
+            <div className="ws-step-num">4</div>
+            <h4 className="ws-step-title">Take It Home</h4>
+            <p className="ws-step-desc">Leave the studio with your personalized, one-of-a-kind masterpiece.</p>
+          </div>
+        </div>
+
         <div className="ws-cta reveal">
           <h2 className="ws-cta-title">Ready to Create Your Own Tote Bag?</h2>
-          <p className="ws-cta-sub">Join our creative workshops and experience the joy of making something truly personal.</p>
-          <Link href="/workshop-experience" style={{ textDecoration: "none" }}>
-            <button
-              className="btn-primary cursor-pointer"
-              style={{ fontSize: "13px", padding: "16px 40px", boxShadow: "0 0 25px rgba(244,114,182,0.4)", borderRadius: "100px" }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              Explore Workshop Experience →
-            </button>
-          </Link>
+          <p className="ws-cta-sub" style={{ marginBottom: "8px" }}>Join our creative workshops and experience the joy of making something truly personal.</p>
+          
+          <div className="reveal text-mocha text-sm md:text-base opacity-95 tracking-wide font-light animate-fade-in" style={{ marginTop: "12px", marginBottom: "28px" }}>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4">
+              <span><strong>Upcoming Session:</strong> Saturday, June 20, 2026 (3:00 PM - 6:00 PM)</span>
+              <span className="hidden sm:inline text-mocha/30">|</span>
+              <span><strong>Venue:</strong> Solviera Cafe & Atelier, Florence</span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-4 justify-center items-center">
+            <Link href="/workshop#booking-section" style={{ textDecoration: "none" }}>
+              <button
+                className="btn-primary cursor-pointer"
+                style={{ fontSize: "13px", padding: "16px 40px", borderRadius: "100px", textTransform: "uppercase" }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                Book Session
+              </button>
+            </Link>
+
+            <Link href="/workshop-experience" style={{ textDecoration: "none" }}>
+              <button
+                className="btn-ghost cursor-pointer"
+                style={{ fontSize: "13px", padding: "15px 40px", borderRadius: "100px", textTransform: "uppercase" }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                Explore Workshop Experience →
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -797,16 +863,54 @@ export default function Homepage() {
       {/* FOUNDER STORY */}
       <FounderStory />
 
-      {/* WORN WITH LOVE TAGLINE */}
-      <section className="worn-with-love-section reveal" id="sec3" style={{ textAlign: "center", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <div className="wwl-inner" style={{ textAlign: "center", width: "100%", maxWidth: "800px" }}>
-          <p className="wwl-eyebrow" style={{ textAlign: "center", width: "100%" }}>Worn with Love</p>
-          <h2 className="wwl-title wwl-typewriter" style={{ textAlign: "center", width: "100%" }}>
-            <span className="wwl-typewriter-text">Made to be <em>kept forever</em></span>
-          </h2>
-          <div className="wwl-divider" />
+      {/* REVIEWS */}
+      <section className="reviews-section" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <div className="section-header reveal" id="sec3">
+          <p className="section-eyebrow">What they say</p>
+          <h2 className="section-title">Worn with <em>Love</em></h2>
+        </div>
+        <div className="reviews-grid">
+          <div className="review-card reveal" style={{ transitionDelay: "0.05s" }}>
+            <div className="stars">★★★★★</div>
+            <p className="review-text">"The Toscana Grand has replaced every other bag I own. Three years in and it only looks better."</p>
+            <div className="reviewer">— Isabelle M., Paris</div>
+          </div>
+          <div className="review-card reveal" style={{ transitionDelay: "0.15s" }}>
+            <div className="stars">★★★★★</div>
+            <p className="review-text">"Impeccable craftsmanship. The leather aged beautifully — it truly becomes your own over time."</p>
+            <div className="reviewer">— Sara K., Milan</div>
+          </div>
+          <div className="review-card reveal" style={{ transitionDelay: "0.25s" }}>
+            <div className="stars">★★★★★</div>
+            <p className="review-text">"Worth every euro. I get compliments everywhere I go. Solviera is all I'll ever carry."</p>
+            <div className="reviewer">— Anna R., London</div>
+          </div>
         </div>
       </section>
+
+      {/* BRAND STORY */}
+      <div style={{ padding: "0 24px" }}>
+        <div className="brand-story reveal" id="sec4">
+          <div className="brand-deco"></div>
+          <div className="brand-deco-2"></div>
+          <div className="brand-story-inner">
+            <p className="brand-story-eyebrow">Our Philosophy</p>
+            <h2 className="brand-story-title">Made to be<br /><em>kept forever</em></h2>
+            <p className="brand-story-body">
+              Founded in Florence in 2012, Solviera was born from a single obsession: making bags that outlast trends. We source only the finest materials from historic tanneries and artisan weavers, and every stitch is placed by hand in our atelier. We believe luxury is not about logos — it's about enduring quality.
+            </p>
+            <button
+              className="btn-primary cursor-pointer"
+              style={{ background: "var(--nude)", color: "var(--cream)" }}
+              onClick={() => document.getElementById("sec5")?.scrollIntoView({ behavior: "smooth" })}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              Read our story
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* NEWSLETTER */}
       <div className="newsletter reveal" id="sec5">
@@ -1077,25 +1181,25 @@ export default function Homepage() {
             {/* Step 3: Processing */}
             <div className={`form-step ${checkoutStep === "processing" ? "active" : ""}`} style={{ textAlign: "center", padding: "40px 0" }}>
               <div className="animate-spin inline-block w-10 h-10 border-[3px] border-beige border-t-warm-brown rounded-full mb-5" />
-              <p className="text-white text-sm tracking-wider">Securing your luxurious purchase...</p>
+              <p className="text-dark-mocha text-sm tracking-wider">Securing your luxurious purchase...</p>
             </div>
 
             {/* Step 4: Success */}
             <div className={`form-step ${checkoutStep === "success" ? "active" : ""}`} style={{ textAlign: "center" }}>
               <div className="text-5xl text-accent mb-4">✦</div>
-              <h4 className="font-serif text-2xl text-white mb-2">Thank You for Your Order</h4>
+              <h4 className="font-serif text-2xl text-dark-mocha mb-2">Thank You for Your Order</h4>
               <p className="text-soft-brown text-xs leading-relaxed mb-6">
                 Your order of luxury Solviera totes is confirmed. A tracking reference and receipt have been dispatched.
               </p>
               
-              <div className="bg-black/50 border border-mocha/15 rounded-2xl p-5 text-left mb-6">
+              <div className="bg-beige/70 border border-mocha/15 rounded-2xl p-5 text-left mb-6">
                 <div className="flex justify-between mb-2 text-xs text-soft-brown">
                   <span>ORDER REFERENCE</span>
                   <span className="text-accent font-bold">{orderRef}</span>
                 </div>
                 <div className="flex justify-between text-xs text-soft-brown">
                   <span>ESTIMATED DELIVERY</span>
-                  <span className="text-white">3-5 Business Days</span>
+                  <span className="text-dark-mocha">3-5 Business Days</span>
                 </div>
               </div>
               
@@ -1124,6 +1228,6 @@ export default function Homepage() {
       >
         <span className="text-white text-xs tracking-wider font-light">{toastMsg}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }

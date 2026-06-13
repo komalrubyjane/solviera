@@ -171,14 +171,14 @@ export default function BeyondTheStudio() {
         <div className="bs-visual-split">
           <motion.div style={{ y: y1 }} className="bs-visual-content">
             <div className="bs-visual-card p-12">
-              <h3 className="text-3xl font-serif text-white mb-4">The Atelier at Scale</h3>
+              <h3 className="text-3xl font-serif text-dark-mocha mb-4">The Atelier at Scale</h3>
               <p className="text-mocha font-light leading-relaxed mb-8">
                 Every bulk order receives the same devotion as a single bespoke piece. From selecting the finest organic canvas to hand-mixing dyes and precision block printing, your vision becomes a tactile reality.
               </p>
               <ul className="bs-feature-list space-y-4">
-                <li className="flex items-center gap-3 text-white/80"><Sparkles className="text-accent w-5 h-5"/> Premium Illustration Style</li>
-                <li className="flex items-center gap-3 text-white/80"><Sparkles className="text-accent w-5 h-5"/> Custom Logo & Artwork Integration</li>
-                <li className="flex items-center gap-3 text-white/80"><Sparkles className="text-accent w-5 h-5"/> Sustainable Packaging</li>
+                <li className="flex items-center gap-3 text-mocha"><Sparkles className="text-accent w-5 h-5"/> Premium Illustration Style</li>
+                <li className="flex items-center gap-3 text-mocha"><Sparkles className="text-accent w-5 h-5"/> Custom Logo & Artwork Integration</li>
+                <li className="flex items-center gap-3 text-mocha"><Sparkles className="text-accent w-5 h-5"/> Sustainable Packaging</li>
               </ul>
             </div>
           </motion.div>
@@ -266,7 +266,7 @@ export default function BeyondTheStudio() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-12"
           >
-            <h3 className="text-3xl font-serif text-white mb-4">Built For Small Batches & Large Dreams</h3>
+            <h3 className="text-3xl font-serif text-dark-mocha mb-4">Built For Small Batches & Large Dreams</h3>
             <p className="text-mocha">No minimum creativity. No maximum ambition.</p>
           </motion.div>
           
@@ -303,7 +303,7 @@ export default function BeyondTheStudio() {
                     ))}
                   </div>
                   <div className="bs-qty-label text-center mt-8">
-                    <span className="text-4xl font-serif text-white">{selectedQty}{selectedQty === 500 ? "+" : ""}</span>
+                    <span className="text-4xl font-serif text-dark-mocha">{selectedQty}{selectedQty === 500 ? "+" : ""}</span>
                     <span className="text-sm text-mocha block mt-2 tracking-widest uppercase">Custom Masterpieces</span>
                   </div>
                 </motion.div>
@@ -323,7 +323,7 @@ export default function BeyondTheStudio() {
           className="text-center mb-16"
         >
           <p className="section-eyebrow">How It Works</p>
-          <h2 className="text-4xl font-serif text-white mt-2">The Creation Process</h2>
+          <h2 className="text-4xl font-serif text-dark-mocha mt-2">The Creation Process</h2>
         </motion.div>
         
         <motion.div
@@ -345,7 +345,7 @@ export default function BeyondTheStudio() {
                 {idx < 3 && <div className="bs-timeline-line"></div>}
               </div>
               <div className="bs-timeline-content">
-                <h4 className="text-xl font-medium text-white mb-2 group-hover:text-accent transition-colors">Step {idx + 1}: {step.title}</h4>
+                <h4 className="text-xl font-medium text-dark-mocha mb-2 group-hover:text-accent transition-colors">Step {idx + 1}: {step.title}</h4>
                 <p className="text-mocha font-light text-sm">{step.desc}</p>
               </div>
             </motion.div>
@@ -353,43 +353,6 @@ export default function BeyondTheStudio() {
         </motion.div>
       </div>
 
-      {/* 6. SHOWCASE GALLERY */}
-      <div className="bs-gallery-section" style={{ marginBottom: "120px" }}>
-        <div className="bs-container">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <p className="section-eyebrow">Our Portfolio</p>
-              <h2 className="text-4xl font-serif text-white mt-2">Recent Commissions</h2>
-            </div>
-            <div className="flex gap-4">
-              <button onClick={() => setCarouselIndex(Math.max(0, carouselIndex - 1))} className="bs-nav-btn"><ArrowRight className="w-5 h-5 rotate-180"/></button>
-              <button onClick={() => setCarouselIndex(Math.min(carouselImages.length - 1, carouselIndex + 1))} className="bs-nav-btn"><ArrowRight className="w-5 h-5"/></button>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bs-carousel-container">
-          <motion.div 
-            className="bs-carousel-track"
-            animate={{ x: `-${carouselIndex * 320}px` }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            {carouselImages.map((img, idx) => (
-              <div key={idx} className={`bs-carousel-item ${idx === carouselIndex ? 'active' : ''}`}>
-                <div className="bs-carousel-img-wrap">
-                  <img src={img.src} alt={img.title} className="bs-carousel-img" />
-                  <div className="bs-carousel-overlay">
-                    <div className="bs-carousel-text">
-                      <h4 className="text-lg font-serif text-white">{img.title}</h4>
-                      <p className="text-xs text-mocha uppercase tracking-widest mt-1">{img.subtitle}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </div>
 
       {/* 7. TRUST SECTION & 8. CLIENT TYPES */}
       <div className="bs-container" style={{ marginBottom: "80px" }}>
@@ -439,7 +402,7 @@ export default function BeyondTheStudio() {
         >
           <div className="bs-cta-bg"></div>
           <div className="relative z-10 text-center max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Have Something <em>Bigger</em> In Mind?</h2>
+            <h2 className="text-4xl md:text-5xl font-serif text-dark-mocha mb-6">Have Something <em>Bigger</em> In Mind?</h2>
             <p className="text-mocha text-lg mb-10">From intimate gatherings to large-scale events, we're ready to create something meaningful together.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button onClick={() => { setModalMode("quote"); setIsModalOpen(true); }} className="btn-primary cursor-pointer text-sm px-8 py-4 !rounded-full">Request A Custom Order</button>
@@ -472,7 +435,7 @@ export default function BeyondTheStudio() {
               </button>
               
               <div className="bs-modal-header">
-                <h3 className="text-2xl font-serif text-white">
+                <h3 className="text-2xl font-serif text-dark-mocha">
                   {modalMode === "quote" ? "Request a Custom Order" : "Talk to Our Team"}
                 </h3>
                 <p className="text-sm text-mocha mt-1">
@@ -489,7 +452,7 @@ export default function BeyondTheStudio() {
                   >
                     <CheckCircle2 className="w-16 h-16 text-accent mb-4" />
                   </motion.div>
-                  <h4 className="text-xl font-serif text-white mb-2">Request Received</h4>
+                  <h4 className="text-xl font-serif text-dark-mocha mb-2">Request Received</h4>
                   <p className="text-mocha text-center">Thank you! Our creative team will review your requirements and reach out shortly.</p>
                 </div>
               ) : (

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { IntroProvider } from "@/components/IntroProvider";
+import FloralDecor from "@/components/FloralDecor";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-serif",
@@ -17,10 +19,11 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "SOLVIERA — Premium Handcrafted Tote Atelier",
-  description: "Experience the luxury of premium, bespoke handcrafted canvas tote bags. Attend our exclusive artisan workshops in Florence.",
+  description:
+    "Experience the luxury of premium, bespoke handcrafted canvas tote bags. Attend our exclusive artisan workshops in Florence.",
   icons: {
     icon: "/favicon.ico",
-  }
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +34,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="bg-cream text-dark-mocha font-sans antialiased min-h-screen">
-        {children}
+        {/* FloralDecor rendered at body level so mix-blend-mode:multiply
+            blends directly against the cream body background,
+            making white PNG backgrounds invisible */}
+        <FloralDecor />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <IntroProvider>{children}</IntroProvider>
+        </div>
       </body>
     </html>
   );
