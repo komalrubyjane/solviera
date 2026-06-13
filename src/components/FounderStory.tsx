@@ -53,7 +53,7 @@ export default function FounderStory() {
           className="text-center"
         >
           <motion.p variants={fadeUp} className="section-eyebrow">Our Story</motion.p>
-          <motion.h2 variants={fadeUp} className="fs-title">Two Threads Co.</motion.h2>
+          <motion.h2 variants={fadeUp} className="fs-title">The Two Threads Co.</motion.h2>
           <motion.p variants={fadeUp} className="fs-sub max-w-3xl mx-auto mt-6">
             What began as a shared love for creativity, craftsmanship, and meaningful design slowly evolved into Solviera — a space where everyday essentials become expressions of individuality.
           </motion.p>
