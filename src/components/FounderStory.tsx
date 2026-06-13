@@ -53,7 +53,7 @@ export default function FounderStory() {
           className="text-center"
         >
           <motion.p variants={fadeUp} className="section-eyebrow">Our Story</motion.p>
-          <motion.h2 variants={fadeUp} className="fs-title">The Threads Behind <em>Solviera</em></motion.h2>
+          <motion.h2 variants={fadeUp} className="fs-title">Two Threads Co.</motion.h2>
           <motion.p variants={fadeUp} className="fs-sub max-w-3xl mx-auto mt-6">
             What began as a shared love for creativity, craftsmanship, and meaningful design slowly evolved into Solviera — a space where everyday essentials become expressions of individuality.
           </motion.p>
@@ -149,7 +149,7 @@ export default function FounderStory() {
             </div>
             <div className="fs-founder-info">
               <h4 className="fs-founder-name">Purna</h4>
-              <p className="fs-founder-role">Founder & Creative Director</p>
+              <p className="fs-founder-role">Co-Founder & Creative Director</p>
               <div className="fs-founder-divider"></div>
               <p className="fs-founder-quote">"Creativity becomes meaningful when it can be carried into everyday life."</p>
             </div>
@@ -163,7 +163,7 @@ export default function FounderStory() {
             </div>
             <div className="fs-founder-info">
               <h4 className="fs-founder-name">Deekshit</h4>
-              <p className="fs-founder-role">Founder & Lead Artisan</p>
+              <p className="fs-founder-role">Co-Founder & Lead Artisan</p>
               <div className="fs-founder-divider"></div>
               <p className="fs-founder-quote">"The smallest handmade details often leave the biggest impression."</p>
             </div>
