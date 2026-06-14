@@ -12,32 +12,47 @@ export default async function AdminBookingsPage() {
     redirect("/admin/login");
   }
 
-  const dbBookings = await db.booking.findMany({
-    include: {
-      user: true,
-      workshopDate: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  try {
+    const dbBookings = await db.booking.findMany({
+      include: {
+        user: true,
+        workshopDate: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  const bookings = dbBookings.map((b) => ({
-    id: b.id,
-    ref: b.bookingRef,
-    customerName: b.user.name,
-    customerEmail: b.user.email,
-    customerPhone: b.user.phone || "",
-    date: b.workshopDate.date.toISOString(),
-    timeSlot: b.workshopDate.timeSlot,
-    bagColor: b.bagColor,
-    style: b.style,
-    participants: b.participants,
-    amount: b.totalAmount,
-    status: b.status,
-    attendance: b.attendance,
-    createdAt: b.createdAt.toISOString(),
-  }));
+    const bookings = dbBookings.map((b) => ({
+      id: b.id,
+      ref: b.bookingRef,
+      customerName: b.user?.name || "Guest",
+      customerEmail: b.user?.email || "",
+      customerPhone: b.user?.phone || "",
+      date: b.workshopDate?.date ? b.workshopDate.date.toISOString() : new Date().toISOString(),
+      timeSlot: b.workshopDate?.timeSlot || "N/A",
+      bagColor: b.bagColor || "",
+      style: b.style || "",
+      participants: b.participants,
+      amount: b.totalAmount,
+      status: b.status,
+      attendance: b.attendance,
+      createdAt: b.createdAt.toISOString(),
+    }));
 
-  return <BookingsClient bookings={bookings} />;
+    return <BookingsClient bookings={bookings} />;
+  } catch (error: any) {
+    console.error("ADMIN BOOKINGS PAGE RENDER ERROR:", error);
+    return (
+      <div className="p-8 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-800 max-w-4xl mx-auto my-12">
+        <h2 className="font-serif text-xl text-red-700 font-bold mb-2">Bookings Ledger Load Error</h2>
+        <p className="text-xs text-[#706353] mb-4">
+          An error occurred in the Server Component render process. The system failed to query the database or resolve dependencies:
+        </p>
+        <pre className="text-xs font-mono bg-white/60 p-4 rounded-xl border border-red-200 overflow-x-auto whitespace-pre-wrap text-red-900 leading-relaxed">
+          {error?.stack || error?.message || String(error)}
+        </pre>
+      </div>
+    );
+  }
 }
