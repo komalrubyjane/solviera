@@ -148,14 +148,14 @@ export default function BookingsClient({ bookings }: Props) {
     <div className="space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="font-serif text-3xl text-white font-light">Bookings Ledger</h1>
+          <h1 className="font-serif text-3xl text-dark-mocha font-light">Bookings Ledger</h1>
           <p className="text-xs font-light text-soft-brown mt-1">
             Audit reservations, process cancellations, and manage check-ins.
           </p>
         </div>
         <button
           onClick={handleExportCSV}
-          className="bg-sand/60 border border-mocha/30 text-mocha hover:text-white py-3 px-6 rounded-xl uppercase text-xs tracking-wider transition-all duration-300"
+          className="bg-sand/60 border border-mocha/30 text-mocha hover:text-dark-mocha py-3 px-6 rounded-xl uppercase text-xs tracking-wider transition-all duration-300"
         >
           Export CSV Reports
         </button>
@@ -163,7 +163,7 @@ export default function BookingsClient({ bookings }: Props) {
 
       {/* QR CODE SCAN SIMULATOR */}
       <div className="bg-gradient-to-r from-sand/80 to-cream/95 border border-mocha/30 rounded-2xl p-6 shadow-md">
-        <h3 className="font-serif text-lg text-white mb-2">QR Code Check-In Scanner</h3>
+        <h3 className="font-serif text-lg text-dark-mocha mb-2">QR Code Check-In Scanner</h3>
         <p className="text-[10px] text-soft-brown font-light mb-4">
           Simulate a camera scanner by typing or pasting the customer's Booking Reference Code (e.g. SLV-WK-XXXXXX).
         </p>
@@ -267,9 +267,9 @@ export default function BookingsClient({ bookings }: Props) {
                 });
                 return (
                   <tr key={b.id} className="hover:bg-sand/20 transition-colors">
-                    <td className="py-3.5 px-4 font-medium text-white">{b.ref}</td>
+                    <td className="py-3.5 px-4 font-medium text-dark-mocha">{b.ref}</td>
                     <td className="py-3.5 px-4">
-                      <div className="font-medium text-white">{b.customerName}</div>
+                      <div className="font-medium text-dark-mocha">{b.customerName}</div>
                       <div className="text-[10px] text-soft-brown mt-0.5">{b.customerEmail}</div>
                     </td>
                     <td className="py-3.5 px-4">
@@ -279,7 +279,7 @@ export default function BookingsClient({ bookings }: Props) {
                     <td className="py-3.5 px-4">{b.style}</td>
                     <td className="py-3.5 px-4">{b.bagColor}</td>
                     <td className="py-3.5 px-4">{b.participants}</td>
-                    <td className="py-3.5 px-4 text-white">₹{b.amount.toLocaleString()}</td>
+                    <td className="py-3.5 px-4 text-dark-mocha">₹{b.amount.toLocaleString()}</td>
                     <td className="py-3.5 px-4">
                       <span
                         className={`text-[9px] uppercase tracking-wider py-1 px-3 rounded-full ${
@@ -322,7 +322,7 @@ export default function BookingsClient({ bookings }: Props) {
         )}
       </div>
 
-      <div id="toast" className="text-white text-xs font-light rounded-xl"></div>
+      <div id="toast" className="text-dark-mocha text-xs font-light rounded-xl"></div>
     </div>
   );
 }

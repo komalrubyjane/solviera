@@ -134,7 +134,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="font-serif text-3xl text-white font-light">Workshops &amp; Schedules</h1>
+        <h1 className="font-serif text-3xl text-dark-mocha font-light">Workshops &amp; Schedules</h1>
         <p className="text-xs font-light text-soft-brown mt-1">
           Configure workshop pricing, capacity, and active session dates.
         </p>
@@ -144,7 +144,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
         
         {/* LEFT: WORKSHOP EDIT CARD */}
         <div className="lg:col-span-1 bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md h-fit">
-          <h3 className="font-serif text-lg text-white mb-6">Atelier Parameters</h3>
+          <h3 className="font-serif text-lg text-dark-mocha mb-6">Atelier Parameters</h3>
           <form onSubmit={handleUpdateWorkshop} className="space-y-5">
             <div>
               <label className="form-label text-[10px]">Workshop Title</label>
@@ -199,7 +199,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
         <div className="lg:col-span-2 space-y-8">
           {/* Add Date Form */}
           <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-            <h3 className="font-serif text-lg text-white mb-6">Schedule New Session Date</h3>
+            <h3 className="font-serif text-lg text-dark-mocha mb-6">Schedule New Session Date</h3>
             <form onSubmit={handleAddDate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
                 <label className="form-label text-[10px]" htmlFor="date">Session Date</label>
@@ -236,7 +236,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
 
           {/* Active Dates Ledger */}
           <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-            <h3 className="font-serif text-lg text-white mb-6">Scheduled Sessions</h3>
+            <h3 className="font-serif text-lg text-dark-mocha mb-6">Scheduled Sessions</h3>
             {workshop.dates.length === 0 ? (
               <p className="text-xs text-soft-brown font-light text-center py-6">
                 No active session dates scheduled. Set one above.
@@ -264,7 +264,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                       });
                       return (
                         <tr key={d.id} className="hover:bg-sand/20 transition-colors">
-                          <td className="py-3.5 px-4 font-medium text-white">{dateStr}</td>
+                          <td className="py-3.5 px-4 font-medium text-dark-mocha">{dateStr}</td>
                           <td className="py-3.5 px-4">{d.timeSlot}</td>
                           <td className="py-3.5 px-4">{d.capacity}</td>
                           <td className="py-3.5 px-4">
@@ -304,7 +304,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
         </div>
       </div>
 
-      <div id="toast" className="text-white text-xs font-light rounded-xl"></div>
+      <div id="toast" className="text-dark-mocha text-xs font-light rounded-xl"></div>
     </div>
   );
 }

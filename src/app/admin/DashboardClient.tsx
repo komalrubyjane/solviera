@@ -60,7 +60,7 @@ interface Props {
   stylePrefData: PreferencesItem[];
 }
 
-const CHART_COLORS = ["#A78BFA", "#F472B6", "#34D399", "#F59E0B"];
+const CHART_COLORS = ["#B69AC7", "#D9A1B4", "#8A9B84", "#C4A86E"];
 
 // Animated counter hook
 function useCountUp(target: number, duration = 1200) {
@@ -121,11 +121,11 @@ function MetricCard({
         transition: `opacity 0.6s ease ${delay}ms, transform 0.6s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms`,
       }}
     >
-      <div className="admin-metric-icon" style={{ background: accent || "rgba(167,139,250,0.12)", color: accent ? "white" : "#A78BFA" }}>
+      <div className="admin-metric-icon" style={{ background: accent || "rgba(182, 154, 199, 0.12)", color: accent ? "var(--ivory)" : "var(--accent)" }}>
         {icon}
       </div>
       <div className="admin-metric-label">{label}</div>
-      <div className="admin-metric-value" style={{ color: accent || "white" }}>
+      <div className="admin-metric-value" style={{ color: accent || "var(--dark-mocha)" }}>
         {prefix}{count.toLocaleString()}{suffix}
       </div>
       {sub && <div className="admin-metric-sub">{sub}</div>}
@@ -284,9 +284,9 @@ export default function DashboardClient({
                 <XAxis dataKey="name" stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <YAxis stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={45} />
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, fontSize: 12 }}
-                  itemStyle={{ color: "#ffffff" }}
-                  labelStyle={{ color: "#a78bfa" }}
+                  contentStyle={{ background: "var(--ivory)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "var(--dark-mocha)" }}
+                  labelStyle={{ color: "var(--accent)" }}
                   formatter={(v: number) => [`₹${v.toLocaleString()}`, "Revenue"]}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#A78BFA" strokeWidth={2} fillOpacity={1} fill="url(#revGrad)" />
@@ -311,9 +311,9 @@ export default function DashboardClient({
                 <XAxis dataKey="date" stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <YAxis stroke="rgba(167,139,250,0.4)" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(244,114,182,0.2)", borderRadius: 12, fontSize: 12 }}
-                  itemStyle={{ color: "#ffffff" }}
-                  labelStyle={{ color: "#f472b6" }}
+                  contentStyle={{ background: "var(--ivory)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "var(--dark-mocha)" }}
+                  labelStyle={{ color: "var(--accent-pink)" }}
                   formatter={(v: number) => [v, "Seats"]}
                 />
                 <Bar dataKey="seats" fill="#F472B6" radius={[6, 6, 0, 0]} maxBarSize={40}>
@@ -362,9 +362,9 @@ export default function DashboardClient({
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, fontSize: 12 }}
-                  itemStyle={{ color: "#ffffff" }}
-                  labelStyle={{ color: "#a78bfa" }}
+                  contentStyle={{ background: "var(--ivory)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "var(--dark-mocha)" }}
+                  labelStyle={{ color: "var(--accent)" }}
                 />
                 <Legend
                   verticalAlign="bottom"
@@ -402,9 +402,9 @@ export default function DashboardClient({
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: "#13091F", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 12, fontSize: 12 }}
-                  itemStyle={{ color: "#ffffff" }}
-                  labelStyle={{ color: "#a78bfa" }}
+                  contentStyle={{ background: "var(--ivory)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
+                  itemStyle={{ color: "var(--dark-mocha)" }}
+                  labelStyle={{ color: "var(--accent)" }}
                 />
                 <Legend
                   verticalAlign="bottom"

@@ -145,7 +145,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="font-serif text-3xl text-white font-light">Content Management System</h1>
+        <h1 className="font-serif text-3xl text-dark-mocha font-light">Content Management System</h1>
         <p className="text-xs font-light text-soft-brown mt-1">
           Customize website details, venue location maps, FAQs, and reviews.
         </p>
@@ -155,7 +155,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
         
         {/* COLUMN 1: VENUE DETAILS CMS */}
         <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md h-fit">
-          <h3 className="font-serif text-lg text-white mb-6">Studio Venue Details</h3>
+          <h3 className="font-serif text-lg text-dark-mocha mb-6">Studio Venue Details</h3>
           <form onSubmit={handleUpdateVenue} className="space-y-5">
             <div>
               <label className="form-label text-[10px]">Venue Name</label>
@@ -223,7 +223,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
           
           {/* FAQ ADD & LIST */}
           <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-            <h3 className="font-serif text-lg text-white mb-6">FAQ Management</h3>
+            <h3 className="font-serif text-lg text-dark-mocha mb-6">FAQ Management</h3>
             <form onSubmit={handleAddFaq} className="space-y-4 mb-6">
               <div>
                 <input
@@ -259,7 +259,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
               {faqs.map((faq) => (
                 <div key={faq.id} className="flex justify-between items-start bg-sand/40 border border-mocha/5 p-4 rounded-xl text-xs">
                   <div className="space-y-1 max-w-[80%]">
-                    <h4 className="font-serif text-white">{faq.question}</h4>
+                    <h4 className="font-serif text-dark-mocha">{faq.question}</h4>
                     <p className="font-light text-soft-brown leading-relaxed">{faq.answer}</p>
                   </div>
                   <button
@@ -275,7 +275,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
 
           {/* TESTIMONIALS ADD & LIST */}
           <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
-            <h3 className="font-serif text-lg text-white mb-6">Review Testimonials</h3>
+            <h3 className="font-serif text-lg text-dark-mocha mb-6">Review Testimonials</h3>
             <form onSubmit={handleAddTestimonial} className="space-y-4 mb-6">
               <div className="grid grid-cols-2 gap-4">
                 <input
@@ -322,7 +322,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
                   <div className="space-y-1 max-w-[80%]">
                     <div className="text-yellow-500 mb-1">{"★".repeat(t.rating)}</div>
                     <p className="font-light text-soft-brown leading-relaxed">"{t.review}"</p>
-                    <h4 className="font-serif text-white">{t.name}</h4>
+                    <h4 className="font-serif text-dark-mocha">{t.name}</h4>
                   </div>
                   <button
                     onClick={() => handleDeleteTestimonial(t.id)}
@@ -338,7 +338,7 @@ export default function ContentManagerClient({ venue, faqs, testimonials }: Prop
         </div>
       </div>
 
-      <div id="toast" className="text-white text-xs font-light rounded-xl"></div>
+      <div id="toast" className="text-dark-mocha text-xs font-light rounded-xl"></div>
     </div>
   );
 }

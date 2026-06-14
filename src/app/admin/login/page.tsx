@@ -31,13 +31,13 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0D0814] px-6 py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-cream px-6 py-12 relative overflow-hidden">
       {/* Background blurs */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(167,139,250,0.08)_0%,transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(182,154,199,0.12)_0%,transparent_60%)] pointer-events-none" />
 
       <div className="w-full max-w-[420px] bg-gradient-to-br from-sand/80 to-cream/95 border border-mocha/25 rounded-3xl p-8 md:p-10 shadow-2xl relative">
         <div className="text-center mb-8">
-          <h1 className="font-serif text-3xl tracking-widest text-white uppercase mb-2">Solviera</h1>
+          <h1 className="font-serif text-3xl tracking-widest text-dark-mocha uppercase mb-2">Solviera</h1>
           <p className="text-[10px] tracking-widest text-mocha uppercase font-light">
             Administrative Access
           </p>
@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
         </form>
 
         <div className="mt-8 text-center">
-          <Link href="/" className="text-[10px] tracking-widest text-soft-brown hover:text-white uppercase transition-colors">
+          <Link href="/" className="text-[10px] tracking-widest text-soft-brown hover:text-dark-mocha uppercase transition-colors">
             ← Return to Solviera Home
           </Link>
         </div>
