@@ -23,14 +23,11 @@ const detailsSchema = z.object({
 
 const customSchema = z.object({
   bagColor: z.enum(["White Tote Bag", "Black Tote Bag"], { required_error: "Please select a tote bag canvas color" }),
-  style: z.enum(["Brush Painting", "Block Printing", "Brush + Block Printing"], { required_error: "Please select a painting style" }),
-  participants: z.number().min(1).max(5),
+  bookingType: z.enum(["Single", "Couple", "Customise"], { required_error: "Please select a booking type" }),
+  customSeats: z.number().min(1).max(20).optional(),
 });
 
-const notesSchema = z.object({
-  notes: z.string().optional(),
-  dietary: z.string().optional(),
-});
+const notesSchema = z.object({});
 
 type FormValues = z.infer<typeof personalSchema> & 
   z.infer<typeof detailsSchema> & 
@@ -78,10 +75,8 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
       city: "",
       dateId: "",
       bagColor: "White Tote Bag",
-      style: "Brush Painting",
-      participants: 1,
-      notes: "",
-      dietary: "",
+      bookingType: "Single",
+      customSeats: 1,
     },
     mode: "onTouched",
   });
@@ -119,23 +114,22 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
     const selectedDate = dates.find((d) => d.id === watchedValues.dateId);
     if (!selectedDate) return;
     
-    let basePrice = selectedDate.price;
-    if (watchedValues.style === "Brush + Block Printing") {
-      basePrice = 5500.0;
-    } else if (watchedValues.style === "Block Printing") {
-      basePrice = 3800.0;
-    } else {
-      basePrice = 3500.0;
+    const basePrice = selectedDate.price;
+    let seats = 1;
+    if (watchedValues.bookingType === "Couple") {
+      seats = 2;
+    } else if (watchedValues.bookingType === "Customise") {
+      seats = watchedValues.customSeats || 1;
     }
 
-    const sub = basePrice * watchedValues.participants;
+    const sub = basePrice * seats;
     const tx = sub * 0.18;
     setPricing({
       subtotal: sub,
       tax: tx,
       grandTotal: sub + tx,
     });
-  }, [watchedValues.style, watchedValues.participants, watchedValues.dateId, step, dates]);
+  }, [watchedValues.bookingType, watchedValues.customSeats, watchedValues.dateId, step, dates]);
 
   const showToast = (msg: string, isErr = false) => {
     setToastMsg(msg);
@@ -156,23 +150,24 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
   const handleNextStep = async () => {
     const isStepValid = await form.trigger();
     if (isStepValid) {
-      if (step === 4) {
+      if (step === 3) {
         setIsSubmitting(true);
+        const seats = watchedValues.bookingType === "Couple" ? 2 : watchedValues.bookingType === "Customise" ? (watchedValues.customSeats || 1) : 1;
         const res = await initializeBookingAction({
           name: watchedValues.name,
           email: watchedValues.email,
           phone: watchedValues.phone,
           city: watchedValues.city,
           dateId: watchedValues.dateId,
-          participants: watchedValues.participants,
+          participants: seats,
           bagColor: watchedValues.bagColor,
-          style: watchedValues.style,
-          notes: watchedValues.notes || watchedValues.dietary ? `Special Notes: ${watchedValues.notes || ""}. Dietary: ${watchedValues.dietary || ""}` : undefined,
+          style: watchedValues.bookingType,
+          notes: undefined,
         });
 
         if (res.success && res.orderId) {
           setOrderData(res);
-          setStep(5);
+          setStep(4);
         } else {
           showToast(res.message || "Failed to create order. Try again.", true);
         }
@@ -192,6 +187,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
     setIsSubmitting(true);
 
     const keyId = "rzp_test_mockkey123";
+    const seats = watchedValues.bookingType === "Couple" ? 2 : watchedValues.bookingType === "Customise" ? (watchedValues.customSeats || 1) : 1;
 
     const options = {
       key: keyId,
@@ -214,10 +210,10 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
           },
           bookingInfo: {
             dateId: watchedValues.dateId,
-            participants: watchedValues.participants,
+            participants: seats,
             bagColor: watchedValues.bagColor,
-            style: watchedValues.style,
-            notes: watchedValues.notes,
+            style: watchedValues.bookingType,
+            notes: undefined,
           },
         });
 
@@ -257,10 +253,10 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
         },
         bookingInfo: {
           dateId: watchedValues.dateId,
-          participants: watchedValues.participants,
+          participants: seats,
           bagColor: watchedValues.bagColor,
-          style: watchedValues.style,
-          notes: watchedValues.notes,
+          style: watchedValues.bookingType,
+          notes: undefined,
         },
       });
 
@@ -280,13 +276,12 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
 
       <div className="text-center mb-8">
-        <p className="text-[10px] tracking-widest text-mocha uppercase mb-2">Step {step} of 5</p>
+        <p className="text-[10px] tracking-widest text-mocha uppercase mb-2">Step {step} of 4</p>
         <h2 className="font-serif text-3xl font-light text-white">
           {step === 1 && "Personal details"}
           {step === 2 && "Select Session Date"}
           {step === 3 && "Customize Your Tote"}
-          {step === 4 && "Additional Notes"}
-          {step === 5 && "Booking Summary"}
+          {step === 4 && "Booking Summary"}
         </h2>
       </div>
 
@@ -488,27 +483,27 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                     </div>
                   </div>
 
-                  {/* Workshop Style */}
+                  {/* Booking Type */}
                   <div className="form-group">
-                    <label className="form-label mb-3">Choose Painting Style</label>
+                    <label className="form-label mb-3">Booking Type</label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <Controller
-                        name="style"
+                        name="bookingType"
                         control={control}
                         render={({ field }) => (
                           <>
                             {[
-                              { name: "Brush Painting", price: "₹3,500" },
-                              { name: "Block Printing", price: "₹3,800" },
-                              { name: "Brush + Block Printing", price: "₹5,500" },
-                            ].map((styleObj) => {
-                              const isSelected = field.value === styleObj.name;
+                              { name: "Single", desc: "1 Guest", icon: "👤" },
+                              { name: "Couple", desc: "2 Guests", icon: "👥" },
+                              { name: "Customise", desc: "Custom group", icon: "✨" },
+                            ].map((opt) => {
+                              const isSelected = field.value === opt.name;
                               return (
                                 <button
-                                  key={styleObj.name}
+                                  key={opt.name}
                                   type="button"
-                                  onClick={() => field.onChange(styleObj.name)}
-                                  className={`py-4 px-3 rounded-xl border text-center transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                                  onClick={() => field.onChange(opt.name)}
+                                  className={`py-5 px-3 rounded-xl border text-center transition-all duration-300 flex flex-col items-center justify-center gap-1.5 ${
                                     isSelected
                                       ? "bg-beige/40 border-mocha text-white shadow-md"
                                       : "bg-sand/40 border-mocha/10 text-soft-brown hover:border-mocha/40"
@@ -516,8 +511,9 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                                   onMouseEnter={handleHoverStart}
                                   onMouseLeave={handleHoverEnd}
                                 >
-                                  <span className="font-serif text-sm">{styleObj.name}</span>
-                                  <span className="text-[10px] text-warm-brown font-light">{styleObj.price}</span>
+                                  <span className="text-xl">{opt.icon}</span>
+                                  <span className="font-serif text-sm">{opt.name}</span>
+                                  <span className="text-[10px] text-warm-brown font-light">{opt.desc}</span>
                                 </button>
                               );
                             })}
@@ -527,92 +523,42 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                     </div>
                   </div>
 
-                  {/* Participants */}
-                  <div className="form-group">
-                    <label className="form-label mb-3">Number of Seats (1-5)</label>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  {/* Custom seats (only show when Customise is selected) */}
+                  {watchedValues.bookingType === "Customise" && (
+                    <div className="form-group">
+                      <label className="form-label mb-3">Number of Seats (1-20)</label>
                       <Controller
-                        name="participants"
+                        name="customSeats"
                         control={control}
                         render={({ field }) => (
-                          <>
-                            {[1, 2, 3, 4, 5].map((num) => {
-                              const isSelected = field.value === num;
-                              return (
-                                <button
-                                  key={num}
-                                  type="button"
-                                  onClick={() => field.onChange(num)}
-                                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center font-serif text-sm sm:text-base transition-all duration-300 ${
-                                    isSelected
-                                      ? "bg-beige border-mocha text-white shadow-md"
-                                      : "bg-sand/40 border-mocha/10 text-soft-brown hover:border-mocha/40"
-                                  }`}
-                                  onMouseEnter={handleHoverStart}
-                                  onMouseLeave={handleHoverEnd}
-                                >
-                                  {num}
-                                </button>
-                              );
-                            })}
-                          </>
+                          <input
+                            type="number"
+                            className="form-input"
+                            min={1}
+                            max={20}
+                            value={field.value || 1}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            placeholder="Enter number of guests"
+                            onFocus={handleHoverStart}
+                            onBlur={handleHoverEnd}
+                          />
                         )}
                       />
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
-              {/* STEP 4: NOTES */}
+              {/* STEP 4: SUMMARY & CHECKOUT */}
               {step === 4 && (
                 <div className="space-y-6">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="notes">Special Requests &amp; Event Info</label>
-                    <Controller
-                      name="notes"
-                      control={control}
-                      render={({ field }) => (
-                        <textarea
-                          {...field}
-                          className="form-input"
-                          rows={3}
-                          placeholder="e.g. Celebrating an anniversary session, booking details, group requests..."
-                          onFocus={handleHoverStart}
-                          onBlur={handleHoverEnd}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="dietary">Dietary Preferences (For Studio Refreshments)</label>
-                    <Controller
-                      name="dietary"
-                      control={control}
-                      render={({ field }) => (
-                        <textarea
-                          {...field}
-                          className="form-input"
-                          rows={2}
-                          placeholder="e.g. Gluten-free, Vegan coffee milk preferences..."
-                          onFocus={handleHoverStart}
-                          onBlur={handleHoverEnd}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* STEP 5: SUMMARY & CHECKOUT */}
-              {step === 5 && (
-                <div className="space-y-6">
                   <div className="border-b border-mocha/15 pb-4">
-                    <h4 className="font-serif text-xl text-white mb-2">Tote Bag Atelier Painting Workshop</h4>
-                    <p className="text-xs text-soft-brown font-light leading-relaxed">
-                      Session Date: {selectedDateObject ? new Date(selectedDateObject.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : ""}
-                      <br />
-                      Time slot: {selectedDateObject?.timeSlot}
-                    </p>
+                     <h4 className="font-serif text-xl text-white mb-2">Tote Bag Atelier Painting Workshop</h4>
+                     <p className="text-xs text-soft-brown font-light leading-relaxed">
+                       Session Date: {selectedDateObject ? new Date(selectedDateObject.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : ""}
+                       <br />
+                       Time slot: {selectedDateObject?.timeSlot}
+                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-xs font-light text-soft-brown pb-6 border-b border-mocha/15">
@@ -620,10 +566,10 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                       <strong>Canvas Color:</strong> {watchedValues.bagColor}
                     </div>
                     <div>
-                      <strong>Painting Style:</strong> {watchedValues.style}
+                      <strong>Booking Type:</strong> {watchedValues.bookingType}
                     </div>
                     <div>
-                      <strong>Participants:</strong> {watchedValues.participants} Seat(s)
+                      <strong>Guests:</strong> {watchedValues.bookingType === "Couple" ? 2 : watchedValues.bookingType === "Customise" ? (watchedValues.customSeats || 1) : 1} Seat(s)
                     </div>
                     <div>
                       <strong>Location:</strong> Florence Atelier
@@ -665,7 +611,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
               </button>
             )}
             
-            {step < 5 ? (
+            {step < 4 ? (
               <button
                 type="button"
                 onClick={handleSubmit(handleNextStep)}
