@@ -163,7 +163,7 @@ export default function FounderStory() {
             </div>
             <div className="fs-founder-info">
               <h4 className="fs-founder-name">Deekshit</h4>
-              <p className="fs-founder-role">Co-Founder & Lead Artisan</p>
+              <p className="fs-founder-role">Co-Founder &  Operations Director</p>
               <div className="fs-founder-divider"></div>
               <p className="fs-founder-quote">"The smallest handmade details often leave the biggest impression."</p>
             </div>
