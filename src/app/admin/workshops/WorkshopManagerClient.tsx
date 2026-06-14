@@ -170,8 +170,10 @@ export default function WorkshopManagerClient({ workshops }: Props) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* LEFT: WORKSHOP EDIT CARD */}
-        <div className="lg:col-span-1 bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md h-fit">
+        {/* LEFT COLUMN: PARAMETERS & FIELD BUILDER */}
+        <div className="lg:col-span-1 space-y-8">
+          {/* Atelier Parameters */}
+          <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md h-fit">
           <h3 className="font-serif text-lg text-dark-mocha mb-6">Atelier Parameters</h3>
           <form onSubmit={handleUpdateWorkshop} className="space-y-5">
             <div>
@@ -221,6 +223,76 @@ export default function WorkshopManagerClient({ workshops }: Props) {
               Save Parameters
             </button>
           </form>
+        </div>
+
+        {/* WORKSHOP BOOKING FORM BUILDER CARD */}
+        <div className="lg:col-span-1 bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md h-fit">
+          <h3 className="font-serif text-lg text-dark-mocha mb-3">Booking Form Configurator</h3>
+          <p className="text-[11px] font-light text-soft-brown mb-6">
+            Enable or disable checkout form inputs. Changes apply to the customer booking form in real-time.
+          </p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Full Name Field</h4>
+                <p className="text-[10px] text-soft-brown font-light">Mandatory personal detail</p>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-green-500 bg-green-500/10 py-1 px-3.5 rounded-full border border-green-500/20">
+                Required
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Email Address Field</h4>
+                <p className="text-[10px] text-soft-brown font-light">Razorpay & Ticket delivery</p>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-green-500 bg-green-500/10 py-1 px-3.5 rounded-full border border-green-500/20">
+                Required
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Tote Bag Canvas Color</h4>
+                <p className="text-[10px] text-soft-brown font-light">White or Black canvas option</p>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-green-500 bg-green-500/10 py-1 px-3.5 rounded-full border border-green-500/20">
+                Enabled
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5 opacity-60">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Choose Painting Style</h4>
+                <p className="text-[10px] text-soft-brown font-light">Brush / Block Printing selection</p>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 bg-red-400/10 py-1 px-3.5 rounded-full border border-red-400/20">
+                Disabled
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5 opacity-60">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Dietary Preferences</h4>
+                <p className="text-[10px] text-soft-brown font-light">For studio refreshments</p>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 bg-red-400/10 py-1 px-3.5 rounded-full border border-red-400/20">
+                Disabled
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5 opacity-60">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Special Requests Box</h4>
+                <p className="text-[10px] text-soft-brown font-light">Custom group requests notes</p>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 bg-red-400/10 py-1 px-3.5 rounded-full border border-red-400/20">
+                Disabled
+              </span>
+            </div>
+          </div>
+        </div>
         </div>
 
         {/* RIGHT: SCHEDULES MANAGER & ADD DATE FORM */}
