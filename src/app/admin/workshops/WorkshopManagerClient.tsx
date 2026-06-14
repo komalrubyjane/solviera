@@ -41,8 +41,13 @@ export default function WorkshopManagerClient({ workshops }: Props) {
   // Forms states
   const [newDate, setNewDate] = useState("");
   const [newTimeSlot, setNewTimeSlot] = useState("Morning (10:00 - 13:00)");
-  const [newCapacity, setNewCapacity] = useState(12);
+  const [newCapacity, setNewCapacity] = useState(workshop?.capacity || 12);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Inline editing state for scheduled sessions
+  const [editingDateId, setEditingDateId] = useState<string | null>(null);
+  const [editingTimeSlot, setEditingTimeSlot] = useState("");
+  const [editingCapacity, setEditingCapacity] = useState(12);
 
   // Workshop Edit fields
   const [editPrice, setEditPrice] = useState(workshop?.price || 3500);
@@ -57,6 +62,29 @@ export default function WorkshopManagerClient({ workshops }: Props) {
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 4000);
     }
+  };
+
+  const startEditing = (d: DateItem) => {
+    setEditingDateId(d.id);
+    setEditingTimeSlot(d.timeSlot);
+    setEditingCapacity(d.capacity);
+  };
+
+  const handleSaveEdit = async (dateId: string) => {
+    setIsSubmitting(true);
+    const res = await updateWorkshopDateAction(dateId, {
+      timeSlot: editingTimeSlot,
+      capacity: Number(editingCapacity),
+    });
+
+    if (res.success) {
+      showToast("Session details updated successfully!");
+      setEditingDateId(null);
+      window.location.reload();
+    } else {
+      showToast(res.message || "Failed to update session details.");
+    }
+    setIsSubmitting(false);
   };
 
   const handleAddDate = async (e: React.FormEvent) => {
@@ -212,17 +240,34 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                   required
                 />
               </div>
-              <div className="md:col-span-2">
+              <div>
                 <label className="form-label text-[10px]" htmlFor="time">Time Slot</label>
-                <select
+                <input
+                  type="text"
                   id="time"
                   className="form-input"
                   value={newTimeSlot}
                   onChange={(e) => setNewTimeSlot(e.target.value)}
-                >
-                  <option value="Morning (10:00 - 13:00)">Morning (10:00 - 13:00)</option>
-                  <option value="Afternoon (14:30 - 17:30)">Afternoon (14:30 - 17:30)</option>
-                </select>
+                  list="time-slots"
+                  placeholder="e.g. Morning (10:00 - 13:00)"
+                  required
+                />
+                <datalist id="time-slots">
+                  <option value="Morning (10:00 - 13:00)" />
+                  <option value="Afternoon (14:30 - 17:30)" />
+                </datalist>
+              </div>
+              <div>
+                <label className="form-label text-[10px]" htmlFor="capacity">Capacity</label>
+                <input
+                  type="number"
+                  id="capacity"
+                  className="form-input"
+                  value={newCapacity}
+                  onChange={(e) => setNewCapacity(Number(e.target.value))}
+                  min={1}
+                  required
+                />
               </div>
               <button
                 type="submit"
@@ -262,6 +307,59 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                         day: "numeric",
                         year: "numeric",
                       });
+                      
+                      const isEditing = editingDateId === d.id;
+
+                      if (isEditing) {
+                        return (
+                          <tr key={d.id} className="bg-sand/10 transition-colors">
+                            <td className="py-3.5 px-4 font-medium text-dark-mocha">{dateStr}</td>
+                            <td className="py-3.5 px-4">
+                              <input
+                                type="text"
+                                className="form-input text-xs py-1 px-2 w-full"
+                                value={editingTimeSlot}
+                                onChange={(e) => setEditingTimeSlot(e.target.value)}
+                                required
+                              />
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <input
+                                type="number"
+                                className="form-input text-xs py-1 px-2 w-20"
+                                value={editingCapacity}
+                                onChange={(e) => setEditingCapacity(Number(e.target.value))}
+                                min={1}
+                                required
+                              />
+                            </td>
+                            <td className="py-3.5 px-4 text-soft-brown">
+                              {d.booked} / {editingCapacity}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="text-[9px] uppercase tracking-wider py-1 px-3 rounded-full border bg-gray-400/10 text-gray-400 border-gray-400/30">
+                                {d.status}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4" style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                              <button
+                                onClick={() => handleSaveEdit(d.id)}
+                                disabled={isSubmitting}
+                                className="text-green-600 hover:text-green-500 font-medium mr-3"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={() => setEditingDateId(null)}
+                                className="text-soft-brown hover:text-dark-mocha font-light"
+                              >
+                                Cancel
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      }
+
                       return (
                         <tr key={d.id} className="hover:bg-sand/20 transition-colors">
                           <td className="py-3.5 px-4 font-medium text-dark-mocha">{dateStr}</td>
@@ -284,10 +382,16 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                               {d.status}
                             </button>
                           </td>
-                          <td className="py-3.5 px-4" style={{ textAlign: "right" }}>
+                          <td className="py-3.5 px-4" style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                            <button
+                              onClick={() => startEditing(d)}
+                              className="text-indigo-600 hover:text-indigo-500 font-light mr-3"
+                            >
+                              Edit
+                            </button>
                             <button
                               onClick={() => handleDeleteDate(d.id)}
-                              className="text-red-400 hover:text-red-300 font-light mr-2"
+                              className="text-red-400 hover:text-red-300 font-light"
                             >
                               Delete
                             </button>

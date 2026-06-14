@@ -189,6 +189,7 @@ export async function updateWorkshopDateAction(
   data: {
     status?: string;
     capacity?: number;
+    timeSlot?: string;
   }
 ) {
   try {
@@ -201,7 +202,7 @@ export async function updateWorkshopDateAction(
     return { success: true };
   } catch (error) {
     console.error("Failed to update session date:", error);
-    return { success: false, message: "Could not update date status." };
+    return { success: false, message: "Could not update date details." };
   }
 }
 
@@ -371,3 +372,138 @@ export async function deleteTestimonialAction(id: string) {
     return { success: false, message: "Could not delete review testimonial." };
   }
 }
+
+// 6. QR Check-In & Admin Check-In Dashboard Actions
+export async function checkInTicketAction(registrationCode: string) {
+  try {
+    const booking = await db.booking.findUnique({
+      where: { bookingRef: registrationCode },
+      include: {
+        user: true,
+        workshop: true,
+        workshopDate: true,
+      },
+    });
+
+    if (!booking) {
+      return {
+        success: false,
+        errorType: "INVALID",
+        message: "❌ Invalid Registration",
+      };
+    }
+
+    if (booking.checkedIn) {
+      return {
+        success: false,
+        errorType: "ALREADY_CHECKED_IN",
+        message: "⚠️ Already Checked In",
+        attendee: {
+          name: booking.user.name,
+          email: booking.user.email,
+          ref: booking.bookingRef,
+          checkedInAt: booking.checkedInAt ? booking.checkedInAt.toISOString() : null,
+        },
+      };
+    }
+
+    // Mark as checked in
+    const now = new Date();
+    await db.booking.update({
+      where: { id: booking.id },
+      data: {
+        checkedIn: true,
+        checkedInAt: now,
+        attendance: true, // Synced with legacy attendance column
+      },
+    });
+
+    const venue = await db.venue.findFirst() || {
+      name: "Solviera Cafe & Atelier",
+      address: "12, Via de' Tornabuoni, Florence, Italy",
+    };
+
+    revalidatePath("/admin/checkin");
+    revalidatePath("/admin");
+
+    return {
+      success: true,
+      message: "✅ Check-In Successful",
+      attendee: {
+        name: booking.user.name,
+        email: booking.user.email,
+        ref: booking.bookingRef,
+        workshopTitle: booking.workshop.title,
+        date: booking.workshopDate.date.toISOString(),
+        timeSlot: booking.workshopDate.timeSlot,
+        venueName: venue.name,
+        checkedInAt: now.toISOString(),
+      },
+    };
+  } catch (error) {
+    console.error("Error during checkInTicketAction:", error);
+    return {
+      success: false,
+      errorType: "ERROR",
+      message: "Server error checking in ticket. Please try again.",
+    };
+  }
+}
+
+export async function getCheckInMetricsAction() {
+  try {
+    const total = await db.booking.count({
+      where: { status: "CONFIRMED" },
+    });
+
+    const checkedIn = await db.booking.count({
+      where: {
+        status: "CONFIRMED",
+        checkedIn: true,
+      },
+    });
+
+    const percent = total > 0 ? Math.round((checkedIn / total) * 100) : 0;
+
+    const recentBookings = await db.booking.findMany({
+      where: {
+        status: "CONFIRMED",
+        checkedIn: true,
+      },
+      include: {
+        user: true,
+        workshop: true,
+        workshopDate: true,
+      },
+      orderBy: {
+        checkedInAt: "desc",
+      },
+      take: 5,
+    });
+
+    const recent = recentBookings.map((b) => ({
+      ref: b.bookingRef,
+      name: b.user.name,
+      workshopTitle: b.workshop.title,
+      timeSlot: b.workshopDate.timeSlot,
+      checkedInAt: b.checkedInAt ? b.checkedInAt.toISOString() : null,
+    }));
+
+    return {
+      success: true,
+      metrics: {
+        total,
+        checkedIn,
+        percent,
+        recent,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching check-in metrics:", error);
+    return {
+      success: false,
+      message: "Could not retrieve check-in statistics.",
+    };
+  }
+}
+

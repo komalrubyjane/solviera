@@ -72,6 +72,9 @@ model Booking {
   totalAmount   Float
   status        String        @default("CONFIRMED") // CONFIRMED, CANCELLED, WAITLIST
   attendance    Boolean       @default(false)
+  checkedIn     Boolean       @default(false)
+  checkedInAt   DateTime?
+  qrCodeUrl     String?
   qrCode        String?       @unique
   paymentId     String?       @unique
   payment       Payment?      @relation(fields: [paymentId], references: [id])

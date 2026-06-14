@@ -1,47 +1,38 @@
 "use server";
 
-// ─── DEMO MODE ─── All DB calls replaced with static mock data for deployment demo.
+import { revalidatePath } from "next/cache";
+import QRCode from "qrcode";
+import { db } from "@/lib/db";
 
 // Action to fetch all active dates and their availability
 export async function getActiveDatesAction() {
   try {
-    // Generate demo dates in the future
-    const now = new Date();
-    const dates = [
-      {
-        id: "demo-date-1",
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 10, 0).toISOString(),
-        timeSlot: "10:00 AM – 1:00 PM",
-        price: 3500,
-        workshopTitle: "Solviera Craft Workshop",
-        capacity: 12,
-        booked: 4,
-        remaining: 8,
-        isSoldOut: false,
+    const dbDates = await db.workshopDate.findMany({
+      where: {
+        status: "ACTIVE",
+        date: {
+          gte: new Date(),
+        },
       },
-      {
-        id: "demo-date-2",
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 10, 14, 0).toISOString(),
-        timeSlot: "2:00 PM – 5:00 PM",
-        price: 3500,
-        workshopTitle: "Solviera Craft Workshop",
-        capacity: 12,
-        booked: 8,
-        remaining: 4,
-        isSoldOut: false,
+      include: {
+        workshop: true,
       },
-      {
-        id: "demo-date-3",
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14, 10, 0).toISOString(),
-        timeSlot: "10:00 AM – 1:00 PM",
-        price: 3500,
-        workshopTitle: "Solviera Craft Workshop",
-        capacity: 12,
-        booked: 2,
-        remaining: 10,
-        isSoldOut: false,
+      orderBy: {
+        date: "asc",
       },
-    ];
+    });
+
+    const dates = dbDates.map((d) => ({
+      id: d.id,
+      date: d.date.toISOString(),
+      timeSlot: d.timeSlot,
+      price: d.workshop.price,
+      workshopTitle: d.workshop.title,
+      capacity: d.capacity,
+      booked: d.booked,
+      remaining: Math.max(0, d.capacity - d.booked),
+      isSoldOut: d.booked >= d.capacity || d.status === "SOLD_OUT",
+    }));
 
     return { success: true, dates };
   } catch (error) {
@@ -62,7 +53,7 @@ interface InitializeBookingData {
   notes?: string;
 }
 
-// Action to initialize a booking and generate Razorpay order (Demo: returns mock order)
+// Action to initialize a booking and generate Razorpay order
 export async function initializeBookingAction(data: InitializeBookingData) {
   const { participants, style } = data;
 
@@ -71,23 +62,42 @@ export async function initializeBookingAction(data: InitializeBookingData) {
       return { success: false, message: "Missing required booking details." };
     }
 
-    let basePrice = 3500;
-    if (style === "Brush + Block Printing") basePrice = 5500;
-    else if (style === "Block Printing") basePrice = 3800;
+    const wDate = await db.workshopDate.findUnique({
+      where: { id: data.dateId },
+      include: { workshop: true },
+    });
+
+    if (!wDate) {
+      return { success: false, message: "Selected session date not found." };
+    }
+
+    let basePrice = wDate.workshop.price;
+    if (style === "Brush + Block Printing" || style === "Both") {
+      basePrice = wDate.workshop.price * 1.5; // 50% markup for combined medium
+    } else if (style === "Block Printing") {
+      basePrice = wDate.workshop.price + 300; // Small stamp premium
+    }
 
     const subtotal = basePrice * participants;
     const tax = subtotal * 0.18;
     const grandTotal = subtotal + tax;
 
-    // Demo: return a mock order (no real Razorpay call)
+    const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const payment = await db.payment.create({
+      data: {
+        razorpayOrderId: orderId,
+        amount: grandTotal,
+        status: "PENDING",
+      },
+    });
+
     return {
       success: true,
-      orderId: `demo_order_${Date.now()}`,
-      amount: grandTotal * 100,
+      orderId: payment.razorpayOrderId,
+      amount: grandTotal * 100, // paise
       currency: "INR",
       pricing: { subtotal, tax, grandTotal },
-      paymentRecordId: `demo_payment_${Date.now()}`,
-      isDemo: true,
+      paymentRecordId: payment.id,
     };
   } catch (error) {
     console.error("Failed to initialize booking order:", error);
@@ -114,16 +124,96 @@ interface ConfirmBookingData {
   };
 }
 
-// Action to confirm a booking (Demo: returns a mock booking ref)
+// Action to confirm a booking, generate QR, and increment seat registration
 export async function confirmBookingAction(data: ConfirmBookingData) {
+  const { razorpayOrderId, razorpayPaymentId, razorpaySignature, personalInfo, bookingInfo } = data;
+
   try {
+    let user = await db.user.findUnique({
+      where: { email: personalInfo.email },
+    });
+
+    if (!user) {
+      user = await db.user.create({
+        data: {
+          email: personalInfo.email,
+          name: personalInfo.name,
+          phone: personalInfo.phone,
+        },
+      });
+    }
+
+    const payment = await db.payment.update({
+      where: { razorpayOrderId },
+      data: {
+        razorpayPaymentId,
+        razorpaySignature,
+        status: "SUCCESSFUL",
+      },
+    });
+
+    const wDate = await db.workshopDate.findUnique({
+      where: { id: bookingInfo.dateId },
+      include: { workshop: true },
+    });
+
+    if (!wDate) {
+      return { success: false, message: "Session date not found." };
+    }
+
+    if (wDate.booked + bookingInfo.participants > wDate.capacity) {
+      return { success: false, message: "Not enough remaining seats in this session." };
+    }
+
     const randomRef = Math.floor(100000 + Math.random() * 900000);
     const bookingRef = `SLV-WK-${randomRef}`;
 
+    // Generate QR pointing to: https://workshopdate.com/ticket/[bookingRef]
+    const ticketUrl = `https://workshopdate.com/ticket/${bookingRef}`;
+    const qrCodeBase64 = await QRCode.toDataURL(ticketUrl, {
+      color: {
+        dark: "#4A4035",
+        light: "#FAF6EE",
+      },
+      width: 300,
+      margin: 2,
+    });
+
+    const booking = await db.booking.create({
+      data: {
+        bookingRef,
+        userId: user.id,
+        workshopId: wDate.workshopId,
+        dateId: wDate.id,
+        bagColor: bookingInfo.bagColor,
+        style: bookingInfo.style,
+        participants: bookingInfo.participants,
+        notes: bookingInfo.notes || "",
+        totalAmount: payment.amount,
+        status: "CONFIRMED",
+        paymentId: payment.id,
+        qrCodeUrl: qrCodeBase64,
+      },
+    });
+
+    await db.workshopDate.update({
+      where: { id: wDate.id },
+      data: {
+        booked: {
+          increment: bookingInfo.participants,
+        },
+      },
+    });
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin/workshops");
+    revalidatePath("/workshop");
+
     return {
       success: true,
-      bookingId: `demo_booking_${Date.now()}`,
-      bookingRef,
+      bookingId: booking.id,
+      bookingRef: booking.bookingRef,
     };
   } catch (error) {
     console.error("Failed to confirm booking:", error);
@@ -132,23 +222,47 @@ export async function confirmBookingAction(data: ConfirmBookingData) {
 }
 
 export async function getBookingByRefAction(bookingRef: string) {
-  // Demo: return a mock booking
-  return {
-    success: true,
-    booking: {
-      ref: bookingRef,
-      name: "Demo Guest",
-      email: "demo@solviera.com",
-      phone: "+91 98765 43210",
-      workshopTitle: "Solviera Craft Workshop",
-      date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      timeSlot: "10:00 AM – 1:00 PM",
-      bagColor: "White",
-      style: "Brush Painting",
-      participants: 1,
-      amount: 4130,
-      qrCode: "",
-      status: "CONFIRMED",
-    },
-  };
+  try {
+    const booking = await db.booking.findUnique({
+      where: { bookingRef },
+      include: {
+        user: true,
+        workshop: true,
+        workshopDate: true,
+      },
+    });
+
+    if (!booking) {
+      return { success: false, message: "Booking not found." };
+    }
+
+    const venue = await db.venue.findFirst() || {
+      name: "Solviera Cafe & Atelier",
+      address: "12, Via de' Tornabuoni, Florence, Italy",
+    };
+
+    return {
+      success: true,
+      booking: {
+        ref: booking.bookingRef,
+        name: booking.user.name,
+        email: booking.user.email,
+        phone: booking.user.phone || "",
+        workshopTitle: booking.workshop.title,
+        date: booking.workshopDate.date.toISOString(),
+        timeSlot: booking.workshopDate.timeSlot,
+        bagColor: booking.bagColor,
+        style: booking.style,
+        participants: booking.participants,
+        amount: booking.totalAmount,
+        qrCode: booking.qrCodeUrl || "",
+        status: booking.status,
+        venueName: venue.name,
+        venueAddress: venue.address,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to retrieve booking by ref:", error);
+    return { success: false, message: "Could not fetch ticket details." };
+  }
 }
