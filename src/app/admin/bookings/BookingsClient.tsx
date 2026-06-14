@@ -199,16 +199,16 @@ export default function BookingsClient({ bookings }: Props) {
           />
         </div>
         <div>
-          <label className="form-label text-[9px] mb-1">Filter Style</label>
+          <label className="form-label text-[9px] mb-1">Filter Booking Type</label>
           <select
             className="form-input text-xs"
             value={filterStyle}
             onChange={(e) => setFilterStyle(e.target.value)}
           >
-            <option value="">All Styles</option>
-            <option value="Brush Painting">Brush Painting</option>
-            <option value="Block Printing">Block Printing</option>
-            <option value="Brush + Block Printing">Dual Craft</option>
+            <option value="">All Types</option>
+            <option value="Single">Single</option>
+            <option value="Couple">Couple</option>
+            <option value="Customise">Customise</option>
           </select>
         </div>
         <div>
@@ -250,7 +250,7 @@ export default function BookingsClient({ bookings }: Props) {
                 <th className="py-3 px-4 font-light">Ref ID</th>
                 <th className="py-3 px-4 font-light">Customer</th>
                 <th className="py-3 px-4 font-light">Date &amp; Time</th>
-                <th className="py-3 px-4 font-light">Style</th>
+                <th className="py-3 px-4 font-light">Type</th>
                 <th className="py-3 px-4 font-light">Canvas</th>
                 <th className="py-3 px-4 font-light">Seats</th>
                 <th className="py-3 px-4 font-light">Paid</th>
