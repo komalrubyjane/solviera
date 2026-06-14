@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -79,6 +79,18 @@ export default function AdminSidebar({ session }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  // Clear navigating state when pathname changes (page loaded)
+  useEffect(() => {
+    setNavigatingTo(null);
+  }, [pathname]);
+
+  const handleNavClick = (path: string) => {
+    if (path !== pathname) {
+      setNavigatingTo(path);
+    }
+  };
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -108,15 +120,25 @@ export default function AdminSidebar({ session }: SidebarProps) {
             item.path === "/admin"
               ? pathname === "/admin"
               : pathname.startsWith(item.path);
+          const isNavigating = navigatingTo === item.path;
           return (
             <Link
               key={item.path}
               href={item.path}
-              className={`admin-nav-item ${isActive ? "admin-nav-item--active" : ""}`}
+              onClick={() => handleNavClick(item.path)}
+              className={`admin-nav-item ${isActive ? "admin-nav-item--active" : ""} ${isNavigating ? "admin-nav-item--loading" : ""}`}
             >
               <span className="admin-nav-icon">{item.icon}</span>
               <span className="admin-nav-text">{item.name}</span>
-              {isActive && <span className="admin-nav-active-dot" />}
+              {isNavigating ? (
+                <span className="admin-nav-spinner">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                  </svg>
+                </span>
+              ) : isActive ? (
+                <span className="admin-nav-active-dot" />
+              ) : null}
             </Link>
           );
         })}

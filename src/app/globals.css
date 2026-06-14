@@ -1753,6 +1753,25 @@
   animation: adminPulse 2s ease-in-out infinite;
 }
 
+.admin-nav-item--loading {
+  color: var(--accent);
+  background: rgba(182, 154, 199, 0.1);
+  pointer-events: none;
+}
+
+.admin-nav-spinner {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  animation: admin-spin 0.8s linear infinite;
+  color: var(--accent);
+}
+
+@keyframes admin-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .admin-nav-item--ghost {
   color: var(--soft-brown);
   font-size: 12px;
