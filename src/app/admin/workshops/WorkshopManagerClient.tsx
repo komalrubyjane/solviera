@@ -300,7 +300,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
             <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
               <div>
                 <h4 className="text-xs font-semibold text-dark-mocha">Choose Painting Style</h4>
-                <p className="text-[10px] text-soft-brown font-light">Brush / Block Printing selection</p>
+                <p className="text-[10px] text-soft-brown font-light">Brush Painting style step</p>
               </div>
               <button
                 onClick={() => handleToggleFormField("showPaintingStyle", workshop.showPaintingStyle)}

@@ -123,17 +123,17 @@ export default async function AdminDashboardPage() {
       bagColorData[1].value = 1;
     }
 
-    // Style Preferences
-    let brushCount = dbBookings.filter((b) => b.status === "CONFIRMED" && (b.style || '').toLowerCase().includes("brush")).length;
-    let blockCount = dbBookings.filter((b) => b.status === "CONFIRMED" && (b.style || '').toLowerCase().includes("block")).length;
-    let dualCount = dbBookings.filter((b) => b.status === "CONFIRMED" && ((b.style || '').toLowerCase().includes("both") || (b.style || '').toLowerCase().includes("dual") || (b.style || '').toLowerCase().includes("+"))).length;
+    // Booking Type Preferences (from style column storing bookingType)
+    let singleCount = dbBookings.filter((b) => b.status === "CONFIRMED" && (b.style || '').toLowerCase().includes("single")).length;
+    let coupleCount = dbBookings.filter((b) => b.status === "CONFIRMED" && (b.style || '').toLowerCase().includes("couple")).length;
+    let customCount = dbBookings.filter((b) => b.status === "CONFIRMED" && (b.style || '').toLowerCase().includes("custom")).length;
 
     const stylePrefData = [
-      { name: "Brush Painting", value: brushCount },
-      { name: "Block Printing", value: blockCount },
-      { name: "Dual Craft", value: dualCount },
+      { name: "Single Guest", value: singleCount },
+      { name: "Couple", value: coupleCount },
+      { name: "Custom Group", value: customCount },
     ];
-    if (brushCount === 0 && blockCount === 0 && dualCount === 0) {
+    if (singleCount === 0 && coupleCount === 0 && customCount === 0) {
       stylePrefData[0].value = 1;
       stylePrefData[1].value = 1;
       stylePrefData[2].value = 1;

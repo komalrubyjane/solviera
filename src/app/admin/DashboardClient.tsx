@@ -340,8 +340,8 @@ export default function DashboardClient({
         <div className="admin-chart-card">
           <div className="admin-chart-header">
             <div>
-              <h3 className="admin-chart-title">Craft Medium</h3>
-              <p className="admin-chart-sub">Style preference breakdown</p>
+              <h3 className="admin-chart-title">Booking Type</h3>
+              <p className="admin-chart-sub">Guest size preference breakdown</p>
             </div>
             <div className="admin-chart-tag">Donut</div>
           </div>
