@@ -100,6 +100,8 @@ export async function createWorkshopAction(data: {
   showDietary?: boolean;
   showSpecialRequests?: boolean;
   showCanvasColor?: boolean;
+  showPhone?: boolean;
+  showCity?: boolean;
 }) {
   try {
     const workshop = await db.workshop.create({
@@ -116,6 +118,8 @@ export async function createWorkshopAction(data: {
         showDietary: data.showDietary ?? false,
         showSpecialRequests: data.showSpecialRequests ?? false,
         showCanvasColor: data.showCanvasColor ?? true,
+        showPhone: data.showPhone ?? true,
+        showCity: data.showCity ?? true,
       },
     });
     revalidatePath("/workshop");
@@ -141,6 +145,8 @@ export async function updateWorkshopAction(
     showDietary?: boolean;
     showSpecialRequests?: boolean;
     showCanvasColor?: boolean;
+    showPhone?: boolean;
+    showCity?: boolean;
   }
 ) {
   try {
@@ -175,6 +181,7 @@ export async function createWorkshopDateAction(data: {
   date: string;
   timeSlot: string;
   capacity: number;
+  price?: number;
 }) {
   try {
     await db.workshopDate.create({
@@ -183,6 +190,7 @@ export async function createWorkshopDateAction(data: {
         date: new Date(data.date),
         timeSlot: data.timeSlot,
         capacity: data.capacity,
+        price: data.price ? Number(data.price) : null,
         booked: 0,
         status: "ACTIVE",
       },
@@ -202,12 +210,16 @@ export async function updateWorkshopDateAction(
     status?: string;
     capacity?: number;
     timeSlot?: string;
+    price?: number | null;
   }
 ) {
   try {
     await db.workshopDate.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        price: data.price !== undefined ? (data.price === null ? null : Number(data.price)) : undefined,
+      },
     });
     revalidatePath("/workshop");
     revalidatePath("/workshop-experience");

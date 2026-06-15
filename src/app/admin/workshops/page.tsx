@@ -40,6 +40,8 @@ export default async function AdminWorkshopsPage() {
       showDietary: w.showDietary,
       showSpecialRequests: w.showSpecialRequests,
       showCanvasColor: w.showCanvasColor,
+      showPhone: w.showPhone,
+      showCity: w.showCity,
       dates: w.dates.map((d) => ({
         id: d.id,
         date: d.date.toISOString(),
@@ -47,6 +49,7 @@ export default async function AdminWorkshopsPage() {
         capacity: d.capacity,
         booked: d.booked,
         status: d.status,
+        price: d.price,
       })),
     }));
 

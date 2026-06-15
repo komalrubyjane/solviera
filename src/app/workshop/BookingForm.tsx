@@ -13,8 +13,8 @@ import { getActiveDatesAction, initializeBookingAction, confirmBookingAction } f
 const personalSchema = z.object({
   name: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number (minimum 10 digits)"),
-  city: z.string().min(2, "Please enter your city"),
+  phone: z.string().optional(),
+  city: z.string().optional(),
 });
 
 const detailsSchema = z.object({
@@ -52,6 +52,8 @@ interface ActiveDate {
   showDietary: boolean;
   showSpecialRequests: boolean;
   showCanvasColor: boolean;
+  showPhone: boolean;
+  showCity: boolean;
 }
 
 interface BookingFormProps {
@@ -161,6 +163,9 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
   };
 
   // Determine active steps dynamically
+  const firstActiveDate = dates[0];
+  const showPhone = selectedDateObject ? selectedDateObject.showPhone : (firstActiveDate ? firstActiveDate.showPhone : true);
+  const showCity = selectedDateObject ? selectedDateObject.showCity : (firstActiveDate ? firstActiveDate.showCity : true);
   const showCanvas = selectedDateObject?.showCanvasColor ?? true;
   const showPainting = selectedDateObject?.showPaintingStyle ?? false;
   const showNotesStep = (selectedDateObject?.showDietary ?? false) || (selectedDateObject?.showSpecialRequests ?? false);
@@ -398,44 +403,50 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                     {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="form-group">
-                      <label className="form-label" htmlFor="phone">Phone Number</label>
-                      <Controller
-                        name="phone"
-                        control={control}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="tel"
-                            className="form-input"
-                            placeholder="e.g. 9876543210"
-                            onFocus={handleHoverStart}
-                            onBlur={handleHoverEnd}
+                  {(showPhone || showCity) && (
+                    <div className={`grid grid-cols-1 ${showPhone && showCity ? "md:grid-cols-2" : ""} gap-6`}>
+                      {showPhone && (
+                        <div className="form-group">
+                          <label className="form-label" htmlFor="phone">Phone Number</label>
+                          <Controller
+                            name="phone"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="tel"
+                                className="form-input"
+                                placeholder="e.g. 9876543210"
+                                onFocus={handleHoverStart}
+                                onBlur={handleHoverEnd}
+                              />
+                            )}
                           />
-                        )}
-                      />
-                      {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label" htmlFor="city">City</label>
-                      <Controller
-                        name="city"
-                        control={control}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="text"
-                            className="form-input"
-                            placeholder="e.g. Florence"
-                            onFocus={handleHoverStart}
-                            onBlur={handleHoverEnd}
+                          {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
+                        </div>
+                      )}
+                      {showCity && (
+                        <div className="form-group">
+                          <label className="form-label" htmlFor="city">City</label>
+                          <Controller
+                            name="city"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="text"
+                                className="form-input"
+                                placeholder="e.g. Florence"
+                                onFocus={handleHoverStart}
+                                onBlur={handleHoverEnd}
+                              />
+                            )}
                           />
-                        )}
-                      />
-                      {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city.message}</p>}
+                          {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city.message}</p>}
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 

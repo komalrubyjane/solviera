@@ -42,6 +42,8 @@ model Workshop {
   showDietary      Boolean        @default(false)
   showSpecialRequests Boolean     @default(false)
   showCanvasColor  Boolean        @default(true)
+  showPhone        Boolean        @default(true)
+  showCity         Boolean        @default(true)
   dates            WorkshopDate[]
   bookings         Booking[]
   createdAt        DateTime       @default(now())
@@ -57,6 +59,7 @@ model WorkshopDate {
   capacity   Int
   booked     Int       @default(0)
   status     String    @default("ACTIVE") // ACTIVE, SOLD_OUT, INACTIVE
+  price      Float?
   bookings   Booking[]
   createdAt  DateTime  @default(now())
 }

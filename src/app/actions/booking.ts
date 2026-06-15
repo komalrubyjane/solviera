@@ -26,7 +26,7 @@ export async function getActiveDatesAction() {
       id: d.id,
       date: d.date.toISOString(),
       timeSlot: d.timeSlot,
-      price: d.workshop.price,
+      price: d.price ?? d.workshop.price,
       workshopTitle: d.workshop.title,
       capacity: d.capacity,
       booked: d.booked,
@@ -36,6 +36,8 @@ export async function getActiveDatesAction() {
       showDietary: d.workshop.showDietary,
       showSpecialRequests: d.workshop.showSpecialRequests,
       showCanvasColor: d.workshop.showCanvasColor,
+      showPhone: d.workshop.showPhone,
+      showCity: d.workshop.showCity,
     }));
 
     return { success: true, dates };
@@ -48,8 +50,8 @@ export async function getActiveDatesAction() {
 interface InitializeBookingData {
   name: string;
   email: string;
-  phone: string;
-  city: string;
+  phone?: string;
+  city?: string;
   dateId: string;
   participants: number;
   bagColor: string;
@@ -62,7 +64,7 @@ export async function initializeBookingAction(data: InitializeBookingData) {
   const { participants, style } = data;
 
   try {
-    if (!data.name || !data.email || !data.phone || !data.dateId || !participants || !data.bagColor || !style) {
+    if (!data.name || !data.email || !data.dateId || !participants || !data.bagColor || !style) {
       return { success: false, message: "Missing required booking details." };
     }
 
@@ -75,11 +77,11 @@ export async function initializeBookingAction(data: InitializeBookingData) {
       return { success: false, message: "Selected session date not found." };
     }
 
-    let basePrice = wDate.workshop.price;
+    let basePrice = wDate.price ?? wDate.workshop.price;
     if (style === "Brush + Block Printing" || style === "Both") {
-      basePrice = wDate.workshop.price * 1.5; // 50% markup for combined medium
+      basePrice = (wDate.price ?? wDate.workshop.price) * 1.5; // 50% markup for combined medium
     } else if (style === "Block Printing") {
-      basePrice = wDate.workshop.price + 300; // Small stamp premium
+      basePrice = (wDate.price ?? wDate.workshop.price) + 300; // Small stamp premium
     }
 
     const subtotal = basePrice * participants;
@@ -116,8 +118,8 @@ interface ConfirmBookingData {
   personalInfo: {
     name: string;
     email: string;
-    phone: string;
-    city: string;
+    phone?: string;
+    city?: string;
   };
   bookingInfo: {
     dateId: string;

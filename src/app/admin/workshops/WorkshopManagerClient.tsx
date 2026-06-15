@@ -15,6 +15,7 @@ interface DateItem {
   capacity: number;
   booked: number;
   status: string;
+  price?: number | null;
 }
 
 interface WorkshopItem {
@@ -31,6 +32,8 @@ interface WorkshopItem {
   showDietary: boolean;
   showSpecialRequests: boolean;
   showCanvasColor: boolean;
+  showPhone: boolean;
+  showCity: boolean;
   dates: DateItem[];
 }
 
@@ -46,12 +49,14 @@ export default function WorkshopManagerClient({ workshops }: Props) {
   const [newDate, setNewDate] = useState("");
   const [newTimeSlot, setNewTimeSlot] = useState("Morning (10:00 - 13:00)");
   const [newCapacity, setNewCapacity] = useState(workshop?.capacity || 12);
+  const [newPrice, setNewPrice] = useState<string>(""); // Custom session price
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Inline editing state for scheduled sessions
   const [editingDateId, setEditingDateId] = useState<string | null>(null);
   const [editingTimeSlot, setEditingTimeSlot] = useState("");
   const [editingCapacity, setEditingCapacity] = useState(12);
+  const [editingPrice, setEditingPrice] = useState<string>("");
 
   // Workshop Edit fields
   const [editPrice, setEditPrice] = useState(workshop?.price || 3500);
@@ -60,7 +65,6 @@ export default function WorkshopManagerClient({ workshops }: Props) {
   const [toastMsg, setToastMsg] = useState("");
 
   const showToast = (msg: string) => {
-    setToastMsg(msg);
     const toast = document.getElementById("toast");
     if (toast) {
       toast.classList.add("show");
@@ -72,6 +76,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
     setEditingDateId(d.id);
     setEditingTimeSlot(d.timeSlot);
     setEditingCapacity(d.capacity);
+    setEditingPrice(d.price !== undefined && d.price !== null ? String(d.price) : "");
   };
 
   const handleSaveEdit = async (dateId: string) => {
@@ -79,6 +84,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
     const res = await updateWorkshopDateAction(dateId, {
       timeSlot: editingTimeSlot,
       capacity: Number(editingCapacity),
+      price: editingPrice.trim() === "" ? null : Number(editingPrice),
     });
 
     if (res.success) {
@@ -101,11 +107,13 @@ export default function WorkshopManagerClient({ workshops }: Props) {
       date: newDate,
       timeSlot: newTimeSlot,
       capacity: newCapacity,
+      price: newPrice.trim() === "" ? undefined : Number(newPrice),
     });
 
     if (res.success) {
       showToast("Session date added successfully!");
       setNewDate("");
+      setNewPrice("");
       window.location.reload();
     } else {
       showToast(res.message || "Failed to add session date.");
@@ -342,6 +350,42 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                 {workshop.showSpecialRequests ? "Enabled" : "Disabled"}
               </button>
             </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">Phone Number Field</h4>
+                <p className="text-[10px] text-soft-brown font-light">Customer contact phone</p>
+              </div>
+              <button
+                onClick={() => handleToggleFormField("showPhone", workshop.showPhone)}
+                disabled={isSubmitting}
+                className={`text-[10px] uppercase font-bold tracking-wider py-1 px-4 rounded-full border transition-all duration-300 ${
+                  workshop.showPhone
+                    ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
+                    : "text-red-400 bg-red-400/10 border-red-400/20 hover:bg-red-400/20"
+                }`}
+              >
+                {workshop.showPhone ? "Enabled" : "Disabled"}
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
+              <div>
+                <h4 className="text-xs font-semibold text-dark-mocha">City Field</h4>
+                <p className="text-[10px] text-soft-brown font-light">Customer origin city</p>
+              </div>
+              <button
+                onClick={() => handleToggleFormField("showCity", workshop.showCity)}
+                disabled={isSubmitting}
+                className={`text-[10px] uppercase font-bold tracking-wider py-1 px-4 rounded-full border transition-all duration-300 ${
+                  workshop.showCity
+                    ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
+                    : "text-red-400 bg-red-400/10 border-red-400/20 hover:bg-red-400/20"
+                }`}
+              >
+                {workshop.showCity ? "Enabled" : "Disabled"}
+              </button>
+            </div>
           </div>
         </div>
         </div>
@@ -351,7 +395,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
           {/* Add Date Form */}
           <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md">
             <h3 className="font-serif text-lg text-dark-mocha mb-6">Schedule New Session Date</h3>
-            <form onSubmit={handleAddDate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <form onSubmit={handleAddDate} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
               <div>
                 <label className="form-label text-[10px]" htmlFor="date">Session Date</label>
                 <input
@@ -392,10 +436,21 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                   required
                 />
               </div>
+              <div>
+                <label className="form-label text-[10px]" htmlFor="sessionPrice">Session Cost (INR)</label>
+                <input
+                  type="number"
+                  id="sessionPrice"
+                  className="form-input"
+                  value={newPrice}
+                  onChange={(e) => setNewPrice(e.target.value)}
+                  placeholder={`Default (₹${workshop.price})`}
+                />
+              </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-gradient-to-r from-warm-brown to-nude text-cream font-bold py-3 px-6 rounded-xl uppercase text-xs tracking-wider transition-all duration-300 hover:scale-102"
+                className="bg-gradient-to-r from-warm-brown to-nude text-cream font-bold py-3 px-6 rounded-xl uppercase text-xs tracking-wider transition-all duration-300 hover:scale-102 w-full text-center"
               >
                 Add Session
               </button>
@@ -418,6 +473,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                       <th className="py-3 px-4 font-light">Time Slot</th>
                       <th className="py-3 px-4 font-light">Capacity</th>
                       <th className="py-3 px-4 font-light">Booked</th>
+                      <th className="py-3 px-4 font-light">Cost</th>
                       <th className="py-3 px-4 font-light">Status</th>
                       <th className="py-3 px-4 font-light" style={{ textAlign: "right" }}>Actions</th>
                     </tr>
@@ -460,6 +516,15 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                               {d.booked} / {editingCapacity}
                             </td>
                             <td className="py-3.5 px-4">
+                              <input
+                                type="number"
+                                className="form-input text-xs py-1 px-2 w-24"
+                                value={editingPrice}
+                                onChange={(e) => setEditingPrice(e.target.value)}
+                                placeholder={`Default (₹${workshop.price})`}
+                              />
+                            </td>
+                            <td className="py-3.5 px-4">
                               <span className="text-[9px] uppercase tracking-wider py-1 px-3 rounded-full border bg-gray-400/10 text-gray-400 border-gray-400/30">
                                 {d.status}
                               </span>
@@ -492,6 +557,9 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                             <span className={d.booked >= d.capacity ? "text-red-400 font-medium" : "text-soft-brown"}>
                               {d.booked} / {d.capacity}
                             </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-dark-mocha font-medium">
+                            {d.price !== undefined && d.price !== null ? `₹${d.price}` : `₹${workshop.price} (default)`}
                           </td>
                           <td className="py-3.5 px-4">
                             <button
