@@ -36,6 +36,10 @@ export default async function AdminWorkshopsPage() {
       status: w.status,
       featured: w.featured,
       tags: w.tags || "",
+      showPaintingStyle: w.showPaintingStyle,
+      showDietary: w.showDietary,
+      showSpecialRequests: w.showSpecialRequests,
+      showCanvasColor: w.showCanvasColor,
       dates: w.dates.map((d) => ({
         id: d.id,
         date: d.date.toISOString(),

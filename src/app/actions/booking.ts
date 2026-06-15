@@ -32,6 +32,10 @@ export async function getActiveDatesAction() {
       booked: d.booked,
       remaining: Math.max(0, d.capacity - d.booked),
       isSoldOut: d.booked >= d.capacity || d.status === "SOLD_OUT",
+      showPaintingStyle: d.workshop.showPaintingStyle,
+      showDietary: d.workshop.showDietary,
+      showSpecialRequests: d.workshop.showSpecialRequests,
+      showCanvasColor: d.workshop.showCanvasColor,
     }));
 
     return { success: true, dates };

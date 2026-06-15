@@ -22,12 +22,16 @@ const detailsSchema = z.object({
 });
 
 const customSchema = z.object({
-  bagColor: z.enum(["White Tote Bag", "Black Tote Bag"], { required_error: "Please select a tote bag canvas color" }),
+  bagColor: z.enum(["White Tote Bag", "Black Tote Bag"], { required_error: "Please select a tote bag canvas color" }).optional(),
   bookingType: z.enum(["Single", "Couple", "Customise"], { required_error: "Please select a booking type" }),
   customSeats: z.number().min(1).max(20).optional(),
+  style: z.enum(["Brush Painting", "Block Printing", "Brush + Block Printing"], { required_error: "Please select a painting style" }).optional(),
 });
 
-const notesSchema = z.object({});
+const notesSchema = z.object({
+  notes: z.string().optional(),
+  dietary: z.string().optional(),
+});
 
 type FormValues = z.infer<typeof personalSchema> & 
   z.infer<typeof detailsSchema> & 
@@ -44,6 +48,10 @@ interface ActiveDate {
   booked: number;
   remaining: number;
   isSoldOut: boolean;
+  showPaintingStyle: boolean;
+  showDietary: boolean;
+  showSpecialRequests: boolean;
+  showCanvasColor: boolean;
 }
 
 interface BookingFormProps {
@@ -61,6 +69,8 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
   const [toastMsg, setToastMsg] = useState("");
   const [toastError, setToastError] = useState(false);
 
+  const selectedDateObject = dates.find((d) => d.id === form?.watch("dateId"));
+
   const form = useForm<FormValues>({
     resolver: zodResolver(
       step === 1 ? personalSchema :
@@ -77,6 +87,9 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
       bagColor: "White Tote Bag",
       bookingType: "Single",
       customSeats: 1,
+      style: "Brush Painting",
+      notes: "",
+      dietary: "",
     },
     mode: "onTouched",
   });
@@ -147,12 +160,61 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
     }
   };
 
+  // Determine active steps dynamically
+  const showCanvas = selectedDateObject?.showCanvasColor ?? true;
+  const showPainting = selectedDateObject?.showPaintingStyle ?? false;
+  const showNotesStep = (selectedDateObject?.showDietary ?? false) || (selectedDateObject?.showSpecialRequests ?? false);
+
+  // We have up to 5 steps:
+  // Step 1: Personal info
+  // Step 2: Date selection
+  // Step 3: Customization (Canvas color / Painting Style)
+  // Step 4: Notes (Dietary / Requests)
+  // Step 5: Summary & Payment
+  
+  // Calculate total steps and map actual step view index
+  const hasStep3 = showCanvas || showPainting;
+  const hasStep4 = showNotesStep;
+
+  let totalSteps = 3; // Step 1 (Personal), Step 2 (Date), Step Last (Summary)
+  if (hasStep3) totalSteps++;
+  if (hasStep4) totalSteps++;
+
+  // Step Mapping logic:
+  // Step 1: Personal info
+  // Step 2: Date selection
+  // Step 3 (if hasStep3): Customization
+  // Step 4 (if hasStep4): Notes
+  // Step Last: Summary
+
+  const getStepName = (s: number) => {
+    if (s === 1) return "Personal details";
+    if (s === 2) return "Select Session Date";
+    if (s === 3 && hasStep3) return "Customize Your Tote";
+    if (s === 3 && !hasStep3 && hasStep4) return "Additional Notes";
+    if (s === 4 && hasStep3 && hasStep4) return "Additional Notes";
+    return "Booking Summary";
+  };
+
+  const isLastStep = step === totalSteps;
+
   const handleNextStep = async () => {
     const isStepValid = await form.trigger();
     if (isStepValid) {
-      if (step === 3) {
+      if (isLastStep) return;
+
+      const currentStepName = getStepName(step);
+      const nextStepName = getStepName(step + 1);
+
+      if (nextStepName === "Booking Summary") {
         setIsSubmitting(true);
         const seats = watchedValues.bookingType === "Couple" ? 2 : watchedValues.bookingType === "Customise" ? (watchedValues.customSeats || 1) : 1;
+        
+        let notesText = undefined;
+        if (hasStep4) {
+          notesText = `Special Notes: ${watchedValues.notes || "None"}. Dietary: ${watchedValues.dietary || "None"}`;
+        }
+
         const res = await initializeBookingAction({
           name: watchedValues.name,
           email: watchedValues.email,
@@ -160,14 +222,14 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
           city: watchedValues.city,
           dateId: watchedValues.dateId,
           participants: seats,
-          bagColor: watchedValues.bagColor,
-          style: watchedValues.bookingType,
-          notes: undefined,
+          bagColor: (showCanvas ? watchedValues.bagColor : "White Tote Bag") || "White Tote Bag",
+          style: showPainting ? (watchedValues.style || "Brush Painting") : watchedValues.bookingType,
+          notes: notesText,
         });
 
         if (res.success && res.orderId) {
           setOrderData(res);
-          setStep(4);
+          setStep(step + 1);
         } else {
           showToast(res.message || "Failed to create order. Try again.", true);
         }
@@ -188,6 +250,11 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
 
     const keyId = "rzp_test_mockkey123";
     const seats = watchedValues.bookingType === "Couple" ? 2 : watchedValues.bookingType === "Customise" ? (watchedValues.customSeats || 1) : 1;
+
+    let notesText = undefined;
+    if (hasStep4) {
+      notesText = `Special Notes: ${watchedValues.notes || "None"}. Dietary: ${watchedValues.dietary || "None"}`;
+    }
 
     const options = {
       key: keyId,
@@ -211,9 +278,9 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
           bookingInfo: {
             dateId: watchedValues.dateId,
             participants: seats,
-            bagColor: watchedValues.bagColor,
-            style: watchedValues.bookingType,
-            notes: undefined,
+            bagColor: (showCanvas ? watchedValues.bagColor : "White Tote Bag") || "White Tote Bag",
+            style: showPainting ? (watchedValues.style || "Brush Painting") : watchedValues.bookingType,
+            notes: notesText,
           },
         });
 
@@ -254,9 +321,9 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
         bookingInfo: {
           dateId: watchedValues.dateId,
           participants: seats,
-          bagColor: watchedValues.bagColor,
-          style: watchedValues.bookingType,
-          notes: undefined,
+          bagColor: (showCanvas ? watchedValues.bagColor : "White Tote Bag") || "White Tote Bag",
+          style: showPainting ? (watchedValues.style || "Brush Painting") : watchedValues.bookingType,
+          notes: notesText,
         },
       });
 
@@ -269,19 +336,14 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
     }
   };
 
-  const selectedDateObject = dates.find((d) => d.id === watchedValues.dateId);
-
   return (
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
 
       <div className="text-center mb-8">
-        <p className="text-[10px] tracking-widest text-mocha uppercase mb-2">Step {step} of 4</p>
+        <p className="text-[10px] tracking-widest text-mocha uppercase mb-2">Step {step} of {totalSteps}</p>
         <h2 className="font-serif text-3xl font-light text-white">
-          {step === 1 && "Personal details"}
-          {step === 2 && "Select Session Date"}
-          {step === 3 && "Customize Your Tote"}
-          {step === 4 && "Booking Summary"}
+          {getStepName(step)}
         </h2>
       </div>
 
@@ -446,42 +508,44 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                 </div>
               )}
 
-              {/* STEP 3: CUSTOMIZATION */}
-              {step === 3 && (
+              {/* STEP 3: CUSTOMIZATION (CANVAS & STYLE SELECTION) */}
+              {step === 3 && hasStep3 && (
                 <div className="space-y-8">
                   {/* Tote bag color */}
-                  <div className="form-group">
-                    <label className="form-label mb-3">Tote Bag Canvas Color</label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Controller
-                        name="bagColor"
-                        control={control}
-                        render={({ field }) => (
-                          <>
-                            {["White Tote Bag", "Black Tote Bag"].map((color) => {
-                              const isSelected = field.value === color;
-                              return (
-                                <button
-                                  key={color}
-                                  type="button"
-                                  onClick={() => field.onChange(color)}
-                                  className={`py-4 rounded-xl border font-serif text-sm transition-all duration-300 ${
-                                    isSelected
-                                      ? "bg-beige/40 border-mocha text-white shadow-md"
-                                      : "bg-sand/40 border-mocha/10 text-soft-brown hover:border-mocha/40"
-                                  }`}
-                                  onMouseEnter={handleHoverStart}
-                                  onMouseLeave={handleHoverEnd}
-                                >
-                                  {color}
-                                </button>
-                              );
-                            })}
-                          </>
-                        )}
-                      />
+                  {showCanvas && (
+                    <div className="form-group">
+                      <label className="form-label mb-3">Tote Bag Canvas Color</label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Controller
+                          name="bagColor"
+                          control={control}
+                          render={({ field }) => (
+                            <>
+                              {["White Tote Bag", "Black Tote Bag"].map((color) => {
+                                const isSelected = field.value === color;
+                                return (
+                                  <button
+                                    key={color}
+                                    type="button"
+                                    onClick={() => field.onChange(color)}
+                                    className={`py-4 rounded-xl border font-serif text-sm transition-all duration-300 ${
+                                      isSelected
+                                        ? "bg-beige/40 border-mocha text-white shadow-md"
+                                        : "bg-sand/40 border-mocha/10 text-soft-brown hover:border-mocha/40"
+                                    }`}
+                                    onMouseEnter={handleHoverStart}
+                                    onMouseLeave={handleHoverEnd}
+                                  >
+                                    {color}
+                                  </button>
+                                );
+                              })}
+                            </>
+                          )}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Booking Type */}
                   <div className="form-group">
@@ -546,11 +610,96 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                       />
                     </div>
                   )}
+
+                  {/* Choose Painting Style */}
+                  {showPainting && (
+                    <div className="form-group">
+                      <label className="form-label mb-3">Choose Painting Style</label>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Controller
+                          name="style"
+                          control={control}
+                          render={({ field }) => (
+                            <>
+                              {[
+                                { name: "Brush Painting", price: "Base Price" },
+                                { name: "Block Printing", price: "+ ₹300 Premium" },
+                                { name: "Brush + Block Printing", price: "Dual Craft (1.5x Base)" },
+                              ].map((styleObj) => {
+                                const isSelected = field.value === styleObj.name;
+                                return (
+                                  <button
+                                    key={styleObj.name}
+                                    type="button"
+                                    onClick={() => field.onChange(styleObj.name)}
+                                    className={`py-4 px-3 rounded-xl border text-center transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                                      isSelected
+                                        ? "bg-beige/40 border-mocha text-white shadow-md"
+                                        : "bg-sand/40 border-mocha/10 text-soft-brown hover:border-mocha/40"
+                                    }`}
+                                    onMouseEnter={handleHoverStart}
+                                    onMouseLeave={handleHoverEnd}
+                                  >
+                                    <span className="font-serif text-sm">{styleObj.name}</span>
+                                    <span className="text-[10px] text-warm-brown font-light">{styleObj.price}</span>
+                                  </button>
+                                );
+                              })}
+                            </>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* STEP 4: SUMMARY & CHECKOUT */}
-              {step === 4 && (
+              {/* STEP 4: NOTES (DIETARY & SPECIAL REQUESTS) */}
+              {((step === 3 && !hasStep3 && hasStep4) || (step === 4 && hasStep3 && hasStep4)) && (
+                <div className="space-y-6">
+                  {selectedDateObject?.showSpecialRequests && (
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="notes">Special Requests &amp; Event Info</label>
+                      <Controller
+                        name="notes"
+                        control={control}
+                        render={({ field }) => (
+                          <textarea
+                            {...field}
+                            className="form-input"
+                            rows={3}
+                            placeholder="e.g. Celebrating an anniversary session, booking details, group requests..."
+                            onFocus={handleHoverStart}
+                            onBlur={handleHoverEnd}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+                  {selectedDateObject?.showDietary && (
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="dietary">Dietary Preferences (For Studio Refreshments)</label>
+                      <Controller
+                        name="dietary"
+                        control={control}
+                        render={({ field }) => (
+                          <textarea
+                            {...field}
+                            className="form-input"
+                            rows={2}
+                            placeholder="e.g. Gluten-free, Vegan coffee milk preferences..."
+                            onFocus={handleHoverStart}
+                            onBlur={handleHoverEnd}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* STEP LAST: SUMMARY & CHECKOUT */}
+              {isLastStep && (
                 <div className="space-y-6">
                   <div className="border-b border-mocha/15 pb-4">
                      <h4 className="font-serif text-xl text-white mb-2">Tote Bag Atelier Painting Workshop</h4>
@@ -562,9 +711,16 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-xs font-light text-soft-brown pb-6 border-b border-mocha/15">
-                    <div>
-                      <strong>Canvas Color:</strong> {watchedValues.bagColor}
-                    </div>
+                    {showCanvas && (
+                      <div>
+                        <strong>Canvas Color:</strong> {watchedValues.bagColor}
+                      </div>
+                    )}
+                    {showPainting && (
+                      <div>
+                        <strong>Painting Style:</strong> {watchedValues.style}
+                      </div>
+                    )}
                     <div>
                       <strong>Booking Type:</strong> {watchedValues.bookingType}
                     </div>
@@ -611,7 +767,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
               </button>
             )}
             
-            {step < 4 ? (
+            {!isLastStep ? (
               <button
                 type="button"
                 onClick={handleSubmit(handleNextStep)}

@@ -96,6 +96,10 @@ export async function createWorkshopAction(data: {
   status?: string;
   featured?: boolean;
   tags?: string;
+  showPaintingStyle?: boolean;
+  showDietary?: boolean;
+  showSpecialRequests?: boolean;
+  showCanvasColor?: boolean;
 }) {
   try {
     const workshop = await db.workshop.create({
@@ -108,6 +112,10 @@ export async function createWorkshopAction(data: {
         status: data.status || "DRAFT",
         featured: data.featured || false,
         tags: data.tags || "",
+        showPaintingStyle: data.showPaintingStyle ?? false,
+        showDietary: data.showDietary ?? false,
+        showSpecialRequests: data.showSpecialRequests ?? false,
+        showCanvasColor: data.showCanvasColor ?? true,
       },
     });
     revalidatePath("/workshop");
@@ -129,6 +137,10 @@ export async function updateWorkshopAction(
     status?: string;
     featured?: boolean;
     tags?: string;
+    showPaintingStyle?: boolean;
+    showDietary?: boolean;
+    showSpecialRequests?: boolean;
+    showCanvasColor?: boolean;
   }
 ) {
   try {

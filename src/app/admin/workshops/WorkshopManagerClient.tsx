@@ -27,6 +27,10 @@ interface WorkshopItem {
   status: string;
   featured: boolean;
   tags: string;
+  showPaintingStyle: boolean;
+  showDietary: boolean;
+  showSpecialRequests: boolean;
+  showCanvasColor: boolean;
   dates: DateItem[];
 }
 
@@ -118,6 +122,21 @@ export default function WorkshopManagerClient({ workshops }: Props) {
     } else {
       showToast(res.message || "Failed to update session status.");
     }
+  };
+
+  const handleToggleFormField = async (field: string, currentValue: boolean) => {
+    if (!workshop) return;
+    setIsSubmitting(true);
+    const res = await updateWorkshopAction(workshop.id, {
+      [field]: !currentValue,
+    });
+    if (res.success) {
+      showToast("Booking form configurator updated!");
+      window.location.reload();
+    } else {
+      showToast(res.message || "Failed to update form layout.");
+    }
+    setIsSubmitting(false);
   };
 
   const handleDeleteDate = async (dateId: string) => {
@@ -257,39 +276,71 @@ export default function WorkshopManagerClient({ workshops }: Props) {
                 <h4 className="text-xs font-semibold text-dark-mocha">Tote Bag Canvas Color</h4>
                 <p className="text-[10px] text-soft-brown font-light">White or Black canvas option</p>
               </div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-green-500 bg-green-500/10 py-1 px-3.5 rounded-full border border-green-500/20">
-                Enabled
-              </span>
+              <button
+                onClick={() => handleToggleFormField("showCanvasColor", workshop.showCanvasColor)}
+                disabled={isSubmitting}
+                className={`text-[10px] uppercase font-bold tracking-wider py-1 px-4 rounded-full border transition-all duration-300 ${
+                  workshop.showCanvasColor
+                    ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
+                    : "text-red-400 bg-red-400/10 border-red-400/20 hover:bg-red-400/20"
+                }`}
+              >
+                {workshop.showCanvasColor ? "Enabled" : "Disabled"}
+              </button>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5 opacity-60">
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
               <div>
                 <h4 className="text-xs font-semibold text-dark-mocha">Choose Painting Style</h4>
                 <p className="text-[10px] text-soft-brown font-light">Brush / Block Printing selection</p>
               </div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 bg-red-400/10 py-1 px-3.5 rounded-full border border-red-400/20">
-                Disabled
-              </span>
+              <button
+                onClick={() => handleToggleFormField("showPaintingStyle", workshop.showPaintingStyle)}
+                disabled={isSubmitting}
+                className={`text-[10px] uppercase font-bold tracking-wider py-1 px-4 rounded-full border transition-all duration-300 ${
+                  workshop.showPaintingStyle
+                    ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
+                    : "text-red-400 bg-red-400/10 border-red-400/20 hover:bg-red-400/20"
+                }`}
+              >
+                {workshop.showPaintingStyle ? "Enabled" : "Disabled"}
+              </button>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5 opacity-60">
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
               <div>
                 <h4 className="text-xs font-semibold text-dark-mocha">Dietary Preferences</h4>
                 <p className="text-[10px] text-soft-brown font-light">For studio refreshments</p>
               </div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 bg-red-400/10 py-1 px-3.5 rounded-full border border-red-400/20">
-                Disabled
-              </span>
+              <button
+                onClick={() => handleToggleFormField("showDietary", workshop.showDietary)}
+                disabled={isSubmitting}
+                className={`text-[10px] uppercase font-bold tracking-wider py-1 px-4 rounded-full border transition-all duration-300 ${
+                  workshop.showDietary
+                    ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
+                    : "text-red-400 bg-red-400/10 border-red-400/20 hover:bg-red-400/20"
+                }`}
+              >
+                {workshop.showDietary ? "Enabled" : "Disabled"}
+              </button>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5 opacity-60">
+            <div className="flex items-center justify-between p-3.5 bg-beige/15 rounded-xl border border-mocha/5">
               <div>
                 <h4 className="text-xs font-semibold text-dark-mocha">Special Requests Box</h4>
                 <p className="text-[10px] text-soft-brown font-light">Custom group requests notes</p>
               </div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 bg-red-400/10 py-1 px-3.5 rounded-full border border-red-400/20">
-                Disabled
-              </span>
+              <button
+                onClick={() => handleToggleFormField("showSpecialRequests", workshop.showSpecialRequests)}
+                disabled={isSubmitting}
+                className={`text-[10px] uppercase font-bold tracking-wider py-1 px-4 rounded-full border transition-all duration-300 ${
+                  workshop.showSpecialRequests
+                    ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
+                    : "text-red-400 bg-red-400/10 border-red-400/20 hover:bg-red-400/20"
+                }`}
+              >
+                {workshop.showSpecialRequests ? "Enabled" : "Disabled"}
+              </button>
             </div>
           </div>
         </div>
