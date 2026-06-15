@@ -241,7 +241,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
         onStart: () => {
           setStage('blooming');
           const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
-          setFlowers(spawnFlowers(isMobileDevice ? 80 : 200, 0, 2.5));
+          setFlowers(spawnFlowers(isMobileDevice ? 80 : 200, 0, 0.8));
         },
       });
   };
