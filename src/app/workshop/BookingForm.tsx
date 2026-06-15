@@ -69,8 +69,6 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
   const [toastMsg, setToastMsg] = useState("");
   const [toastError, setToastError] = useState(false);
 
-  const selectedDateObject = dates.find((d) => d.id === form?.watch("dateId"));
-
   const form = useForm<FormValues>({
     resolver: zodResolver(
       step === 1 ? personalSchema :
@@ -96,6 +94,8 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
 
   const { control, handleSubmit, watch, formState: { errors } } = form;
   const watchedValues = watch();
+
+  const selectedDateObject = dates.find((d) => d.id === watchedValues.dateId);
 
   const handleHoverStart = () => {
     if (onHoverChange) onHoverChange(true);
