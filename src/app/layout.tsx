@@ -21,6 +21,13 @@ export const metadata: Metadata = {
   title: "SOLVIERA — Premium Handcrafted Tote Atelier",
   description:
     "Experience the luxury of premium, bespoke handcrafted canvas tote bags. Attend our exclusive artisan workshops in Florence.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
