@@ -284,3 +284,26 @@ export async function getBookingByRefAction(bookingRef: string) {
     return { success: false, message: "Could not fetch ticket details." };
   }
 }
+
+export async function getProductsAction() {
+  try {
+    const products = await db.product.findMany({
+      orderBy: { createdAt: "asc" },
+    });
+    return {
+      success: true,
+      products: products.map((p) => ({
+        id: p.id,
+        name: p.name,
+        desc: p.desc,
+        price: `₹${p.price.toLocaleString()}`,
+        priceNum: p.price,
+        badge: p.badge,
+        img: p.img,
+      })),
+    };
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return { success: false, message: "Could not fetch products from catalog." };
+  }
+}

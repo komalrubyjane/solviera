@@ -17,6 +17,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import Image from "next/image";
+import { createCustomOrderAction } from "@/app/actions/admin";
 
 // --- Types ---
 type QuoteFormState = {
@@ -128,12 +129,26 @@ export default function BeyondTheStudio() {
     setMousePos({ x, y });
   };
 
-  const handleQuoteSubmit = (e: React.FormEvent) => {
+  const handleQuoteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Mock submission delay
-    setTimeout(() => {
-      setIsSubmitting(false);
+    
+    const res = await createCustomOrderAction({
+      name: formState.name,
+      company: formState.company || undefined,
+      email: formState.email,
+      phone: formState.phone || undefined,
+      eventType: formState.eventType || undefined,
+      quantity: formState.quantity || undefined,
+      color: formState.color || undefined,
+      method: formState.method || undefined,
+      date: formState.date || undefined,
+      description: formState.description || undefined,
+      budget: formState.budget || undefined,
+    });
+
+    setIsSubmitting(false);
+    if (res.success) {
       setIsSuccess(true);
       setTimeout(() => {
         setIsSuccess(false);
@@ -143,7 +158,9 @@ export default function BeyondTheStudio() {
           quantity: "", color: "", method: "", date: "", description: "", budget: ""
         });
       }, 3000);
-    }, 1500);
+    } else {
+      alert(res.message || "Failed to submit quote request. Please try again.");
+    }
   };
 
   return (

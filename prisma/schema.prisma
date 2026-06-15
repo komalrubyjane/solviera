@@ -137,6 +137,35 @@ model Testimonial {
   avatar    String?
 }
 
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  desc      String
+  price     Float
+  badge     String?
+  img       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomOrder {
+  id          String   @id @default(uuid())
+  name        String
+  company     String?
+  email       String
+  phone       String?
+  eventType   String?
+  quantity    String?
+  color       String?
+  method      String?
+  date        String?
+  description String?
+  budget      String?
+  status      String   @default("PENDING") // PENDING, REVIEWED, CONTACTED, ARCHIVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model CustomQuestion {
   id         String   @id @default(uuid())
   workshopId String

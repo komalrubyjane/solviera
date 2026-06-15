@@ -600,3 +600,112 @@ export async function deleteCustomQuestionAction(id: string) {
   }
 }
 
+// 8. Product (Featured Pieces) Actions
+export async function createProductAction(data: {
+  name: string;
+  desc: string;
+  price: number;
+  badge?: string;
+  img: string;
+}) {
+  try {
+    const product = await db.product.create({
+      data,
+    });
+    revalidatePath("/");
+    return { success: true, product };
+  } catch (error) {
+    console.error("Failed to create product:", error);
+    return { success: false, message: "Could not create product." };
+  }
+}
+
+export async function updateProductAction(
+  id: string,
+  data: {
+    name?: string;
+    desc?: string;
+    price?: number;
+    badge?: string | null;
+    img?: string;
+  }
+) {
+  try {
+    const product = await db.product.update({
+      where: { id },
+      data: {
+        ...data,
+        badge: data.badge === "" ? null : data.badge,
+      },
+    });
+    revalidatePath("/");
+    return { success: true, product };
+  } catch (error) {
+    console.error("Failed to update product:", error);
+    return { success: false, message: "Could not update product details." };
+  }
+}
+
+export async function deleteProductAction(id: string) {
+  try {
+    await db.product.delete({
+      where: { id },
+    });
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete product:", error);
+    return { success: false, message: "Could not delete product." };
+  }
+}
+
+// 9. Custom Orders Actions
+export async function createCustomOrderAction(data: {
+  name: string;
+  company?: string;
+  email: string;
+  phone?: string;
+  eventType?: string;
+  quantity?: string;
+  color?: string;
+  method?: string;
+  date?: string;
+  description?: string;
+  budget?: string;
+}) {
+  try {
+    const order = await db.customOrder.create({
+      data,
+    });
+    return { success: true, orderId: order.id };
+  } catch (error) {
+    console.error("Failed to create custom order:", error);
+    return { success: false, message: "Could not submit custom order request." };
+  }
+}
+
+export async function updateCustomOrderStatusAction(id: string, status: string) {
+  try {
+    await db.customOrder.update({
+      where: { id },
+      data: { status },
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update custom order status:", error);
+    return { success: false, message: "Could not update status." };
+  }
+}
+
+export async function deleteCustomOrderAction(id: string) {
+  try {
+    await db.customOrder.delete({
+      where: { id },
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete custom order:", error);
+    return { success: false, message: "Could not delete request." };
+  }
+}
+
