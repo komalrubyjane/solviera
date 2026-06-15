@@ -595,7 +595,7 @@ export default function Homepage() {
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  Studio Experience →
+                  Workshop Experience →
                 </a>
               </div>
             </div>

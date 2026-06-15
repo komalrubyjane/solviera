@@ -162,31 +162,6 @@ export default function BookingsClient({ bookings }: Props) {
         </button>
       </div>
 
-      {/* QR CODE SCAN SIMULATOR */}
-      <div className="bg-gradient-to-r from-sand/80 to-cream/95 border border-mocha/30 rounded-2xl p-6 shadow-md">
-        <h3 className="font-serif text-lg text-dark-mocha mb-2">QR Code Check-In Scanner</h3>
-        <p className="text-[10px] text-soft-brown font-light mb-4">
-          Simulate a camera scanner by typing or pasting the customer's Booking Reference Code (e.g. SLV-WK-XXXXXX).
-        </p>
-        <form onSubmit={handleScanCheckIn} className="flex gap-4 max-w-[500px]">
-          <input
-            type="text"
-            placeholder="Paste booking reference code..."
-            className="form-input"
-            value={qrCodeInput}
-            onChange={(e) => setQrCodeInput(e.target.value)}
-            required
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-gradient-to-r from-warm-brown to-nude text-cream font-bold py-3 px-6 rounded-xl uppercase text-xs tracking-wider transition-all duration-300"
-          >
-            Check In
-          </button>
-        </form>
-      </div>
-
       {/* FILTERS AND SEARCH */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-sand/30 border border-mocha/10 rounded-2xl p-5 shadow-md">
         <div>

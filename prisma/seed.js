@@ -36,7 +36,7 @@ async function main() {
     data: {
       title: 'Tote Bag Painting Workshop',
       description: 'Transform a simple heavy-canvas tote bag into a personal piece of art. Explore fabric colors, experiment with traditional woodblock stamps, and leave with a handcrafted creation that is uniquely yours. Classes are hosted by master artisans in our sunlit Tornabuoni atelier.',
-      price: 3500.0,
+      price: 599.0,
       capacity: 12,
       banner: './workshop_scene.png',
       status: 'PUBLISHED',

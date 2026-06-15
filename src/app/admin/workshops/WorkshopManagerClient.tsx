@@ -71,7 +71,7 @@ export default function WorkshopManagerClient({ workshops }: Props) {
   const [editingPrice, setEditingPrice] = useState<string>("");
 
   // Workshop Edit fields
-  const [editPrice, setEditPrice] = useState(workshop?.price || 3500);
+  const [editPrice, setEditPrice] = useState(workshop?.price || 599);
   const [editCapacity, setEditCapacity] = useState(workshop?.capacity || 12);
   const [editDesc, setEditDesc] = useState(workshop?.description || "");
   const [toastMsg, setToastMsg] = useState("");
