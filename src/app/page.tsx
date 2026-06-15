@@ -313,24 +313,24 @@ export default function Homepage() {
 
   const featuredBags = [
     {
-      name: "Toscana Crochet",
-      desc: "Intricately hand-woven crochet mesh tote. Light, breathable, and perfect for resort days.",
+      name: "Heritage Kolam",
+      desc: "A premium charcoal black canvas tote featuring an elegant hand-painted traditional Indian Kolam geometric grid.",
       price: "₹29,900",
       priceNum: 29900,
       badge: "Bestseller",
       img: "/tote_crochet.png"
     },
     {
-      name: "Venezia Hibiscus",
-      desc: "Plush tufted velvet tote in a deep hibiscus crimson. Features a beautiful white floral motif.",
+      name: "Atelier Lotus",
+      desc: "An exquisite cream canvas tote adorned with a vibrant red blooming lotus motif and intricate golden accent detailing.",
       price: "₹26,500",
       priceNum: 26500,
       badge: null,
       img: "/tote_hibiscus.png"
     },
     {
-      name: "Palermo Kitty",
-      desc: "Premium plush tufted signature tote in sunset bubblegum pink. A playful, high-fashion statement piece.",
+      name: "Signature Mandala",
+      desc: "A timeless black canvas everyday tote decorated with a striking hand-painted white semi-mandala pattern on the border.",
       price: "₹22,900",
       priceNum: 22900,
       badge: "New",
@@ -626,8 +626,8 @@ export default function Homepage() {
                 onMouseLeave={handleBagTiltLeave}
                 style={{ position: "relative", display: "inline-block", cursor: "none" }}
               >
-                <img className="bag-svg" src="/tote_crochet.png" alt="Toscana Crochet Tote" style={{ width: "100%", display: "block" }} />
-                <div className="bag-label label-1">Toscana Crochet</div>
+                <img className="bag-svg" src="/tote_crochet.png" alt="Heritage Kolam Tote" style={{ width: "100%", display: "block" }} />
+                <div className="bag-label label-1">Heritage Kolam</div>
                 <div className="bag-label label-2">From ₹29,900</div>
               </div>
             </div>
@@ -640,8 +640,8 @@ export default function Homepage() {
                 onMouseLeave={handleBagTiltLeave}
                 style={{ position: "relative", display: "inline-block", cursor: "none" }}
               >
-                <img className="bag-svg" src="/tote_hibiscus.png" alt="Venezia Hibiscus Mini" style={{ width: "100%", display: "block" }} />
-                <div className="bag-label label-3">Venezia Hibiscus</div>
+                <img className="bag-svg" src="/tote_hibiscus.png" alt="Atelier Lotus Tote" style={{ width: "100%", display: "block" }} />
+                <div className="bag-label label-3">Atelier Lotus</div>
               </div>
             </div>
 
@@ -653,8 +653,8 @@ export default function Homepage() {
                 onMouseLeave={handleBagTiltLeave}
                 style={{ position: "relative", display: "inline-block", cursor: "none" }}
               >
-                <img className="bag-svg" src="/tote_kitty.png" alt="Palermo Kitty Everyday" style={{ width: "100%", display: "block" }} />
-                <div className="bag-label label-1">Palermo Kitty</div>
+                <img className="bag-svg" src="/tote_kitty.png" alt="Signature Mandala Tote" style={{ width: "100%", display: "block" }} />
+                <div className="bag-label label-1">Signature Mandala</div>
               </div>
             </div>
           </div>
