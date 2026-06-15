@@ -166,22 +166,25 @@ export default function FloralDecor() {
       }}
     >
       {/* ── Generated/Uploaded Flowers ── */}
-      {FLOWERS.map((f, i) => (
-        <div
-          key={`fl-${i}`}
-          className={f.anim}
-          style={{
-            position: "absolute",
-            top: f.top,
-            ...(f.right !== undefined ? { right: f.right } : { left: f.left }),
-            animationDelay: f.delay,
-            transform: `rotate(${f.rotate}deg)`,
-            pointerEvents: "none",
-          }}
-        >
-          {renderFlower(f.type, f.size, f.opacity)}
-        </div>
-      ))}
+      {FLOWERS.map((f, i) => {
+        const isAccent = f.left !== undefined && f.left !== "0%";
+        return (
+          <div
+            key={`fl-${i}`}
+            className={`${f.anim} ${isAccent ? "fl-accent" : ""}`}
+            style={{
+              position: "absolute",
+              top: f.top,
+              ...(f.right !== undefined ? { right: f.right } : { left: f.left }),
+              animationDelay: f.delay,
+              transform: `rotate(${f.rotate}deg)`,
+              pointerEvents: "none",
+            }}
+          >
+            {renderFlower(f.type, f.size, f.opacity)}
+          </div>
+        );
+      })}
 
       {/* ── Generated/Uploaded Petals ── */}
       {PETALS.map((p, i) => (

@@ -3739,6 +3739,14 @@
 .fl-sway-a  { animation: fl-sway-a 6s ease-in-out infinite; }
 .fl-sway-b  { animation: fl-sway-b 8s ease-in-out infinite; }
 
+@media (max-width: 768px) {
+  .fl-accent,
+  .fl-drift-a,
+  .fl-sway-a {
+    display: none !important;
+  }
+}
+
 /* Ensure all page sections sit above the floral layer */
 .main-nav,
 .hero,

@@ -118,6 +118,7 @@ const ZoomFlower = ({
         scale: 0.05,
         opacity: 0,
         rotation: flower.startRotation,
+        force3D: true,
       },
       {
         x: `${flower.endX}vw`,
@@ -128,6 +129,7 @@ const ZoomFlower = ({
         duration: flower.duration,
         delay: flower.delay,
         ease: 'power1.in',
+        force3D: true,
         onStart: () => {
           gsap.to(el, {
             opacity: 0,
@@ -135,6 +137,7 @@ const ZoomFlower = ({
             duration: 0.35,
             delay: flower.duration + flower.delay - 0.35,
             ease: 'power1.in',
+            force3D: true,
           });
         },
       }
@@ -238,7 +241,7 @@ export default function SolveriaIntro({ onComplete }: { onComplete: () => void }
         onStart: () => {
           setStage('blooming');
           const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
-          setFlowers(spawnFlowers(isMobileDevice ? 120 : 380, 0, 2.5));
+          setFlowers(spawnFlowers(isMobileDevice ? 25 : 80, 0, 2.5));
         },
       });
   };
