@@ -84,7 +84,7 @@ export default function FounderStory() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 style={{ x: mousePos.x * 1, y: mousePos.y * 1 }}
               >
-                <img src="/tote_kitty.png" alt="Tote" className="w-full h-full object-contain drop-shadow-2xl" />
+                <img src="/tote_starry_cat.png" alt="Tote" className="w-full h-full object-contain drop-shadow-2xl" />
               </motion.div>
               
               <motion.div 
@@ -145,7 +145,9 @@ export default function FounderStory() {
           {/* Founder 1 */}
           <motion.div variants={fadeUp} className="fs-founder-card group">
             <div className="fs-founder-photo-wrap">
-              <div className="fs-founder-placeholder f-placeholder-1"></div>
+              <div className="w-full h-full rounded-full overflow-hidden relative">
+                <img src="/purna.jpg" alt="Purna" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              </div>
             </div>
             <div className="fs-founder-info">
               <h4 className="fs-founder-name">Purna</h4>
@@ -159,7 +161,9 @@ export default function FounderStory() {
           {/* Founder 2 */}
           <motion.div variants={fadeUp} className="fs-founder-card group">
             <div className="fs-founder-photo-wrap">
-              <div className="fs-founder-placeholder f-placeholder-2"></div>
+              <div className="w-full h-full rounded-full overflow-hidden relative">
+                <img src="/deekshit.jpg" alt="Deekshit" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              </div>
             </div>
             <div className="fs-founder-info">
               <h4 className="fs-founder-name">Deekshit</h4>

@@ -588,12 +588,12 @@
   max-width: 540px;
 }
 .ws-eyebrow {
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.2em;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
   color: var(--mocha);
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 .ws-title {
   font-family: var(--font-serif);
@@ -718,6 +718,11 @@
   border-radius: 32px;
   position: relative;
   overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.ws-cta:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(167, 139, 250, 0.15), 0 10px 20px rgba(196, 168, 110, 0.2);
 }
 .ws-cta::before {
   content: '';

@@ -104,7 +104,7 @@ export default function BeyondTheStudio() {
   const carouselImages = [
     { src: "/tote_crochet.png", title: "Corporate Gift Bags", subtitle: "Tech Summit 2024" },
     { src: "/tote_hibiscus.png", title: "Wedding Welcome Bags", subtitle: "Tuscany Celebration" },
-    { src: "/tote_kitty.png", title: "Event Merchandise", subtitle: "Art Biennale" },
+    { src: "/tote_starry_cat.png", title: "Event Merchandise", subtitle: "Art Biennale" },
     { src: "/workshop_scene.png", title: "Brand Collaborations", subtitle: "Exclusive Launch" }
   ];
 
@@ -298,7 +298,7 @@ export default function BeyondTheStudio() {
                   <div className="bs-stack-graphic" style={{ opacity: Math.min(selectedQty / 1000 + 0.2, 1) }}>
                     {[...Array(Math.min(selectedQty / 25, 20))].map((_, i) => (
                       <div key={i} className="bs-stack-item" style={{ bottom: `${i * 8}px`, zIndex: 20 - i, left: `calc(50% + ${Math.sin(i)*10}px)` }}>
-                        <img src="/tote_kitty.png" alt="Stack item" className="w-24 h-24 object-contain" />
+                        <img src="/tote_starry_cat.png" alt="Stack item" className="w-24 h-24 object-contain" />
                       </div>
                     ))}
                   </div>

@@ -313,8 +313,8 @@ export default function Homepage() {
 
   const featuredBags = [
     {
-      name: "Heritage Kolam",
-      desc: "A premium charcoal black canvas tote featuring an elegant hand-painted traditional Indian Kolam geometric grid.",
+      name: "Toscana Tulip",
+      desc: "A premium cream canvas everyday tote featuring a hand-painted vibrant pink tulip bouquet with lush green leaves.",
       price: "₹29,900",
       priceNum: 29900,
       badge: "Bestseller",
@@ -329,12 +329,12 @@ export default function Homepage() {
       img: "/tote_hibiscus.png"
     },
     {
-      name: "Signature Mandala",
-      desc: "A timeless black canvas everyday tote decorated with a striking hand-painted white semi-mandala pattern on the border.",
+      name: "Starry Night Cat",
+      desc: "A striking black canvas everyday tote featuring a hand-painted cat silhouetted against a vibrant, swirling starry night sky.",
       price: "₹22,900",
       priceNum: 22900,
       badge: "New",
-      img: "/tote_kitty.png"
+      img: "/tote_starry_cat.png"
     },
   ];
   const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -589,14 +589,14 @@ export default function Homepage() {
                 >
                   Explore Collection
                 </button>
-                <Link
-                  href="/workshop-experience"
+                <a
+                  href="#sec-workshop"
                   className="btn-ghost flex items-center justify-center cursor-pointer"
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  Our Story →
-                </Link>
+                  Studio Experience →
+                </a>
               </div>
             </div>
             
@@ -626,8 +626,8 @@ export default function Homepage() {
                 onMouseLeave={handleBagTiltLeave}
                 style={{ position: "relative", display: "inline-block", cursor: "none" }}
               >
-                <img className="bag-svg" src="/tote_crochet.png" alt="Heritage Kolam Tote" style={{ width: "100%", display: "block" }} />
-                <div className="bag-label label-1">Heritage Kolam</div>
+                <img className="bag-svg" src="/tote_crochet.png" alt="Toscana Tulip Tote" style={{ width: "100%", display: "block" }} />
+                <div className="bag-label label-1">Toscana Tulip</div>
                 <div className="bag-label label-2">From ₹29,900</div>
               </div>
             </div>
@@ -653,8 +653,8 @@ export default function Homepage() {
                 onMouseLeave={handleBagTiltLeave}
                 style={{ position: "relative", display: "inline-block", cursor: "none" }}
               >
-                <img className="bag-svg" src="/tote_kitty.png" alt="Signature Mandala Tote" style={{ width: "100%", display: "block" }} />
-                <div className="bag-label label-1">Signature Mandala</div>
+                <img className="bag-svg" src="/tote_starry_cat.png" alt="Starry Night Cat Tote" style={{ width: "100%", display: "block" }} />
+                <div className="bag-label label-1">Starry Night Cat</div>
               </div>
             </div>
           </div>
@@ -679,7 +679,7 @@ export default function Homepage() {
       <section className="workshop-preview" id="sec-workshop">
         <div className="workshop-split">
           <div className="workshop-left reveal">
-            <p className="ws-eyebrow">Studio Experience</p>
+            <p className="ws-eyebrow">Workshop Experience</p>
             <h2 className="ws-title"><em>Create.</em> Paint. <strong>Carry.</strong></h2>
             <p className="ws-sub">Transform a simple tote bag into a personal piece of art. Explore colors, experiment with brush canvas painting, and leave with a handcrafted creation that's uniquely yours.</p>
             <p className="ws-desc">Whether you're an experienced artist or picking up a brush for the first time, our workshops are designed to inspire creativity in a welcoming and fun environment.</p>
