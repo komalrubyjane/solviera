@@ -25,7 +25,7 @@ const customSchema = z.object({
   bagColor: z.enum(["White Tote Bag", "Black Tote Bag"], { required_error: "Please select a tote bag canvas color" }).optional(),
   bookingType: z.enum(["Single", "Couple", "Customise"], { required_error: "Please select a booking type" }),
   customSeats: z.number().min(1).max(20).optional(),
-  style: z.enum(["Brush Painting", "Block Printing", "Brush + Block Printing"], { required_error: "Please select a painting style" }).optional(),
+  style: z.enum(["Brush Painting"], { required_error: "Please select a painting style" }).optional(),
 });
 
 const notesSchema = z.object({
@@ -634,8 +634,6 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                             <>
                               {[
                                 { name: "Brush Painting", price: "Base Price" },
-                                { name: "Block Printing", price: "+ ₹300 Premium" },
-                                { name: "Brush + Block Printing", price: "Dual Craft (1.5x Base)" },
                               ].map((styleObj) => {
                                 const isSelected = field.value === styleObj.name;
                                 return (

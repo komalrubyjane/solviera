@@ -173,7 +173,7 @@ export default function BeyondTheStudio() {
             <div className="bs-visual-card p-12">
               <h3 className="text-3xl font-serif text-dark-mocha mb-4">The Atelier at Scale</h3>
               <p className="text-mocha font-light leading-relaxed mb-8">
-                Every bulk order receives the same devotion as a single bespoke piece. From selecting the finest organic canvas to hand-mixing dyes and precision block printing, your vision becomes a tactile reality.
+                Every bulk order receives the same devotion as a single bespoke piece. From selecting the finest organic canvas to hand-mixing dyes and precision brush painting, your vision becomes a tactile reality.
               </p>
               <ul className="bs-feature-list space-y-4">
                 <li className="flex items-center gap-3 text-mocha"><Sparkles className="text-accent w-5 h-5"/> Premium Illustration Style</li>

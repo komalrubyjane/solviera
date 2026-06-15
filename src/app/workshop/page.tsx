@@ -20,7 +20,7 @@ export default async function WorkshopPage() {
       id: "1",
       question: "What will I make in the workshop?",
       answer:
-        "You'll create your own hand-crafted tote bag using either brush painting or block printing techniques. All materials are provided.",
+        "You'll create your own hand-crafted tote bag using brush canvas painting or custom stencil techniques. All materials are provided.",
       order: 1,
     },
     {
@@ -41,7 +41,7 @@ export default async function WorkshopPage() {
       id: "4",
       question: "What is included in the price?",
       answer:
-        "The price includes all materials (canvas tote, paints, blocks, stencils), expert guidance, refreshments, and you take home your finished creation.",
+        "The price includes all materials (canvas tote, paints, stencils, brushes), expert guidance, refreshments, and you take home your finished creation.",
       order: 4,
     },
     {
@@ -81,7 +81,7 @@ export default async function WorkshopPage() {
       id: "3",
       name: "Rohan Kapoor",
       review:
-        "Gifted this experience to my wife for her birthday. She absolutely loved it! She's already planning to go back and try the block printing style.",
+        "Gifted this experience to my wife for her birthday. She absolutely loved it! She's already planning to go back and create another design.",
       rating: 5,
       avatar: null,
     },

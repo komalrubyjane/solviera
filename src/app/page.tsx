@@ -681,7 +681,7 @@ export default function Homepage() {
           <div className="workshop-left reveal">
             <p className="ws-eyebrow">Studio Experience</p>
             <h2 className="ws-title"><em>Create.</em> Paint. <strong>Carry.</strong></h2>
-            <p className="ws-sub">Transform a simple tote bag into a personal piece of art. Explore colors, experiment with traditional block printing, and leave with a handcrafted creation that's uniquely yours.</p>
+            <p className="ws-sub">Transform a simple tote bag into a personal piece of art. Explore colors, experiment with brush canvas painting, and leave with a handcrafted creation that's uniquely yours.</p>
             <p className="ws-desc">Whether you're an experienced artist or picking up a brush for the first time, our workshops are designed to inspire creativity in a welcoming and fun environment.</p>
             
             <div className="ws-highlights">
@@ -698,7 +698,7 @@ export default function Homepage() {
                 <div className="ws-icon">✔</div><div className="ws-text">Vibrant Fabric Colors</div>
               </div>
               <div className="ws-card reveal" style={{ transitionDelay: "0.5s" }} onMouseMove={handleWsCardMouseMove} onMouseLeave={handleWsCardMouseLeave}>
-                <div className="ws-icon">✔</div><div className="ws-text">Traditional Block Printing</div>
+                <div className="ws-icon">✔</div><div className="ws-text">Master Artisan Guidance</div>
               </div>
               <div className="ws-card reveal" style={{ transitionDelay: "0.6s" }} onMouseMove={handleWsCardMouseMove} onMouseLeave={handleWsCardMouseLeave}>
                 <div className="ws-icon">✔</div><div className="ws-text">Take Home Your Creation</div>
@@ -725,13 +725,13 @@ export default function Homepage() {
           </div>
           <div className="ws-step reveal" style={{ transitionDelay: "0.2s" }}>
             <div className="ws-step-num">2</div>
-            <h4 className="ws-step-title">Choose Your Style</h4>
-            <p className="ws-step-desc">Go freehand with brush painting or explore intricate block printing.</p>
+            <h4 className="ws-step-title">Choose Your Canvas</h4>
+            <p className="ws-step-desc">Pick between premium classic white or charcoal black tote bag canvas.</p>
           </div>
           <div className="ws-step reveal" style={{ transitionDelay: "0.3s" }}>
             <div className="ws-step-num">3</div>
             <h4 className="ws-step-title">Create Your Design</h4>
-            <p className="ws-step-desc">Use provided vibrant colors, brushes, and handcrafted wooden blocks.</p>
+            <p className="ws-step-desc">Use provided vibrant fabric colors, stencils, and professional brushes.</p>
           </div>
           <div className="ws-step reveal" style={{ transitionDelay: "0.4s" }}>
             <div className="ws-step-num">4</div>

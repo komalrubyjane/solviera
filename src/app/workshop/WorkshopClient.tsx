@@ -89,7 +89,7 @@ export default function WorkshopClient({ venue, faqs, testimonials }: Props) {
     { name: "Premium Raw Canvas", desc: "Heavy-duty 14oz organic cotton canvas tote bags, custom woven for our atelier." },
     { name: "Fine Bristle Brushes", desc: "Assorted professional paint brushes ranging from fine details to wide coverage." },
     { name: "Permanent Textile Acrylics", desc: "A curated range of fabric acrylic pigments that fuse molecularly on canvas." },
-    { name: "Woodblock Stamps", desc: "Hand-carved solid teak stamps featuring geometric grids and heritage motifs." },
+    { name: "Artisan Stencils", desc: "Premium custom-designed stencils for outlining classic geometric patterns and frames." },
   ];
 
   return (
@@ -223,28 +223,28 @@ export default function WorkshopClient({ venue, faqs, testimonials }: Props) {
             </div>
           </div>
 
-          {/* Card 2: Block Printing */}
+          {/* Card 2: Color Blending & Stenciling */}
           <div className="exp-card reveal">
             <div className="exp-img-wrapper">
               <span className="exp-badge">Craft 02</span>
               <img
                 src="/tote_blockprint.png"
-                alt="Block Printing"
+                alt="Color Blending"
                 className="exp-img"
               />
               <div className="exp-overlay">
-                <h3 className="exp-title-overlay">Block Printing</h3>
+                <h3 className="exp-title-overlay">Color Blending</h3>
               </div>
             </div>
             <div className="exp-details">
-              <h4 className="exp-heading">Heritage Woodblocks</h4>
+              <h4 className="exp-heading">Stencils &amp; Curation</h4>
               <p className="exp-desc">
-                Learn the beautiful traditional technique of woodblock printing. Browse our archive of hand-carved teak stamps featuring geometric grids, traditional borders, and nature-inspired motifs. Stamp patterns in rich indigos and organic earth pigments.
+                Master the art of color theory and layout. Use custom stencils to mask geometric borders, frame your designs, and apply gradient blends. Work with vibrant fabric pigments that fuse molecularly on raw canvas under expert supervision.
               </p>
               <ul className="exp-features">
-                <li>Teakwood heritage blocks</li>
-                <li>Thick organic pigments</li>
-                <li>Practice canvas grids</li>
+                <li>Custom geometric stencils</li>
+                <li>Gradient blending sponges</li>
+                <li>Palette mixing guides</li>
               </ul>
             </div>
           </div>

@@ -77,12 +77,7 @@ export async function initializeBookingAction(data: InitializeBookingData) {
       return { success: false, message: "Selected session date not found." };
     }
 
-    let basePrice = wDate.price ?? wDate.workshop.price;
-    if (style === "Brush + Block Printing" || style === "Both") {
-      basePrice = (wDate.price ?? wDate.workshop.price) * 1.5; // 50% markup for combined medium
-    } else if (style === "Block Printing") {
-      basePrice = (wDate.price ?? wDate.workshop.price) + 300; // Small stamp premium
-    }
+    const basePrice = wDate.price ?? wDate.workshop.price;
 
     const subtotal = basePrice * participants;
     const tax = subtotal * 0.18;
