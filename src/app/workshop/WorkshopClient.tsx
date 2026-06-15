@@ -197,54 +197,54 @@ export default function WorkshopClient({ venue, faqs, testimonials }: Props) {
         </div>
 
         <div className="experience-showcase">
-          {/* Card 1: Brush Painting */}
+          {/* Card 1: The Canvas Bags */}
           <div className="exp-card reveal">
             <div className="exp-img-wrapper">
               <span className="exp-badge">Craft 01</span>
               <img
-                src="/tote_floral.png"
-                alt="Brush Painting"
+                src="/ws_canvas_bags.jpg"
+                alt="Premium Canvas Bags"
                 className="exp-img"
               />
               <div className="exp-overlay">
-                <h3 className="exp-title-overlay">Brush Painting</h3>
+                <h3 className="exp-title-overlay">The Canvas Bags</h3>
               </div>
             </div>
             <div className="exp-details">
-              <h4 className="exp-heading">Freehand Brushstrokes</h4>
+              <h4 className="exp-heading">Premium Organic Canvas</h4>
               <p className="exp-desc">
-                Master the fine bristles and translate elegant botanical details, script lettering, or expressive abstract shapes directly onto heavy raw canvas. Explore fabric coloring, mixing, and layering under expert supervision.
+                Select your preferred base canvas, available in premium Off-White and Noir Black tote bags. Every bag features heavy-duty organic cotton weave, heavy weight stitching, and luxury genuine leather straps designed to withstand daily use while serving as your personal artistic canvas.
               </p>
               <ul className="exp-features">
-                <li>Durable fabric acrylics</li>
-                <li>Fine-point natural brushes</li>
-                <li>Practice canvas panels & templates</li>
+                <li>Heavyweight 100% organic cotton</li>
+                <li>Genuine leather top handles</li>
+                <li>Secure internal pockets & premium details</li>
               </ul>
             </div>
           </div>
 
-          {/* Card 2: Color Blending & Stenciling */}
+          {/* Card 2: Pigments & Colors */}
           <div className="exp-card reveal">
             <div className="exp-img-wrapper">
               <span className="exp-badge">Craft 02</span>
               <img
-                src="/tote_blockprint.png"
-                alt="Color Blending"
+                src="/ws_palette.png"
+                alt="Pigments and Color Palettes"
                 className="exp-img"
               />
               <div className="exp-overlay">
-                <h3 className="exp-title-overlay">Color Blending</h3>
+                <h3 className="exp-title-overlay">Pigments &amp; Colors</h3>
               </div>
             </div>
             <div className="exp-details">
-              <h4 className="exp-heading">Stencils &amp; Curation</h4>
+              <h4 className="exp-heading">Artisanal Color Palettes</h4>
               <p className="exp-desc">
-                Master the art of color theory and layout. Use custom stencils to mask geometric borders, frame your designs, and apply gradient blends. Work with vibrant fabric pigments that fuse molecularly on raw canvas under expert supervision.
+                Explore an extensive collection of premium, molecular-binding fabric pigments. Learn the principles of color theory, custom gradient blending, and shading techniques to mix customized hues on your wooden mixing palette under expert atelier guidance.
               </p>
               <ul className="exp-features">
-                <li>Custom geometric stencils</li>
-                <li>Gradient blending sponges</li>
-                <li>Palette mixing guides</li>
+                <li>Non-toxic, molecular-binding pigment</li>
+                <li>Professional wooden mixing palettes</li>
+                <li>Shading, layering & gradient tools</li>
               </ul>
             </div>
           </div>
