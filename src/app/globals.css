@@ -718,11 +718,12 @@
   border-radius: 32px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease;
 }
 .ws-cta:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(167, 139, 250, 0.15), 0 10px 20px rgba(196, 168, 110, 0.2);
+  border-color: rgba(196, 168, 110, 0.6);
+  box-shadow: 0 30px 60px rgba(167, 139, 250, 0.1), 0 12px 30px rgba(196, 168, 110, 0.15);
 }
 .ws-cta::before {
   content: '';
@@ -731,8 +732,12 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, rgba(217, 161, 180, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle at center, rgba(217, 161, 180, 0.15) 0%, transparent 60%);
   pointer-events: none;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ws-cta:hover::before {
+  transform: translate(5%, 5%) scale(1.1);
 }
 .ws-cta-title {
   font-family: var(--font-serif);
