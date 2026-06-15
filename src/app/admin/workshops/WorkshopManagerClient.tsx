@@ -6,6 +6,9 @@ import {
   updateWorkshopDateAction,
   deleteWorkshopDateAction,
   updateWorkshopAction,
+  createCustomQuestionAction,
+  updateCustomQuestionAction,
+  deleteCustomQuestionAction,
 } from "@/app/actions/admin";
 
 interface DateItem {
@@ -16,6 +19,14 @@ interface DateItem {
   booked: number;
   status: string;
   price?: number | null;
+}
+
+interface CustomQuestionItem {
+  id: string;
+  label: string;
+  type: string;
+  required: boolean;
+  options: string;
 }
 
 interface WorkshopItem {
@@ -35,6 +46,7 @@ interface WorkshopItem {
   showPhone: boolean;
   showCity: boolean;
   dates: DateItem[];
+  questions?: CustomQuestionItem[];
 }
 
 interface Props {
@@ -63,6 +75,81 @@ export default function WorkshopManagerClient({ workshops }: Props) {
   const [editCapacity, setEditCapacity] = useState(workshop?.capacity || 12);
   const [editDesc, setEditDesc] = useState(workshop?.description || "");
   const [toastMsg, setToastMsg] = useState("");
+
+  // Custom Questions states
+  const [newQuestionLabel, setNewQuestionLabel] = useState("");
+  const [newQuestionType, setNewQuestionType] = useState("TEXT");
+  const [newQuestionRequired, setNewQuestionRequired] = useState(false);
+  const [newQuestionOptions, setNewQuestionOptions] = useState("");
+
+  const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
+  const [editingQuestionLabel, setEditingQuestionLabel] = useState("");
+  const [editingQuestionType, setEditingQuestionType] = useState("TEXT");
+  const [editingQuestionRequired, setEditingQuestionRequired] = useState(false);
+  const [editingQuestionOptions, setEditingQuestionOptions] = useState("");
+
+  const handleAddQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newQuestionLabel.trim() || !workshop) return;
+    setIsSubmitting(true);
+    const res = await createCustomQuestionAction({
+      workshopId: workshop.id,
+      label: newQuestionLabel.trim(),
+      type: newQuestionType,
+      required: newQuestionRequired,
+      options: newQuestionType === "SELECT" ? newQuestionOptions : undefined,
+    });
+    if (res.success) {
+      showToast("Custom question added!");
+      setNewQuestionLabel("");
+      setNewQuestionOptions("");
+      setNewQuestionRequired(false);
+      window.location.reload();
+    } else {
+      showToast(res.message || "Failed to add question.");
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleUpdateQuestion = async (id: string) => {
+    if (!editingQuestionLabel.trim()) return;
+    setIsSubmitting(true);
+    const res = await updateCustomQuestionAction(id, {
+      label: editingQuestionLabel.trim(),
+      type: editingQuestionType,
+      required: editingQuestionRequired,
+      options: editingQuestionType === "SELECT" ? editingQuestionOptions : "",
+    });
+    if (res.success) {
+      showToast("Question updated successfully!");
+      setEditingQuestionId(null);
+      window.location.reload();
+    } else {
+      showToast(res.message || "Failed to update question.");
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleDeleteQuestion = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this custom question?")) return;
+    setIsSubmitting(true);
+    const res = await deleteCustomQuestionAction(id);
+    if (res.success) {
+      showToast("Question deleted.");
+      window.location.reload();
+    } else {
+      showToast(res.message || "Failed to delete question.");
+    }
+    setIsSubmitting(false);
+  };
+
+  const startEditingQuestion = (q: CustomQuestionItem) => {
+    setEditingQuestionId(q.id);
+    setEditingQuestionLabel(q.label);
+    setEditingQuestionType(q.type);
+    setEditingQuestionRequired(q.required);
+    setEditingQuestionOptions(q.options || "");
+  };
 
   const showToast = (msg: string) => {
     const toast = document.getElementById("toast");
@@ -388,7 +475,192 @@ export default function WorkshopManagerClient({ workshops }: Props) {
             </div>
           </div>
         </div>
+
+        {/* CUSTOM QUESTIONS MANAGER */}
+        <div className="bg-sand/30 border border-mocha/10 rounded-2xl p-6 shadow-md h-fit">
+          <h3 className="font-serif text-lg text-dark-mocha mb-3">Custom Form Questions</h3>
+          <p className="text-[11px] font-light text-soft-brown mb-6">
+            Configure, edit, and add custom fields for the customer details checkout step.
+          </p>
+
+          {/* List existing custom questions */}
+          <div className="space-y-4 mb-6">
+            {workshop.questions && workshop.questions.length > 0 ? (
+              workshop.questions.map((q) => {
+                const isEditing = editingQuestionId === q.id;
+                return (
+                  <div key={q.id} className="p-4 bg-beige/15 rounded-xl border border-mocha/5 space-y-3">
+                    {isEditing ? (
+                      <div className="space-y-3">
+                        <div>
+                          <label className="form-label text-[9px] mb-1">Question Label</label>
+                          <input
+                            type="text"
+                            className="form-input text-xs"
+                            value={editingQuestionLabel}
+                            onChange={(e) => setEditingQuestionLabel(e.target.value)}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="form-label text-[9px] mb-1">Field Type</label>
+                            <select
+                              className="form-input text-xs"
+                              value={editingQuestionType}
+                              onChange={(e) => setEditingQuestionType(e.target.value)}
+                            >
+                              <option value="TEXT">Short Answer Text</option>
+                              <option value="SELECT">Dropdown Selection</option>
+                            </select>
+                          </div>
+                          <div className="flex items-center pt-5">
+                            <label className="flex items-center gap-2 text-[10px] text-dark-mocha cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editingQuestionRequired}
+                                onChange={(e) => setEditingQuestionRequired(e.target.checked)}
+                                className="rounded border-mocha/30 text-mocha focus:ring-mocha"
+                              />
+                              Required?
+                            </label>
+                          </div>
+                        </div>
+                        {editingQuestionType === "SELECT" && (
+                          <div>
+                            <label className="form-label text-[9px] mb-1">Options (comma-separated)</label>
+                            <input
+                              type="text"
+                              className="form-input text-xs"
+                              placeholder="e.g. Medium, Large, Extra Large"
+                              value={editingQuestionOptions}
+                              onChange={(e) => setEditingQuestionOptions(e.target.value)}
+                            />
+                          </div>
+                        )}
+                        <div className="flex justify-end gap-2 pt-1 text-xs">
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateQuestion(q.id)}
+                            className="bg-mocha text-cream px-3 py-1.5 rounded-lg font-medium hover:opacity-90"
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingQuestionId(null)}
+                            className="bg-sand/50 text-soft-brown px-3 py-1.5 rounded-lg border border-mocha/10"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-xs font-semibold text-dark-mocha">{q.label}</h4>
+                            {q.required && (
+                              <span className="text-[8px] tracking-wider uppercase bg-amber-400/10 text-amber-500 border border-amber-400/20 px-1.5 py-0.5 rounded-md">
+                                Required
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[9px] text-warm-brown mt-1">
+                            Type: {q.type} {q.type === "SELECT" && `(${q.options})`}
+                          </p>
+                        </div>
+                        <div className="flex gap-2 text-[10px]">
+                          <button
+                            type="button"
+                            onClick={() => startEditingQuestion(q)}
+                            className="text-indigo-600 hover:text-indigo-500"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteQuestion(q.id)}
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-[10px] text-center py-4 text-soft-brown font-light">
+                No custom questions configured yet. Add one below!
+              </p>
+            )}
+          </div>
+
+          {/* Add custom question form */}
+          <form onSubmit={handleAddQuestion} className="border-t border-mocha/10 pt-5 space-y-4">
+            <h4 className="text-xs font-semibold text-dark-mocha uppercase tracking-wider">Add Custom Question</h4>
+            <div>
+              <label className="form-label text-[10px]" htmlFor="q-label">Question Label</label>
+              <input
+                type="text"
+                id="q-label"
+                className="form-input text-xs"
+                placeholder="e.g. What is your Instagram handle?"
+                value={newQuestionLabel}
+                onChange={(e) => setNewQuestionLabel(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="form-label text-[10px]" htmlFor="q-type">Input Type</label>
+                <select
+                  id="q-type"
+                  className="form-input text-xs"
+                  value={newQuestionType}
+                  onChange={(e) => setNewQuestionType(e.target.value)}
+                >
+                  <option value="TEXT">Short Answer Text</option>
+                  <option value="SELECT">Dropdown Options</option>
+                </select>
+              </div>
+              <div className="flex items-center pt-5">
+                <label className="flex items-center gap-2 text-[10px] text-dark-mocha cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newQuestionRequired}
+                    onChange={(e) => setNewQuestionRequired(e.target.checked)}
+                    className="rounded border-mocha/30 text-mocha focus:ring-mocha"
+                  />
+                  Required Field
+                </label>
+              </div>
+            </div>
+            {newQuestionType === "SELECT" && (
+              <div>
+                <label className="form-label text-[10px]" htmlFor="q-options">Select Choices (comma separated)</label>
+                <input
+                  type="text"
+                  id="q-options"
+                  className="form-input text-xs"
+                  placeholder="e.g. Yes, No, Maybe"
+                  value={newQuestionOptions}
+                  onChange={(e) => setNewQuestionOptions(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-mocha text-cream font-bold py-2.5 px-4 rounded-xl uppercase text-xs tracking-wider transition-all duration-300 hover:scale-102"
+            >
+              Add Question
+            </button>
+          </form>
         </div>
+      </div>
 
         {/* RIGHT: SCHEDULES MANAGER & ADD DATE FORM */}
         <div className="lg:col-span-2 space-y-8">

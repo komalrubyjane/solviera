@@ -54,6 +54,13 @@ interface ActiveDate {
   showCanvasColor: boolean;
   showPhone: boolean;
   showCity: boolean;
+  questions?: {
+    id: string;
+    label: string;
+    type: string;
+    required: boolean;
+    options: string;
+  }[];
 }
 
 interface BookingFormProps {
@@ -162,6 +169,9 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
     }
   };
 
+  // State to hold answers to custom questions (maps question.id -> answer string value)
+  const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
+
   // Determine active steps dynamically
   const firstActiveDate = dates[0];
   const showPhone = selectedDateObject ? selectedDateObject.showPhone : (firstActiveDate ? firstActiveDate.showPhone : true);
@@ -170,8 +180,10 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
   const showPainting = selectedDateObject?.showPaintingStyle ?? false;
   const showNotesStep = (selectedDateObject?.showDietary ?? false) || (selectedDateObject?.showSpecialRequests ?? false);
 
+  const customQuestions = selectedDateObject?.questions || [];
+
   // We have up to 5 steps:
-  // Step 1: Personal info
+  // Step 1: Personal info & Custom questions
   // Step 2: Date selection
   // Step 3: Customization (Canvas color / Painting Style)
   // Step 4: Notes (Dietary / Requests)
@@ -206,6 +218,16 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
   const handleNextStep = async () => {
     const isStepValid = await form.trigger();
     if (isStepValid) {
+      if (step === 1) {
+        // Validate custom questions
+        for (const q of customQuestions) {
+          if (q.required && !customAnswers[q.id]?.trim()) {
+            showToast(`Please answer the required field: "${q.label}"`, true);
+            return;
+          }
+        }
+      }
+
       if (isLastStep) return;
 
       const currentStepName = getStepName(step);
@@ -286,6 +308,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
             bagColor: (showCanvas ? watchedValues.bagColor : "White Tote Bag") || "White Tote Bag",
             style: showPainting ? (watchedValues.style || "Brush Painting") : watchedValues.bookingType,
             notes: notesText,
+            customAnswers: customAnswers,
           },
         });
 
@@ -329,6 +352,7 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
           bagColor: (showCanvas ? watchedValues.bagColor : "White Tote Bag") || "White Tote Bag",
           style: showPainting ? (watchedValues.style || "Brush Painting") : watchedValues.bookingType,
           notes: notesText,
+          customAnswers: customAnswers,
         },
       });
 
@@ -445,6 +469,58 @@ export default function BookingForm({ onHoverChange }: BookingFormProps) {
                           {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city.message}</p>}
                         </div>
                       )}
+                    </div>
+                  )}
+
+                  {/* CUSTOM DYNAMIC QUESTIONS */}
+                  {customQuestions.length > 0 && (
+                    <div className="border-t border-mocha/10 pt-6 space-y-6">
+                      <h4 className="font-serif text-sm text-dark-mocha uppercase tracking-wider">Additional Details</h4>
+                      {customQuestions.map((q) => {
+                        const val = customAnswers[q.id] || "";
+                        const updateVal = (newVal: string) => {
+                          setCustomAnswers((prev) => ({ ...prev, [q.id]: newVal }));
+                        };
+
+                        return (
+                          <div key={q.id} className="form-group">
+                            <label className="form-label" htmlFor={`custom-q-${q.id}`}>
+                              {q.label} {q.required && <span className="text-red-400">*</span>}
+                            </label>
+                            {q.type === "SELECT" ? (
+                              <select
+                                id={`custom-q-${q.id}`}
+                                className="form-input text-xs"
+                                value={val}
+                                onChange={(e) => updateVal(e.target.value)}
+                                onFocus={handleHoverStart}
+                                onBlur={handleHoverEnd}
+                              >
+                                <option value="">Select an option...</option>
+                                {q.options.split(",").map((opt: string) => {
+                                  const o = opt.trim();
+                                  return (
+                                    <option key={o} value={o}>
+                                      {o}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            ) : (
+                              <input
+                                id={`custom-q-${q.id}`}
+                                type="text"
+                                className="form-input"
+                                placeholder="Enter your answer..."
+                                value={val}
+                                onChange={(e) => updateVal(e.target.value)}
+                                onFocus={handleHoverStart}
+                                onBlur={handleHoverEnd}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

@@ -20,6 +20,11 @@ export default async function AdminWorkshopsPage() {
             date: "asc",
           },
         },
+        questions: {
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -42,6 +47,13 @@ export default async function AdminWorkshopsPage() {
       showCanvasColor: w.showCanvasColor,
       showPhone: w.showPhone,
       showCity: w.showCity,
+      questions: w.questions.map((q) => ({
+        id: q.id,
+        label: q.label,
+        type: q.type,
+        required: q.required,
+        options: q.options || "",
+      })),
       dates: w.dates.map((d) => ({
         id: d.id,
         date: d.date.toISOString(),

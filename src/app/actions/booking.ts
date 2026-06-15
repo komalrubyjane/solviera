@@ -15,7 +15,15 @@ export async function getActiveDatesAction() {
         },
       },
       include: {
-        workshop: true,
+        workshop: {
+          include: {
+            questions: {
+              orderBy: {
+                createdAt: "asc"
+              }
+            }
+          }
+        },
       },
       orderBy: {
         date: "asc",
@@ -38,6 +46,13 @@ export async function getActiveDatesAction() {
       showCanvasColor: d.workshop.showCanvasColor,
       showPhone: d.workshop.showPhone,
       showCity: d.workshop.showCity,
+      questions: d.workshop.questions.map((q) => ({
+        id: q.id,
+        label: q.label,
+        type: q.type,
+        required: q.required,
+        options: q.options || "",
+      })),
     }));
 
     return { success: true, dates };
@@ -122,6 +137,7 @@ interface ConfirmBookingData {
     bagColor: string;
     style: string;
     notes?: string;
+    customAnswers?: Record<string, string>;
   };
 }
 
@@ -194,6 +210,7 @@ export async function confirmBookingAction(data: ConfirmBookingData) {
         status: "CONFIRMED",
         paymentId: payment.id,
         qrCodeUrl: qrCodeBase64,
+        customAnswers: bookingInfo.customAnswers || {},
       },
     });
 

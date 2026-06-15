@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { markAttendanceAction, markAttendanceByRefAction, cancelBookingAction } from "@/app/actions/admin";
+import { markAttendanceAction, checkInTicketAction, cancelBookingAction } from "@/app/actions/admin";
 
 interface BookingItem {
   id: string;
@@ -18,6 +18,7 @@ interface BookingItem {
   status: string;
   attendance: boolean;
   createdAt: string;
+  customAnswers?: Record<string, string> | null;
 }
 
 interface Props {
@@ -63,14 +64,14 @@ export default function BookingsClient({ bookings }: Props) {
     if (!qrCodeInput) return;
     setIsSubmitting(true);
 
-    const res = await markAttendanceByRefAction(qrCodeInput.trim());
+    const res = await checkInTicketAction(qrCodeInput.trim());
     if (res.success) {
-      showToast(`Check-in Success: Reference ${res.name} marked as present!`);
+      showToast(`Check-in Success: ${res.attendee?.name || "Guest"} checked in!`);
       setQrCodeInput("");
       // Reload page to update UI
       setTimeout(() => window.location.reload(), 1500);
     } else {
-      showToast(res.message || "Failed to process scan.", );
+      showToast(res.message || "Failed to process scan.");
     }
     setIsSubmitting(false);
   };
@@ -271,6 +272,15 @@ export default function BookingsClient({ bookings }: Props) {
                     <td className="py-3.5 px-4">
                       <div className="font-medium text-dark-mocha">{b.customerName}</div>
                       <div className="text-[10px] text-soft-brown mt-0.5">{b.customerEmail}</div>
+                      {b.customAnswers && Object.keys(b.customAnswers).length > 0 && (
+                        <div className="mt-2 pt-1.5 border-t border-mocha/5 text-[9px] text-warm-brown space-y-0.5">
+                          {Object.entries(b.customAnswers).map(([qId, ans]) => (
+                            <div key={qId}>
+                              <span className="font-medium opacity-80">{qId}:</span> {ans}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3.5 px-4">
                       <div>{dateStr}</div>

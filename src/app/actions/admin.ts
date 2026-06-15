@@ -247,9 +247,14 @@ export async function deleteWorkshopDateAction(id: string) {
 // 4. Booking & Attendance check-in actions
 export async function markAttendanceAction(bookingId: string, present: boolean) {
   try {
+    const now = new Date();
     await db.booking.update({
       where: { id: bookingId },
-      data: { attendance: present },
+      data: { 
+        attendance: present,
+        checkedIn: present,
+        checkedInAt: present ? now : null
+      },
     });
     return { success: true };
   } catch (error) {
@@ -528,6 +533,70 @@ export async function getCheckInMetricsAction() {
       success: false,
       message: "Could not retrieve check-in statistics.",
     };
+  }
+}
+
+// 7. Custom Question Actions
+export async function createCustomQuestionAction(data: {
+  workshopId: string;
+  label: string;
+  type: string;
+  required: boolean;
+  options?: string;
+}) {
+  try {
+    const question = await db.customQuestion.create({
+      data: {
+        workshopId: data.workshopId,
+        label: data.label,
+        type: data.type,
+        required: data.required,
+        options: data.options || null,
+      },
+    });
+    revalidatePath("/workshop");
+    revalidatePath("/admin/workshops");
+    return { success: true, question };
+  } catch (error) {
+    console.error("Failed to create custom question:", error);
+    return { success: false, message: "Could not add custom question." };
+  }
+}
+
+export async function updateCustomQuestionAction(
+  id: string,
+  data: {
+    label?: string;
+    type?: string;
+    required?: boolean;
+    options?: string;
+  }
+) {
+  try {
+    const question = await db.customQuestion.update({
+      where: { id },
+      data,
+    });
+    revalidatePath("/workshop");
+    revalidatePath("/admin/workshops");
+    return { success: true, question };
+  } catch (error) {
+    console.error("Failed to update custom question:", error);
+    return { success: false, message: "Could not update custom question." };
+  }
+}
+
+export async function deleteCustomQuestionAction(id: string) {
+  try {
+    await db.customQuestion.delete({
+      where: { id },
+    });
+    revalidatePath("/workshop");
+    revalidatePath("/admin/workshops");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete custom question:", error);
+    return { success: false, message: "Could not delete custom question." };
   }
 }
 

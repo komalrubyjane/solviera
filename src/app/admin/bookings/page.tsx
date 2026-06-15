@@ -38,6 +38,7 @@ export default async function AdminBookingsPage() {
       status: b.status,
       attendance: b.attendance,
       createdAt: b.createdAt.toISOString(),
+      customAnswers: b.customAnswers ? (b.customAnswers as Record<string, string>) : null,
     }));
 
     return <BookingsClient bookings={bookings} />;
