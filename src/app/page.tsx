@@ -68,6 +68,7 @@ export default function Homepage() {
   const [productsList, setProductsList] = useState<any[]>([]);
   const [upcomingSession, setUpcomingSession] = useState<{ date: string; timeSlot: string } | null>(null);
   const [venueInfo, setVenueInfo] = useState<{ name: string; address: string } | null>(null);
+  const [isLoadingSession, setIsLoadingSession] = useState(true);
 
   useEffect(() => {
     if (showToast) {
@@ -100,10 +101,16 @@ export default function Homepage() {
       }
     }
     async function loadUpcomingSession() {
-      const res = await getUpcomingSessionAction();
-      if (res.success) {
-        setUpcomingSession(res.upcomingSession || null);
-        setVenueInfo(res.venue || null);
+      try {
+        const res = await getUpcomingSessionAction();
+        if (res.success) {
+          setUpcomingSession(res.upcomingSession || null);
+          setVenueInfo(res.venue || null);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoadingSession(false);
       }
     }
     loadProducts();
@@ -838,19 +845,25 @@ export default function Homepage() {
           <p className="ws-cta-sub" style={{ marginBottom: "8px" }}>Join our creative workshops and experience the joy of making something truly personal.</p>
           
           <div className="reveal text-mocha text-sm md:text-base opacity-95 tracking-wide font-light animate-fade-in" style={{ marginTop: "12px", marginBottom: "28px" }}>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4">
-              <span>
-                <strong>Upcoming Session:</strong>{" "}
-                {upcomingSession
-                  ? `${formatSessionDate(upcomingSession.date)} (${upcomingSession.timeSlot})`
-                  : "To Be Announced"}
-              </span>
-              {(upcomingSession || venueInfo) && (
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4 min-h-[24px]">
+              {isLoadingSession ? (
+                <span className="opacity-50 text-mocha/70">Loading upcoming session...</span>
+              ) : (
                 <>
-                  <span className="hidden sm:inline text-mocha/30">|</span>
                   <span>
-                    <strong>Venue:</strong> {venueInfo?.name || "Solviera Cafe & Atelier"}, {venueInfo?.address || "Florence"}
+                    <strong>Upcoming Session:</strong>{" "}
+                    {upcomingSession
+                      ? `${formatSessionDate(upcomingSession.date)} (${upcomingSession.timeSlot})`
+                      : "To Be Announced"}
                   </span>
+                  {(upcomingSession || venueInfo) && (
+                    <>
+                      <span className="hidden sm:inline text-mocha/30">|</span>
+                      <span>
+                        <strong>Venue:</strong> {venueInfo?.name || "Solviera Cafe & Atelier"}, {venueInfo?.address || "Florence"}
+                      </span>
+                    </>
+                  )}
                 </>
               )}
             </div>
