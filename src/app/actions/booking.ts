@@ -285,6 +285,46 @@ export async function getBookingByRefAction(bookingRef: string) {
   }
 }
 
+export async function getUpcomingSessionAction() {
+  try {
+    const dbDates = await db.workshopDate.findMany({
+      where: {
+        status: "ACTIVE",
+        date: {
+          gte: new Date(),
+        },
+      },
+      orderBy: {
+        date: "asc",
+      },
+      take: 1,
+    });
+
+    const venue = await db.venue.findFirst() || {
+      name: "Solviera Cafe & Atelier",
+      address: "Florence",
+    };
+
+    if (dbDates.length === 0) {
+      return { success: true, upcomingSession: null, venue };
+    }
+
+    const d = dbDates[0];
+    return {
+      success: true,
+      upcomingSession: {
+        id: d.id,
+        date: d.date.toISOString(),
+        timeSlot: d.timeSlot,
+      },
+      venue,
+    };
+  } catch (error) {
+    console.error("Failed to fetch upcoming session:", error);
+    return { success: false, error: "Failed to fetch upcoming session" };
+  }
+}
+
 export async function getProductsAction() {
   try {
     const products = await db.product.findMany({
@@ -307,3 +347,4 @@ export async function getProductsAction() {
     return { success: false, message: "Could not fetch products from catalog." };
   }
 }
+

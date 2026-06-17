@@ -9,7 +9,7 @@ import FounderStory from "@/components/FounderStory";
 import { useIntro } from "@/components/IntroProvider";
 import SolveriaIntro from "@/components/SolveriaIntro";
 import { motion } from "framer-motion";
-import { getProductsAction } from "@/app/actions/booking";
+import { getProductsAction, getUpcomingSessionAction } from "@/app/actions/booking";
 
 interface CartItem {
   name: string;
@@ -66,6 +66,8 @@ export default function Homepage() {
   };
 
   const [productsList, setProductsList] = useState<any[]>([]);
+  const [upcomingSession, setUpcomingSession] = useState<{ date: string; timeSlot: string } | null>(null);
+  const [venueInfo, setVenueInfo] = useState<{ name: string; address: string } | null>(null);
 
   useEffect(() => {
     if (showToast) {
@@ -76,6 +78,20 @@ export default function Homepage() {
     }
   }, [showToast]);
 
+  const formatSessionDate = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch (e) {
+      return "";
+    }
+  };
+
   useEffect(() => {
     async function loadProducts() {
       const res = await getProductsAction();
@@ -83,7 +99,15 @@ export default function Homepage() {
         setProductsList(res.products);
       }
     }
+    async function loadUpcomingSession() {
+      const res = await getUpcomingSessionAction();
+      if (res.success) {
+        setUpcomingSession(res.upcomingSession || null);
+        setVenueInfo(res.venue || null);
+      }
+    }
     loadProducts();
+    loadUpcomingSession();
   }, []);
 
   // Load cart from localStorage
@@ -815,9 +839,20 @@ export default function Homepage() {
           
           <div className="reveal text-mocha text-sm md:text-base opacity-95 tracking-wide font-light animate-fade-in" style={{ marginTop: "12px", marginBottom: "28px" }}>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4">
-              <span><strong>Upcoming Session:</strong> Saturday, June 20, 2026 (3:00 PM - 6:00 PM)</span>
-              <span className="hidden sm:inline text-mocha/30">|</span>
-              <span><strong>Venue:</strong> Solviera Cafe & Atelier, Florence</span>
+              <span>
+                <strong>Upcoming Session:</strong>{" "}
+                {upcomingSession
+                  ? `${formatSessionDate(upcomingSession.date)} (${upcomingSession.timeSlot})`
+                  : "To Be Announced"}
+              </span>
+              {(upcomingSession || venueInfo) && (
+                <>
+                  <span className="hidden sm:inline text-mocha/30">|</span>
+                  <span>
+                    <strong>Venue:</strong> {venueInfo?.name || "Solviera Cafe & Atelier"}, {venueInfo?.address || "Florence"}
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
