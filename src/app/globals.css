@@ -2980,11 +2980,13 @@
   height: 240px;
   bottom: 20%;
   left: 20%;
+  z-index: 3;
 }
 
 .fs-brushes {
   top: 30%;
   right: 25%;
+  z-index: 2;
 }
 
 .fs-fabric {
@@ -2997,6 +2999,7 @@
   transform: rotate(15deg);
   border: 1px solid rgba(182, 154, 199, 0.15);
   backdrop-filter: blur(5px);
+  z-index: 1;
 }
 
 .fs-founder-silhouettes {
